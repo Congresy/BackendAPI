@@ -29,7 +29,7 @@ public class GestionConferenciasApplication{
 		SpringApplication.run(GestionConferenciasApplication.class, args);
 	}
 
-    @Bean
+   /* @Bean
     CommandLineRunner init(UserRepository userRepository) {
 
         return args -> {
@@ -44,7 +44,7 @@ public class GestionConferenciasApplication{
 
         };
 
-    }
+    }*/
 
     @Bean
     public Docket swaggerSettings() {
