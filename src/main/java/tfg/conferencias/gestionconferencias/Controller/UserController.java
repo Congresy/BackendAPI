@@ -36,7 +36,7 @@ public class UserController {
 
     @ApiOperation(value = "Search an User with a name", response = User.class)
     @GetMapping("{name}")
-    public User getById(@PathVariable("name") String name){
+    public User getByName(@PathVariable("name") String name){
         return userRepository.findByFirstName(name);
     }
 

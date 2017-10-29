@@ -1,5 +1,6 @@
 package tfg.conferencias.gestionconferencias.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
 
     @Id
+    @JsonIgnore
     public String id;
 
     public String firstName;

@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
@@ -21,9 +25,14 @@ import java.util.List;
 @SpringBootApplication
 @Configuration
 @ComponentScan
+@Controller
 @EnableSwagger2
 public class GestionConferenciasApplication{
 
+    @RequestMapping("/")
+    public ModelAndView welcome(){
+        return new ModelAndView("redirect:/swagger-ui.html");
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(GestionConferenciasApplication.class, args);
@@ -50,7 +59,7 @@ public class GestionConferenciasApplication{
     public Docket swaggerSettings() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())
                 .build()
                 .pathMapping("/");
