@@ -3,7 +3,7 @@ package tfg.conferencias.gestionconferencias.Domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "address")
-public class Address {
+public class Address extends DomainEntity{
 
     private String city;
     private String country;//
