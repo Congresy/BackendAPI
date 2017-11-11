@@ -71,7 +71,7 @@ public class ActorController {
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity delete(@PathVariable String id) {
 		actorRepository.delete(actorRepository.findById(id));
-		return new ResponseEntity("Product deleted successfully", HttpStatus.OK);
+		return new ResponseEntity("Product deleted successfully", HttpStatus.OK);//
 
 	}
 }

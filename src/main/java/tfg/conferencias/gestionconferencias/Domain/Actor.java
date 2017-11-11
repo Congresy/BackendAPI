@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Actor extends DomainEntity {
 
 	@NotBlank
-	private String name;
+	private String name;//
 	@NotBlank
 	private String surname;
 	@Email

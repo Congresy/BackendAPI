@@ -44,7 +44,7 @@ public abstract class DomainEntity {
     @Override
     public int hashCode() {
         return this.getId().hashCode();
-    }
+    }//
 
     @Override
     public boolean equals(final Object other) {

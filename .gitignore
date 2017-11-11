@@ -24,3 +24,9 @@ hs_err_pid*
 /target/
 /src/main/resources/application.properties
 /gestion-conferencias.iml
+/.classpath
+/.project
+/.idea/
+.settings/.gitignore
+.settings/org.eclipse.m2e.core.prefs
+/.settings/

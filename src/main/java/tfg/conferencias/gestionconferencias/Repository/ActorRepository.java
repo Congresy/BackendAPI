@@ -11,7 +11,7 @@ import java.util.List;
 public interface ActorRepository extends MongoRepository<Actor, String> {
 
     public Actor findByName(String name);
-    public List<Actor> findBySurname(String surname);
+    public List<Actor> findBySurname(String surname);//
     public Actor findById(String id);
 
 }

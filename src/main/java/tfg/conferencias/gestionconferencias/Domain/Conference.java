@@ -24,7 +24,7 @@ public class Conference extends DomainEntity {
 	}
 
 	@NotBlank
-	private String name;
+	private String name;//
 	@NotNull
 	private Double duration;
 	@NotBlank
