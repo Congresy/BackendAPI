@@ -1,5 +1,6 @@
 package tfg.conferencias.gestionconferencias.Domain;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,25 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "conference")
 public class Conference extends Commentable {
 
-	public Conference(String name, Double duration, String theme, Double price, Double popularity, Date start,
-			Date end, List<Talk> talks, List<SocialEvent> socialEvents, Video video, Organizer organizer,
-                      List<Comment> comments) {
-		super(comments);
-		this.name = name;
-		this.duration = duration;
-		this.theme = theme;
-		this.price = price;
-		this.popularity = popularity;
-		this.start = start;
-		this.end = end;
-		this.talks = talks;
-		this.socialEvents = socialEvents;
-		this.video = video;
-		this.organizer = organizer;
-	}
-
 	@NotBlank
-	private String name;//
+	private String name;
 	@NotNull
 	private Double duration;
 	@NotBlank
@@ -42,11 +26,28 @@ public class Conference extends Commentable {
 	private Date start;
 	@NotNull
 	private Date end;
+
 	private List<Talk> talks;
 	private List<SocialEvent> socialEvents;
 	private Video video;
 	@NotNull
 	private Organizer organizer;
+
+	public Conference(String name, Double duration, String theme, Double price, Double popularity, Date start,
+			Date end, Video video, Organizer organizer) {
+		super();
+		this.name = name;
+		this.duration = duration;
+		this.theme = theme;
+		this.price = price;
+		this.popularity = popularity;
+		this.start = start;
+		this.end = end;
+		this.talks = new ArrayList<>();
+		this.socialEvents = new ArrayList<>();
+		this.video = video;
+		this.organizer = organizer;
+	}
 
 	public String getName() {
 		return name;

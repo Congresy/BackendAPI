@@ -3,11 +3,13 @@ package tfg.conferencias.gestionconferencias.Domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "guest")
-public class Guest extends Talk {
+public class Guest extends Event {
 
-    public Guest(String name, Integer duration, Integer freeSeats, Integer takenSeats, Integer totalSeats, Date start, Date end) {
-        super(name, duration, freeSeats, takenSeats, totalSeats, start, end);
+    public Guest(String name, Integer duration, String place, Date start, Date end, Integer allowedParticipants,
+                 Conference conference, Video video) {
+        super(name, duration, place, start, end, allowedParticipants, conference, video);
     }
 }

@@ -7,8 +7,11 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "actor")
-public class Actor extends DomainEntity {
+public abstract class Actor extends DomainEntity {
 
 	@NotBlank
 	private String name;//
@@ -19,20 +22,24 @@ public class Actor extends DomainEntity {
 	private String email;
 	@NotBlank
 	private String phone;
-	private Address address;
 	@URL
 	private String photo;
 	@NotNull
 	private Boolean banned;
 
-	public Actor(String name, String surname, String email, String phone, Address address) {
+	private Address address;
+	private List<Comment> comments;
+
+ 	public Actor(String name, String surname, String email, String phone, Address address) {
 
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.phone = phone;
-		this.address = address;
 		this.banned = false;
+
+		this.address = address;
+		this.comments = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -94,5 +101,13 @@ public class Actor extends DomainEntity {
 
 	public void setBanned(Boolean banned) {
 		this.banned = banned;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

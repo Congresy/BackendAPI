@@ -2,6 +2,8 @@ package tfg.conferencias.gestionconferencias.Domain;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
+
 @Document(collection = "address")
 public class Address extends DomainEntity{
 
@@ -10,11 +12,16 @@ public class Address extends DomainEntity{
     private String postal;
     private String address;
 
-    public Address(String city, String country, String postal, String address) {
+    @NotNull
+    private Actor actor;
+
+    public Address(String city, String country, String postal, String address, Actor actor) {
         this.city = city;
         this.country = country;
         this.postal = postal;
         this.address = address;
+
+        this.actor = actor;
     }
 
     public String getCity() {
@@ -48,4 +55,13 @@ public class Address extends DomainEntity{
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public Actor getActor() {
+        return actor;
+    }
+
+    public void setActor(Actor actor) {
+        this.actor = actor;
+    }
+
 }
