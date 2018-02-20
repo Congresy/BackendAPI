@@ -1,9 +1,10 @@
-package tfg.conferencias.gestionconferencias.Repository;
+package com.conferencias.tfg.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import tfg.conferencias.gestionconferencias.Domain.Conference;
+import com.conferencias.tfg.domain.Conference;
 
 public interface ConferenceRepository extends MongoRepository<Conference, String> {
 
+	Conference findById(String id);
 }
