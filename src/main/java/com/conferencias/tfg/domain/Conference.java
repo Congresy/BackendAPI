@@ -18,7 +18,7 @@ public class Conference {
 
 	@Id
 	@JsonIgnore
-	private Integer id;
+	private int id;
 	@JsonView(Shorted.class)
 	private String name;
 	@JsonView(Shorted.class)
@@ -30,7 +30,7 @@ public class Conference {
 	@JsonView(Detailed.class)
 	private Double price;
 	@JsonView(Detailed.class)
-	private Address place;
+	private String place;
 	@JsonView(Shorted.class)
 	private String talker;
 	@JsonView(Shorted.class)
@@ -43,7 +43,7 @@ public class Conference {
 
 	}
 
-	public Conference(String name, String theme, Date start, Date finish, Double price, Address place, String talker) {
+	public Conference(String name, String theme, Date start, Date finish, Double price, String place, String talker) {
 		super();
 		this.id = ObjectId.getGeneratedProcessIdentifier();
 		this.name = name;
@@ -72,11 +72,11 @@ public class Conference {
 		this.name = name;
 	}
 
-	public Address getPlace() {
+	public String getPlace() {
 		return place;
 	}
 
-	public void setPlace(Address place) {
+	public void setPlace(String place) {
 		this.place = place;
 	}
 
@@ -130,10 +130,6 @@ public class Conference {
 
 	public void setDuration(Integer duration) {
 		this.duration = duration;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getVideo() {

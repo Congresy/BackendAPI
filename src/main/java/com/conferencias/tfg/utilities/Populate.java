@@ -17,9 +17,9 @@ public class Populate {
 		MongoTemplate mongo = new MongoTemplate(new Mongo(uri), "conferencias");
 		mongo.dropCollection("conference");
 		mongo.dropCollection("address");
-		Address address = new Address("Sevilla", "España", "Avda. de la Raza");
+		//Address address = new Address("Sevilla", "España", "Avda. de la Raza");
 		Conference conference = new Conference("Ciencias de la tierra", "Medioambiente", new Date(2017, 12, 12, 12, 00),
-				new Date(2017, 12, 19, 12, 00), 20., address, "Juan López");
+				new Date(2017, 12, 19, 12, 00), 20., "Sevilla, España, Avda. de la Raza", "Juan López");
 		conference.setVideo("https://www.youtube.com");
 		mongo.save(conference);
 
