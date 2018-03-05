@@ -30,3 +30,4 @@ hs_err_pid*
 .settings/.gitignore
 .settings/org.eclipse.m2e.core.prefs
 /.settings/
+/conferencias-api.iml
