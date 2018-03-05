@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "actor") //TODO Se pone únicamente en el archivo "padre"
@@ -52,6 +53,7 @@ public class Actor {
         this.nick = nick;
         this.banned = false;
         this.private_ = true;
+        this.conferences = new ArrayList<>();
     }
 
     public long getId() {
@@ -128,13 +130,13 @@ public class Actor {
 
     // --------------------------------------------------------------------------------------------------------------
 
-    private List<Conference> conferences;
+    private List<Long> conferences;
 
-    public List<Conference> getConferences() {
+    public List<Long> getConferences() {
         return conferences;
     }
 
-    public void setConferences(List<Conference> conferences) {
+    public void setConferences(List<Long> conferences) {
         this.conferences = conferences;
     }
 }

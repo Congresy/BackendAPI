@@ -36,9 +36,13 @@ public class Populate {
 		Conference conference1 = new Conference("Ciencias de la tierra", "Medioambiente",
 				new Date(2017, 12, 12, 12, 00),
 				new Date(2017, 12, 19, 12, 00), 20.,
-				"Sevilla, España, Avda. de la Raza", "Juan López", actor1);
+				"Sevilla, España, Avda. de la Raza", "Juan López", actor1.getId());
 
 		conference1.setVideo("https://www.youtube.com");
+
+        List<Long> conferencesActor1 = new ArrayList<>();
+        conferencesActor1.add(conference1.getId());
+        actor1.setConferences(conferencesActor1);
 
 		mongo.save(conference1);
 		mongo.save(actor1);

@@ -7,6 +7,7 @@ import java.util.Date;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.conferencias.tfg.utilities.Views.Detailed;
@@ -45,7 +46,7 @@ public class Conference {
 	}
 
 	public Conference(String name, String theme, Date start, Date finish, Double price, String place, String talker,
-					  Actor actor) {
+					  long actor) {
 		super();
 		this.id = ObjectId.getGeneratedProcessIdentifier();
 		this.name = name;
@@ -146,13 +147,13 @@ public class Conference {
 	// --------------------------------------------------------------------------------------------------------------
 
 	@JsonView(Detailed.class)
-	private Actor actor;
+	private long actor;
 
-	public Actor getActor() {
+	public long getActor() {
 		return actor;
 	}
 
-	public void setActor(Actor actor) {
+	public void setActor(long actor) {
 		this.actor = actor;
 	}
 }
