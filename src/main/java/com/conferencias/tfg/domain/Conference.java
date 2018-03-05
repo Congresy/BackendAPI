@@ -1,5 +1,6 @@
 package com.conferencias.tfg.domain;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,12 +14,12 @@ import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
-@Document
+@Document(collection = "conference")
 public class Conference {
 
 	@Id
 	@JsonIgnore
-	private int id;
+	private long id;
 	@JsonView(Shorted.class)
 	private String name;
 	@JsonView(Shorted.class)
@@ -43,7 +44,8 @@ public class Conference {
 
 	}
 
-	public Conference(String name, String theme, Date start, Date finish, Double price, String place, String talker) {
+	public Conference(String name, String theme, Date start, Date finish, Double price, String place, String talker,
+					  Actor actor) {
 		super();
 		this.id = ObjectId.getGeneratedProcessIdentifier();
 		this.name = name;
@@ -54,13 +56,14 @@ public class Conference {
 		this.place = place;
 		this.talker = talker;
 		this.duration = getDuration();
+		this.actor = actor;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -140,4 +143,16 @@ public class Conference {
 		this.video = video;
 	}
 
+	// --------------------------------------------------------------------------------------------------------------
+
+	@JsonView(Detailed.class)
+	private Actor actor;
+
+	public Actor getActor() {
+		return actor;
+	}
+
+	public void setActor(Actor actor) {
+		this.actor = actor;
+	}
 }
