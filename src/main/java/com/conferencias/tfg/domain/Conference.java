@@ -1,10 +1,18 @@
 package com.conferencias.tfg.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.apache.tomcat.jni.Local;
 import org.bson.types.ObjectId;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -14,6 +22,12 @@ import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Document(collection = "conference")
 public class Conference {
@@ -21,43 +35,59 @@ public class Conference {
 	@Id
 	@JsonIgnore
 	private long id;
+	@NotBlank
 	@JsonView(Shorted.class)
 	private String name;
-	@JsonView(Shorted.class)
-	private String theme;
+	@NotBlank
 	@JsonView(Detailed.class)
-	private Date start;
-	@JsonView(Detailed.class)
-	private Date finish;
+	private String theme; 					//TODO eliminar 'duration' de conferencia del modelo conceptual
+	@DecimalMin("0.0")
 	@JsonView(Detailed.class)
 	private Double price;
-	@JsonView(Detailed.class)
-	private String place;
+	@NotNull
 	@JsonView(Shorted.class)
-	private String talker;
+	private Double popularity;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonView(Shorted.class)
-	private Integer duration;
+	private LocalDateTime start;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonView(Detailed.class)
-	@URL
-	private String video;
+	private LocalDateTime end;				//TODO cambiar tipo de atributo en el modelo conceptual
+	@NotBlank
+	@Length(max = 50)
+	@JsonView(Detailed.class)				//TODO añadir al modelo conceptual
+	private String guests;
+	@NotBlank
+	@JsonView(Detailed.class)
+	private String description;				//TODO añadir al modelo conceptual
+	/*@URL
+	private String video_; 					//TODO incorporar API de YouTube para videos en directo
+	private List<Calendar> calendars; */	//TODO incorporar API de Google Calendar para los calendarios
 
 	public Conference() {
 
 	}
 
-	public Conference(String name, String theme, Date start, Date finish, Double price, String place, String talker,
-					  long actor) {
-		super();
-		this.id = ObjectId.getGeneratedProcessIdentifier();
+	public Conference(String name, String theme, Double price, LocalDateTime start, LocalDateTime end,
+					  String description, String guests) {
 		this.name = name;
 		this.theme = theme;
-		this.start = start;
-		this.finish = finish;
 		this.price = price;
-		this.place = place;
-		this.talker = talker;
-		this.duration = getDuration();
-		this.actor = actor;
+		this.popularity = 0.0;
+		this.start = start;
+		this.end = end;
+		this.description = description;
+		this.guests = guests;
+		this.organizators = new ArrayList<>();
+		this.events = new ArrayList<>();
+	}
+
+	public String getGuests() {
+		return guests;
+	}
+
+	public void setGuests(String guests) {
+		this.guests = guests;
 	}
 
 	public long getId() {
@@ -76,44 +106,12 @@ public class Conference {
 		this.name = name;
 	}
 
-	public String getPlace() {
-		return place;
-	}
-
-	public void setPlace(String place) {
-		this.place = place;
-	}
-
-	public String getTalker() {
-		return talker;
-	}
-
-	public void setTalker(String talker) {
-		this.talker = talker;
-	}
-
 	public String getTheme() {
 		return theme;
 	}
 
 	public void setTheme(String theme) {
 		this.theme = theme;
-	}
-
-	public Date getStart() {
-		return start;
-	}
-
-	public void setStart(Date start) {
-		this.start = start;
-	}
-
-	public Date getFinish() {
-		return finish;
-	}
-
-	public void setFinish(Date finish) {
-		this.finish = finish;
 	}
 
 	public Double getPrice() {
@@ -124,36 +122,57 @@ public class Conference {
 		this.price = price;
 	}
 
-	public Integer getDuration() {
-		Calendar start = Calendar.getInstance();
-		start.setTime(this.start);
-		Calendar finish = Calendar.getInstance();
-		finish.setTime(this.finish);
-		return (int) ((finish.getTimeInMillis() - start.getTimeInMillis()) / (24 * 60 * 60 * 1000));
+	public Double getPopularity() {
+		return popularity;
 	}
 
-	public void setDuration(Integer duration) {
-		this.duration = duration;
+	public void setPopularity(Double popularity) {
+		this.popularity = popularity;
 	}
 
-	public String getVideo() {
-		return video;
+	public LocalDateTime getStart() {
+		return start;
 	}
 
-	public void setVideo(String video) {
-		this.video = video;
+	public void setStart(LocalDateTime start) {
+		this.start = start;
 	}
 
-	// --------------------------------------------------------------------------------------------------------------
-
-	@JsonView(Detailed.class)
-	private long actor;
-
-	public long getActor() {
-		return actor;
+	public LocalDateTime getEnd() {
+		return end;
 	}
 
-	public void setActor(long actor) {
-		this.actor = actor;
+	public void setEnd(LocalDateTime end) {
+		this.end = end;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	//TODO mirar porqué no funcionan los @ aquí, popula aunque esté vacio y esté indicado @NotEmpty
+	private List<Long> events;
+	private List<Long> organizators;
+
+	public List<Long> getEvents() {
+		return events;
+	}
+
+	public void setEvents(List<Long> events) {
+		this.events = events;
+	}
+
+	public List<Long> getOrganizators() {
+		return organizators;
+	}
+
+	public void setOrganizators(List<Long> organizators) {
+		this.organizators = organizators;
 	}
 }

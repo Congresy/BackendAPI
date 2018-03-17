@@ -71,7 +71,7 @@ public class ConferenceController {
 	/** Crea una conferencia según los valores que se envien en el método POST */
     @PostMapping("/create")
     @JsonView(Detailed.class)
-    public ResponseEntity<?> createConference(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
 		if (this.conferenceExist(conference)) {
 			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
@@ -86,20 +86,20 @@ public class ConferenceController {
 
     /** Modifica una conferencia con los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> editConference(@PathVariable("id") long id, @RequestBody Conference conference) {
+	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody Conference conference) {
 		Conference currentConference = conferenceRepository.findOne(id);
 
 		if (currentConference == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		currentConference.setDuration(conference.getDuration());
-		currentConference.setFinish(conference.getFinish());
+		currentConference.setEnd(conference.getEnd());
 		currentConference.setName(conference.getName());
-		currentConference.setPlace(conference.getPlace());
 		currentConference.setStart(conference.getStart());
 		currentConference.setPrice(conference.getPrice());
 		currentConference.setTheme(conference.getTheme());
+		currentConference.setDescription(conference.getDescription());
+		currentConference.setGuests(conference.getGuests());
 
 		conferenceRepository.save(conference);
 		return new ResponseEntity<>(conference, HttpStatus.OK);

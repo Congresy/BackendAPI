@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "actor") //TODO Se pone únicamente en el archivo "padre"
+@Document(collection = "actor")
 public class Actor {
 
     @Id
@@ -44,7 +44,7 @@ public class Actor {
 
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick) {
+    public Actor(String name, String surname, String email, String phone, String photo, String nick, Long place) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -52,8 +52,8 @@ public class Actor {
         this.photo = photo;
         this.nick = nick;
         this.banned = false;
-        this.private_ = true;
-        this.conferences = new ArrayList<>();
+        this.private_ = false;
+        this.place = place;
     }
 
     public long getId() {
@@ -131,6 +131,8 @@ public class Actor {
     // --------------------------------------------------------------------------------------------------------------
 
     private List<Long> conferences;
+    //@NotNull
+    private Long place;
 
     public List<Long> getConferences() {
         return conferences;
@@ -139,4 +141,13 @@ public class Actor {
     public void setConferences(List<Long> conferences) {
         this.conferences = conferences;
     }
+
+    public Long getPlace() {
+        return place;
+    }
+
+    public void setPlace(Long place) {
+        this.place = place;
+    }
+
 }
