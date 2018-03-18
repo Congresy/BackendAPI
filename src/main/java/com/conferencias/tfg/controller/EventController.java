@@ -29,15 +29,13 @@ public class EventController {
 
 	/** Recibe todas los eventos */
 	@GetMapping("/all")
-	@JsonView(Shorted.class)
-	public ResponseEntity<?> getAllShort() {
+	public ResponseEntity<?> getAll() {
 		List<Event> events = eventRepository.findAll();
 		return new ResponseEntity<Object>(events, HttpStatus.OK);
 	}
 
 	/** Recibe un evento en concreto */
 	@GetMapping(value = "/{id}")
-	@JsonView(Shorted.class)
 	public ResponseEntity<?> get(@PathVariable("id") long id) {
 		Event event = eventRepository.findOne(id);
 
@@ -50,7 +48,6 @@ public class EventController {
 
 	/** Crea un evento según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody Event event, UriComponentsBuilder ucBuilder) {
 
 		if (this.eventExist(event)) {
@@ -92,7 +89,7 @@ public class EventController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	/** Borra a un evento en concreto */
+	/** Borra un evento en concreto */
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") long id) {
 		Event event = eventRepository.findOne(id);
@@ -107,7 +104,7 @@ public class EventController {
 	// ----------------------------------------------- Métodos auxiliares --------------------------------------------//
 	// ---------------------------------------------------------------------------------------------------------------//
 	
-	/** Dada un evento, comprueba si existe uno igual */
+	/** Dado un evento, comprueba si existe uno igual */
 	private Boolean eventExist(Event event){
 		Boolean res = false;
 
