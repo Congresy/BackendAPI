@@ -1,12 +1,14 @@
 package com.conferencias.tfg.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.conferencias.tfg.utilities.Views.Default;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -18,15 +20,19 @@ import java.util.List;
 public class Event {
 
     @Id
-    @JsonIgnore
+    @JsonView(Default.class)
     private long id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonView(Default.class)
     private LocalDateTime start;
     @NotBlank
+    @JsonView(Default.class)
     private String name;
     @Min(0)
+    @JsonView(Default.class)
     private Integer duration;
     @Min(1)
+    @JsonView(Default.class)
     private Integer allowedParticipants;
 
     public Event(){
@@ -84,13 +90,16 @@ public class Event {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
+    @JsonView(Default.class)
     private List<Long> participants;
     @NotEmpty
+    @JsonView(Default.class)
     private List<Long> speakers;
     @NotNull
+    @JsonView(Default.class)
     private Long conference;
     //@NotNull
+    @JsonView(Default.class)
     private Long place;
 
     public List<Long> getParticipants() {

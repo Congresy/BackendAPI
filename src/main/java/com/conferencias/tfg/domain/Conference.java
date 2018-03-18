@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.apache.tomcat.jni.Local;
@@ -33,7 +34,8 @@ import javax.validation.constraints.Pattern;
 public class Conference {
 
 	@Id
-	@JsonIgnore
+	//@JsonIgnore
+	@JsonView(Detailed.class)
 	private long id;
 	@NotBlank
 	@JsonView(Shorted.class)
@@ -157,7 +159,9 @@ public class Conference {
 	// -----------------------------------------------------------------------------------------------------------------
 
 	//TODO mirar porqué no funcionan los @ aquí, popula aunque esté vacio y esté indicado @NotEmpty
+	@JsonView(Detailed.class)
 	private List<Long> events;
+	@JsonView(Detailed.class)
 	private List<Long> organizators;
 
 	public List<Long> getEvents() {

@@ -2,6 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Guest;
 import com.conferencias.tfg.repository.GuestRepository;
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,7 +28,7 @@ public class GuestController {
 
 	/** Recibe todas las charlas de invitados */
 	@GetMapping("/all")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAllShort() {
 		List<Guest> guests = guestRepository.findAll();
 		return new ResponseEntity<Object>(guests, HttpStatus.OK);
@@ -35,7 +36,7 @@ public class GuestController {
 
 	/** Recibe una charla de invitados en concreto */
 	@GetMapping(value = "/{id}")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("id") long id) {
 		Guest guest = guestRepository.findOne(id);
 
@@ -48,7 +49,6 @@ public class GuestController {
 
 	/** Crea una charla de invitados según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody Guest guest, UriComponentsBuilder ucBuilder) {
 
 		if (this.guestExist(guest)) {

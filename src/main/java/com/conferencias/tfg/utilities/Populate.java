@@ -3,11 +3,9 @@ package com.conferencias.tfg.utilities;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import com.conferencias.tfg.domain.Actor;
-import com.conferencias.tfg.domain.Place;
+import com.conferencias.tfg.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.conferencias.tfg.domain.Conference;
 import com.mongodb.Mongo;
 import com.mongodb.MongoURI;
 
@@ -19,7 +17,12 @@ public class Populate {
 		MongoTemplate mongo = new MongoTemplate(new Mongo(uri), "conferencias");
 		mongo.dropCollection("conference");
 		mongo.dropCollection("place");
-		mongo.dropCollection("actor");
+		mongo.dropCollection("speaker");
+		mongo.dropCollection("organizator");
+		mongo.dropCollection("guest");
+		mongo.dropCollection("course");
+		mongo.dropCollection("regular");
+		mongo.dropCollection("socialEvent");
 
 		// ----------------------------------------------------------------------------------------------
 		// ------------------------------------------ PLACES --------------------------------------------
@@ -30,13 +33,62 @@ public class Populate {
 		mongo.save(place1);
 
 		// ----------------------------------------------------------------------------------------------
-		// ------------------------------------------ ACTORS --------------------------------------------
+		// ----------------------------------------- SPEAKERS -------------------------------------------
 		// ----------------------------------------------------------------------------------------------
 
-		Actor actor1 = new Actor("José", "Pérez Garrido", "email@us.es", "987678152"
-				, "http://conceptodefinicion.de/wp-content/uploads/2014/10/persona.jpg", "jopega", place1.getId());
+		Speaker speaker1 = new Speaker("Nombre1", "Apellido1", "email1@us.es", "987678152"
+				, "http://imagen1.jpg", "nick1", place1.getId());
 
-		mongo.save(actor1);
+		mongo.save(speaker1);
+
+		// ----------------------------------------------------------------------------------------------
+		// --------------------------------------- ORGANIZATORS -----------------------------------------
+		// ----------------------------------------------------------------------------------------------
+
+		Organizator organizator1 = new Organizator("Nombre1", "Apellido1", "email1@us.es", "987678152"
+				, "http://imagen1.jpg", "nick1", place1.getId());
+
+		mongo.save(organizator1);
+
+		// ----------------------------------------------------------------------------------------------
+		// -------------------------------------- SOCIAL EVENTS -----------------------------------------
+		// ----------------------------------------------------------------------------------------------
+
+		SocialEvent socialEvent1 = new SocialEvent(
+				LocalDateTime.of(2019, Month.APRIL, 1, 10, 10,30),
+				"Nombre1", 200, 35, place1.getId(), "Tipo1");
+
+		mongo.save(socialEvent1);
+
+		// ----------------------------------------------------------------------------------------------
+		// ------------------------------------------ GUESTS --------------------------------------------
+		// ----------------------------------------------------------------------------------------------
+
+		Guest guest1 = new Guest(
+				LocalDateTime.of(2019, Month.APRIL, 1, 10, 10,30),
+				"Nombre1", 200, 35, place1.getId());
+
+		mongo.save(guest1);
+
+		// ----------------------------------------------------------------------------------------------
+		// ----------------------------------------- REGULARS -------------------------------------------
+		// ----------------------------------------------------------------------------------------------
+
+		Regular regular1 = new Regular(
+				LocalDateTime.of(2019, Month.APRIL, 1, 10, 10,30),
+				"Nombre1", 200, 35, place1.getId());
+
+		mongo.save(regular1);
+
+		// ----------------------------------------------------------------------------------------------
+		// ------------------------------------------ COURSES -------------------------------------------
+		// ----------------------------------------------------------------------------------------------
+
+		Course course1 = new Course(
+				LocalDateTime.of(2019, Month.APRIL, 1, 10, 10,30),
+				"Nombre1", 200, 35, place1.getId(), "Requisitos1");
+
+		mongo.save(course1);
 
 		// ----------------------------------------------------------------------------------------------
 		// --------------------------------------- CONFERENCES ------------------------------------------
@@ -49,7 +101,5 @@ public class Populate {
 
 		mongo.save(conference1);
 
-
 	}
-
 }

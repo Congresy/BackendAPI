@@ -18,7 +18,7 @@ import java.util.List;
 public class Actor {
 
     @Id
-    @JsonIgnore
+    //@JsonIgnore
     private long id;
     @NotBlank
     private String name;

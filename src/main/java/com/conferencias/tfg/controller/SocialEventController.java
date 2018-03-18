@@ -2,6 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.SocialEvent;
 import com.conferencias.tfg.repository.SocialEventRepository;
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,7 +28,7 @@ public class SocialEventController {
 
 	/** Recibe todas los eventos sociales */
 	@GetMapping("/all")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAllShort() {
 		List<SocialEvent> socialEvents = socialEventRepository.findAll();
 		return new ResponseEntity<Object>(socialEvents, HttpStatus.OK);
@@ -35,7 +36,7 @@ public class SocialEventController {
 
 	/** Recibe un evento social en concreto */
 	@GetMapping(value = "/{id}")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("id") long id) {
 		SocialEvent socialEvent = socialEventRepository.findOne(id);
 
@@ -48,7 +49,6 @@ public class SocialEventController {
 
 	/** Crea un evento social según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody SocialEvent socialEvent, UriComponentsBuilder ucBuilder) {
 
 		if (this.socialEventExist(socialEvent)) {

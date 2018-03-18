@@ -2,6 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Course;
 import com.conferencias.tfg.repository.CourseRepository;
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,7 +28,7 @@ public class CourseController {
 
 	/** Recibe todas los cursos */
 	@GetMapping("/all")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAllShort() {
 		List<Course> courses = courseRepository.findAll();
 		return new ResponseEntity<Object>(courses, HttpStatus.OK);
@@ -35,7 +36,7 @@ public class CourseController {
 
 	/** Recibe un curso en concreto */
 	@GetMapping(value = "/{id}")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("id") long id) {
 		Course course = courseRepository.findOne(id);
 
@@ -48,7 +49,6 @@ public class CourseController {
 
 	/** Crea un curso según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody Course course, UriComponentsBuilder ucBuilder) {
 
 		if (this.courseExist(course)) {

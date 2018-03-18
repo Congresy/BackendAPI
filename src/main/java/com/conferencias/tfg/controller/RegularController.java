@@ -2,6 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Regular;
 import com.conferencias.tfg.repository.RegularRepository;
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -27,7 +28,7 @@ public class RegularController {
 
 	/** Recibe todas las charlas 'normales' */
 	@GetMapping("/all")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAllShort() {
 		List<Regular> regulars = regularRepository.findAll();
 		return new ResponseEntity<Object>(regulars, HttpStatus.OK);
@@ -35,7 +36,7 @@ public class RegularController {
 
 	/** Recibe una charla 'normal' en concreto */
 	@GetMapping(value = "/{id}")
-	@JsonView(Shorted.class)
+	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("id") long id) {
 		Regular regular = regularRepository.findOne(id);
 
@@ -48,7 +49,6 @@ public class RegularController {
 
 	/** Crea una charla 'normal' según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody Regular regular, UriComponentsBuilder ucBuilder) {
 
 		if (this.regularExist(regular)) {
