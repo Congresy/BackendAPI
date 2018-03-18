@@ -5,6 +5,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Pattern;
+
 @Document(collection = "place")
 public class Place {
 
@@ -18,7 +20,8 @@ public class Place {
     @NotBlank
     private String address;
     @NotBlank
-    private String postalCode;                                  //TODO añadir regex
+    @Pattern(regexp = "((0[1-9]|5[0-2])|[1-4][0-9])[0-9]{3}")
+    private String postalCode;
 
     public Place() {
 

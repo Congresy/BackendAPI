@@ -21,7 +21,7 @@ public class Event {
     @JsonIgnore
     private long id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime start;                                //TODO eliminar 'end' del evento en el modelo conceptual
+    private LocalDateTime start;
     @NotBlank
     private String name;
     @Min(0)
@@ -91,7 +91,7 @@ public class Event {
     @NotNull
     private Long conference;
     //@NotNull
-    private Long place;                                    //TODO cambiar en el modelo conceptual
+    private Long place;
 
     public List<Long> getParticipants() {
         return participants;

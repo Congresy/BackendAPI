@@ -40,7 +40,7 @@ public class Conference {
 	private String name;
 	@NotBlank
 	@JsonView(Detailed.class)
-	private String theme; 					//TODO eliminar 'duration' de conferencia del modelo conceptual
+	private String theme;
 	@DecimalMin("0.0")
 	@JsonView(Detailed.class)
 	private Double price;
@@ -52,14 +52,14 @@ public class Conference {
 	private LocalDateTime start;
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonView(Detailed.class)
-	private LocalDateTime end;				//TODO cambiar tipo de atributo en el modelo conceptual
+	private LocalDateTime end;
 	@NotBlank
 	@Length(max = 50)
-	@JsonView(Detailed.class)				//TODO añadir al modelo conceptual
+	@JsonView(Detailed.class)
 	private String guests;
 	@NotBlank
 	@JsonView(Detailed.class)
-	private String description;				//TODO añadir al modelo conceptual
+	private String description;
 	/*@URL
 	private String video_; 					//TODO incorporar API de YouTube para videos en directo
 	private List<Calendar> calendars; */	//TODO incorporar API de Google Calendar para los calendarios
