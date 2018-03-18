@@ -45,7 +45,7 @@ public class ConferenceController {
 	/** Recibe los valores de todos los atributos de una conferencia en concreto */
 	@GetMapping(value = "/detailed/{id}")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getDetailed(@PathVariable("id") long id) {
+	public ResponseEntity<?> getDetailed(@PathVariable("id") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 
 		if (conference == null) {
@@ -58,7 +58,7 @@ public class ConferenceController {
 	/** Recibe los valores de todos los atributos de una conferencia en concreto */
 	@GetMapping(value = "/short/{id}")
 	@JsonView(Shorted.class)
-	public ResponseEntity<?> getShort(@PathVariable("id") long id) {
+	public ResponseEntity<?> getShort(@PathVariable("id") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 
 		if (conference == null) {
@@ -77,6 +77,8 @@ public class ConferenceController {
 		}
 
         conferenceRepository.save(conference);
+		Conference con = new Conference();
+		System.out.println(conference.getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/conference/create/{id}").buildAndExpand(conference.getId()).toUri());
@@ -85,7 +87,7 @@ public class ConferenceController {
 
     /** Modifica una conferencia con los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody Conference conference) {
+	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Conference conference) {
 		Conference currentConference = conferenceRepository.findOne(id);
 
 		if (currentConference == null) {
@@ -113,7 +115,7 @@ public class ConferenceController {
 
 	/** Borra a una conferencia en concreto */
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 		if (conference == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

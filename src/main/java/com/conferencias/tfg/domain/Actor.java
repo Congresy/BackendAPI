@@ -18,8 +18,8 @@ import java.util.List;
 public class Actor {
 
     @Id
-    //@JsonIgnore
-    private long id;
+    @JsonIgnore
+    private String id;
     @NotBlank
     private String name;
     @NotBlank
@@ -44,7 +44,7 @@ public class Actor {
 
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick, Long place) {
+    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -56,11 +56,11 @@ public class Actor {
         this.place = place;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -130,23 +130,23 @@ public class Actor {
 
     // --------------------------------------------------------------------------------------------------------------
 
-    private List<Long> conferences;
+    private List<String> conferences;
     //@NotNull
-    private Long place;
+    private String place;
 
-    public List<Long> getConferences() {
+    public List<String> getConferences() {
         return conferences;
     }
 
-    public void setConferences(List<Long> conferences) {
+    public void setConferences(List<String> conferences) {
         this.conferences = conferences;
     }
 
-    public Long getPlace() {
+    public String getPlace() {
         return place;
     }
 
-    public void setPlace(Long place) {
+    public void setPlace(String place) {
         this.place = place;
     }
 

@@ -20,8 +20,8 @@ import java.util.List;
 public class Event {
 
     @Id
-    @JsonView(Default.class)
-    private long id;
+    @JsonIgnore
+    private String id;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonView(Default.class)
     private LocalDateTime start;
@@ -39,7 +39,7 @@ public class Event {
 
     }
 
-    public Event(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, Long place) {
+    public Event(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place) {
         this.start = start;
         this.name = name;
         this.duration = duration;
@@ -49,11 +49,11 @@ public class Event {
         this.speakers = new ArrayList<>();
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -91,46 +91,46 @@ public class Event {
 
     // -----------------------------------------------------------------------------------------------------------------
     @JsonView(Default.class)
-    private List<Long> participants;
+    private List<String> participants;
     @NotEmpty
     @JsonView(Default.class)
-    private List<Long> speakers;
+    private List<String> speakers;
     @NotNull
     @JsonView(Default.class)
-    private Long conference;
+    private String conference;
     //@NotNull
     @JsonView(Default.class)
-    private Long place;
+    private String place;
 
-    public List<Long> getParticipants() {
+    public List<String> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<Long> participants) {
+    public void setParticipants(List<String> participants) {
         this.participants = participants;
     }
 
-    public List<Long> getSpeakers() {
+    public List<String> getSpeakers() {
         return speakers;
     }
 
-    public void setSpeakers(List<Long> speakers) {
+    public void setSpeakers(List<String> speakers) {
         this.speakers = speakers;
     }
 
-    public Long getConference() {
+    public String getConference() {
         return conference;
     }
 
-    public void setConference(Long conference) {
+    public void setConference(String conference) {
         this.conference = conference;
     }
 
-    public Long getPlace() {
+    public String getPlace() {
         return place;
     }
 
-    public void setPlace(Long place) {
+    public void setPlace(String place) {
         this.place = place;
     }
 }

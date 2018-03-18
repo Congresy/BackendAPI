@@ -37,7 +37,7 @@ public class CourseController {
 	/** Recibe un curso en concreto */
 	@GetMapping(value = "/{id}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") long id) {
+	public ResponseEntity<?> get(@PathVariable("id") String id) {
 		Course course = courseRepository.findOne(id);
 
 		if (course == null) {
@@ -64,7 +64,7 @@ public class CourseController {
 
     /** Modifica un curso según los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody Course course) {
+	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Course course) {
 		Course currentCourse = courseRepository.findOne(id);
 
 		if (currentCourse == null) {
@@ -92,7 +92,7 @@ public class CourseController {
 
 	/** Borra a un curso en concreto */
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		Course course = courseRepository.findOne(id);
 		if (course == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

@@ -14,7 +14,7 @@ public class Course extends Talk {
     @JsonView(Views.Default.class)
     private String requeriments;
 
-    public Course(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, Long place, String requeriments) {
+    public Course(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place, String requeriments) {
         super(start, name, duration, allowedParticipants, place);
         this.requeriments = requeriments;
     }

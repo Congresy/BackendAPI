@@ -18,7 +18,7 @@ public class SocialEvent extends Event {
 
     }
 
-    public SocialEvent(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, Long place, String type) {
+    public SocialEvent(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place, String type) {
         super(start, name, duration, allowedParticipants, place);
         this.type = type;
     }

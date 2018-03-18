@@ -37,7 +37,7 @@ public class RegularController {
 	/** Recibe una charla 'normal' en concreto */
 	@GetMapping(value = "/{id}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") long id) {
+	public ResponseEntity<?> get(@PathVariable("id") String id) {
 		Regular regular = regularRepository.findOne(id);
 
 		if (regular == null) {
@@ -64,7 +64,7 @@ public class RegularController {
 
     /** Modifica una charla 'normal' los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody Regular regular) {
+	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Regular regular) {
 		Regular currentRegular = regularRepository.findOne(id);
 
 		if (currentRegular == null) {
@@ -92,7 +92,7 @@ public class RegularController {
 
 	/** Borra una charla 'normal' en concreto */
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		Regular regular = regularRepository.findOne(id);
 		if (regular == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

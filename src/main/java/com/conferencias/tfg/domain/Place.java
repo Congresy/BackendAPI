@@ -13,9 +13,9 @@ import javax.validation.constraints.Pattern;
 public class Place {
 
     @Id
-    //@JsonIgnore
+    @JsonIgnore
     @JsonView(Views.Default.class)
-    private long id;
+    private String id;
     @NotBlank
     @JsonView(Views.Default.class)
     private String town;
@@ -65,11 +65,11 @@ public class Place {
         this.address = address;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

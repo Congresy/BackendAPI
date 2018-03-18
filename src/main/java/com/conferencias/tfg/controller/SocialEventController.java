@@ -37,7 +37,7 @@ public class SocialEventController {
 	/** Recibe un evento social en concreto */
 	@GetMapping(value = "/{id}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") long id) {
+	public ResponseEntity<?> get(@PathVariable("id") String id) {
 		SocialEvent socialEvent = socialEventRepository.findOne(id);
 
 		if (socialEvent == null) {
@@ -64,7 +64,7 @@ public class SocialEventController {
 
     /** Modifica un evento social los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody SocialEvent socialEvent) {
+	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody SocialEvent socialEvent) {
 		SocialEvent currentSocialEvent = socialEventRepository.findOne(id);
 
 		if (currentSocialEvent == null) {
@@ -92,7 +92,7 @@ public class SocialEventController {
 
 	/** Borra a un evento social en concreto */
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		SocialEvent socialEvent = socialEventRepository.findOne(id);
 		if (socialEvent == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

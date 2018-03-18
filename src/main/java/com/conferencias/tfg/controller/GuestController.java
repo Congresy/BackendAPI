@@ -37,7 +37,7 @@ public class GuestController {
 	/** Recibe una charla de invitados en concreto */
 	@GetMapping(value = "/{id}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") long id) {
+	public ResponseEntity<?> get(@PathVariable("id") String id) {
 		Guest guest = guestRepository.findOne(id);
 
 		if (guest == null) {
@@ -64,7 +64,7 @@ public class GuestController {
 
     /** Modifica una charla de invitados los campos que se indiquen */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") long id, @RequestBody Guest guest) {
+	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Guest guest) {
 		Guest currentGuest = guestRepository.findOne(id);
 
 		if (currentGuest == null) {
@@ -92,7 +92,7 @@ public class GuestController {
 
 	/** Borra una charla de invitados en concreto */
 	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") long id) {
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		Guest guest = guestRepository.findOne(id);
 		if (guest == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Document
 public class Guest extends Talk {
 
-    public Guest(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, Long place) {
+    public Guest(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place) {
         super(start, name, duration, allowedParticipants, place);
     }
 }

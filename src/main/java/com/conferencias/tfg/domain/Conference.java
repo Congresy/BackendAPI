@@ -25,6 +25,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.annotation.Generated;
+import javax.jdo.annotations.Serialized;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -34,9 +36,8 @@ import javax.validation.constraints.Pattern;
 public class Conference {
 
 	@Id
-	//@JsonIgnore
-	@JsonView(Detailed.class)
-	private long id;
+	@JsonIgnore
+	private String id;
 	@NotBlank
 	@JsonView(Shorted.class)
 	private String name;
@@ -67,7 +68,6 @@ public class Conference {
 	private List<Calendar> calendars; */	//TODO incorporar API de Google Calendar para los calendarios
 
 	public Conference() {
-
 	}
 
 	public Conference(String name, String theme, Double price, LocalDateTime start, LocalDateTime end,
@@ -92,11 +92,11 @@ public class Conference {
 		this.guests = guests;
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -160,23 +160,23 @@ public class Conference {
 
 	//TODO mirar porqué no funcionan los @ aquí, popula aunque esté vacio y esté indicado @NotEmpty
 	@JsonView(Detailed.class)
-	private List<Long> events;
+	private List<String> events;
 	@JsonView(Detailed.class)
-	private List<Long> organizators;
+	private List<String> organizators;
 
-	public List<Long> getEvents() {
+	public List<String> getEvents() {
 		return events;
 	}
 
-	public void setEvents(List<Long> events) {
+	public void setEvents(List<String> events) {
 		this.events = events;
 	}
 
-	public List<Long> getOrganizators() {
+	public List<String> getOrganizators() {
 		return organizators;
 	}
 
-	public void setOrganizators(List<Long> organizators) {
+	public void setOrganizators(List<String> organizators) {
 		this.organizators = organizators;
 	}
 }

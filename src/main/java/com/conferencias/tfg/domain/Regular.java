@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Document
 public class Regular extends Talk {
 
-    public Regular(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, Long place) {
+    public Regular(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place) {
         super(start, name, duration, allowedParticipants, place);
     }
 }
