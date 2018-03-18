@@ -58,7 +58,7 @@ public class GuestController {
         guestRepository.save(guest);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/event/talk/guest/create/{id}").buildAndExpand(guest.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/event/talk/guest/{id}").buildAndExpand(guest.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 

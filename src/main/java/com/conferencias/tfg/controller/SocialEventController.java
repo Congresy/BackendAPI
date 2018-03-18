@@ -58,7 +58,7 @@ public class SocialEventController {
         socialEventRepository.save(socialEvent);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/event/socialEvent/create/{id}").buildAndExpand(socialEvent.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/event/socialEvent/{id}").buildAndExpand(socialEvent.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 

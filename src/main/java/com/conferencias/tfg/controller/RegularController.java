@@ -58,7 +58,7 @@ public class RegularController {
         regularRepository.save(regular);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/event/talk/regular/create/{id}").buildAndExpand(regular.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/event/talk/regular/{id}").buildAndExpand(regular.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 

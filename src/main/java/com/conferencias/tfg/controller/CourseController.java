@@ -58,7 +58,7 @@ public class CourseController {
         courseRepository.save(course);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/course/create/{id}").buildAndExpand(course.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/course/{id}").buildAndExpand(course.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 

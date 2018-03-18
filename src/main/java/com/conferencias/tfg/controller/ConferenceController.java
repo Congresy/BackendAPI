@@ -81,7 +81,7 @@ public class ConferenceController {
 		System.out.println(conference.getId());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/conference/create/{id}").buildAndExpand(conference.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/conference/{id}").buildAndExpand(conference.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
