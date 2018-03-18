@@ -70,7 +70,6 @@ public class ConferenceController {
 
 	/** Crea una conferencia según los valores que se envien en el método POST */
     @PostMapping("/create")
-    @JsonView(Detailed.class)
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
 		if (this.conferenceExist(conference)) {
