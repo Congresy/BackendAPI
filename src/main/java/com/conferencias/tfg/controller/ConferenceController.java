@@ -1,19 +1,19 @@
 package com.conferencias.tfg.controller;
 
 
-import java.util.List;
-
+import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.repository.ConferenceRepository;
+import com.conferencias.tfg.utilities.Views.Detailed;
+import com.conferencias.tfg.utilities.Views.Shorted;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.conferencias.tfg.domain.Conference;
-import com.conferencias.tfg.utilities.Views.Detailed;
-import com.conferencias.tfg.utilities.Views.Shorted;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("conference")

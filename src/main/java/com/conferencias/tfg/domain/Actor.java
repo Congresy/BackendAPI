@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "actor")
+@Document
 public class Actor {
 
     @Id

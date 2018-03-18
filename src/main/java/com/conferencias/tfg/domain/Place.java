@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Pattern;
 
-@Document(collection = "place")
+@Document
 public class Place {
 
     @Id
