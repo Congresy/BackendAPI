@@ -30,6 +30,7 @@ public class Place {
     @JsonView(Views.Default.class)
     private String postalCode;
 
+    //TODO añadir que ciertos valores sean
     public Place() {
 
     }
