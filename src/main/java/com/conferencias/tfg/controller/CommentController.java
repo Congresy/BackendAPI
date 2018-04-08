@@ -44,43 +44,30 @@ public class CommentController {
 		return new ResponseEntity<>(comments, HttpStatus.OK);
 	}
 
-    @GetMapping("/conference/{id}")
+    @GetMapping("/commentable/{id}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfConference(@PathVariable("id") String id) {
-        Conference conference = conferenceRepository.findOne(id);
-        List<String> commentsAux = conference.getComments();
+    public ResponseEntity<?> getAllOfCommentable(@PathVariable("id") String id) {
         List<Comment> comments = new ArrayList<>();
+        List<String> commentsAux = new ArrayList<>();
+        Object commentable = null;
+
+        if(postRepository.findOne(id) != null){
+            commentable = postRepository.findOne(id);
+            commentsAux = ((Post) commentable).getComments();
+        } else if (actorRepository.findOne(id) != null){
+            commentable = actorRepository.findOne(id);
+            commentsAux = ((Actor) commentable).getComments();
+        } else if (conferenceRepository.findOne(id) != null){
+            commentable = conferenceRepository.findOne(id);
+            commentsAux = ((Conference) commentable).getComments();
+        }
+
+        if (commentable == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
 
         for(String s : commentsAux){
                 comments.add(commentRepository.findOne(s));
-        }
-
-        return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
-
-    @GetMapping("/post/{id}")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfPost(@PathVariable("id") String id) {
-        Post post = postRepository.findOne(id);
-        List<String> commentsAux = post.getComments();
-        List<Comment> comments = new ArrayList<>();
-
-        for(String s : commentsAux){
-            comments.add(commentRepository.findOne(s));
-        }
-
-        return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
-
-    @GetMapping("/actor/{id}")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfActor(@PathVariable("id") String id) {
-        Actor actor = actorRepository.findOne(id);
-        List<String> commentsAux = actor.getComments();
-        List<Comment> comments = new ArrayList<>();
-
-        for(String s : commentsAux){
-            comments.add(commentRepository.findOne(s));
         }
 
         return new ResponseEntity<>(comments, HttpStatus.OK);
