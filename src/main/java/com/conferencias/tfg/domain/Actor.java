@@ -1,8 +1,6 @@
 package com.conferencias.tfg.domain;
 
-import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
@@ -54,6 +52,7 @@ public class Actor {
         this.banned = false;
         this.private_ = false;
         this.place = place;
+        this.comments = new ArrayList<>();
     }
 
     public String getId() {
@@ -133,6 +132,8 @@ public class Actor {
     private List<String> conferences;
     //@NotNull
     private String place;
+    @NotNull
+    private List<Comment> comments;
 
     public List<String> getConferences() {
         return conferences;
@@ -150,4 +151,11 @@ public class Actor {
         this.place = place;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
