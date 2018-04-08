@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -43,6 +46,41 @@ public class CommentController {
 		List<Comment> comments = commentRepository.findAll();
 		return new ResponseEntity<>(comments, HttpStatus.OK);
 	}
+
+    @GetMapping("/commentable/search/{keyword}/{commentableId}")
+    @JsonView(Views.Default.class)
+    public ResponseEntity<?> searchInCommentable(@PathVariable("commentableId") String commentableId, @PathVariable("keyword") String keyword) {
+        List<Comment> comments = new ArrayList<>();
+        List<String> commentsAux = new ArrayList<>();
+        Object commentable = null;
+
+        if(postRepository.findOne(commentableId) != null){
+            commentable = postRepository.findOne(commentableId);
+            commentsAux = ((Post) commentable).getComments();
+        } else if (actorRepository.findOne(commentableId) != null){
+            commentable = actorRepository.findOne(commentableId);
+            commentsAux = ((Actor) commentable).getComments();
+        } else if (conferenceRepository.findOne(commentableId) != null){
+            commentable = conferenceRepository.findOne(commentableId);
+            commentsAux = ((Conference) commentable).getComments();
+        }
+
+        if (commentable == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        for(String s : commentsAux){
+            if(commentRepository.findOne(s).getText().toLowerCase().contains(keyword.toLowerCase()) || commentRepository.findOne(s).getTitle().toLowerCase().contains(keyword.toLowerCase()))
+                comments.add(commentRepository.findOne(s));
+        }
+
+        if (comments.isEmpty()) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
 
     @GetMapping("/commentable/{id}")
     @JsonView(Views.Default.class)
@@ -70,6 +108,21 @@ public class CommentController {
                 comments.add(commentRepository.findOne(s));
         }
 
+        Comparator<Comment> comparator = new Comparator<Comment>() {
+            @Override
+            public int compare(Comment c1, Comment c2) {
+                Integer c1T = c1.getThumbsUp() - c1.getThumbsDown();
+                Integer c2T = c2.getThumbsUp() - c2.getThumbsDown();
+                if(c1T.compareTo(c2T) == 0)
+                    return parseDate(c1.getSentMoment()).compareTo(parseDate(c2.getSentMoment()));
+                else {
+                    return c1T.compareTo(c2T);
+                }
+            }
+        };
+
+        comments.sort(comparator);
+
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
@@ -83,6 +136,15 @@ public class CommentController {
         for(String s : commentsAux){
             comments.add(commentRepository.findOne(s));
         }
+
+        Comparator<Comment> comparator = new Comparator<Comment>() {
+            @Override
+            public int compare(Comment c1, Comment c2) {
+                return parseDate(c1.getSentMoment()).compareTo(parseDate(c2.getSentMoment()));
+            }
+        };
+
+        comments.sort(comparator);
 
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
@@ -202,4 +264,10 @@ public class CommentController {
 		}
 		return res;
 	}
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
+    }
 }

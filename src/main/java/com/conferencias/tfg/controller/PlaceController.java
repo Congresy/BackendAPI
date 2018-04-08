@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -95,6 +96,21 @@ public class PlaceController {
 		placeRepository.delete(id);
 		return new ResponseEntity<Place>(HttpStatus.NO_CONTENT);
 	}
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
+        List<Place> places = new ArrayList<>();
+
+        for(Place c : placeRepository.findAll())
+            if((c.getAddress() + c.getCountry() + c.getPostalCode() + c.getTown()).toLowerCase().contains(keyword.toLowerCase()))
+                places.add(c);
+
+        if (places.isEmpty()) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(places, HttpStatus.OK);
+    }
 	
 	// ---------------------------------------------------------------------------------------------------------------//
 	// ----------------------------------------------- Métodos auxiliares --------------------------------------------//

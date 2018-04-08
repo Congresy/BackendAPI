@@ -1,7 +1,11 @@
 package com.conferencias.tfg.controller;
 
 
+import com.conferencias.tfg.domain.Actor;
+import com.conferencias.tfg.domain.Comment;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.Message;
+import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
@@ -13,6 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -20,18 +28,56 @@ import java.util.List;
 public class ConferenceController {
 
     private ConferenceRepository conferenceRepository;
+    private ActorRepository actorRepository;
 
 	@Autowired
-    public ConferenceController(ConferenceRepository conferenceRepository) {
+    public ConferenceController(ConferenceRepository conferenceRepository, ActorRepository actorRepository) {
         this.conferenceRepository = conferenceRepository;
+        this.actorRepository = actorRepository;
     }
 
-	@GetMapping("/detailed")
+	@GetMapping("/detailed/date")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getAllDetailed() {
+	public ResponseEntity<?> getAllDetailedByDate() {
 		List<Conference> conferences = conferenceRepository.findAll();
+
+        Comparator<Conference> comparator = new Comparator<Conference>() {
+            @Override
+            public int compare(Conference c1, Conference c2) {
+                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
+            }
+        };
+
+        conferences.sort(comparator);
+
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
+
+    @GetMapping("/detailed/search/{keyword}")
+    @JsonView(Detailed.class)
+    public ResponseEntity<?> getAllDetailedByDate(@PathVariable("keyword") String keyword) {
+        List<Conference> conferences = new ArrayList<>();
+
+        for(Conference c : conferenceRepository.findAll())
+            if((c.getName() + c.getDescription() + c.getPrice().toString() + c.getSpeakersNames() + c.getTheme()).toLowerCase().contains(keyword.toLowerCase())){
+                conferences.add(c);
+        }
+
+        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
+    }
+
+    @GetMapping("/shorted/search/{keyword}")
+    @JsonView(Shorted.class)
+    public ResponseEntity<?> getAllShortedByDate(@PathVariable("keyword") String keyword) {
+        List<Conference> conferences = new ArrayList<>();
+
+        for(Conference c : conferenceRepository.findAll())
+            if((c.getName() + c.getDescription() + c.getPrice().toString() + c.getSpeakersNames() + c.getTheme()).toLowerCase().contains(keyword.toLowerCase())){
+                conferences.add(c);
+            }
+
+        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
+    }
 
 	@GetMapping("/short")
 	@JsonView(Shorted.class)
@@ -39,6 +85,23 @@ public class ConferenceController {
 		List<Conference> conferences = conferenceRepository.findAll();
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
+
+    @GetMapping("/short/date")
+    @JsonView(Shorted.class)
+    public ResponseEntity<?> getAllShortByDate() {
+        List<Conference> conferences = conferenceRepository.findAll();
+
+        Comparator<Conference> comparator = new Comparator<Conference>() {
+            @Override
+            public int compare(Conference c1, Conference c2) {
+                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
+            }
+        };
+
+        conferences.sort(comparator);
+
+        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
+    }
 
 	@GetMapping(value = "/detailed/{id}")
 	@JsonView(Detailed.class)
@@ -52,6 +115,24 @@ public class ConferenceController {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
+    @PutMapping("/add/{idConference}/{idActor}")
+    public ResponseEntity<?> addOrganizator(@PathVariable("idConference") String idConferece, @PathVariable("idActor") String idActor) {
+
+	    Actor actor = actorRepository.findOne(idActor);
+	    Conference conference = conferenceRepository.findOne(idConferece);
+
+	    if(!actor.getRole().equals("Organizator")){
+	        new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+	    List<String> organizators = conference.getOrganizators();
+
+        organizators.add(actor.getId());
+        conference.setOrganizators(organizators);
+
+        return new ResponseEntity<>(conference, HttpStatus.CREATED);
+    }
+
 	@GetMapping(value = "/short/{id}")
 	@JsonView(Shorted.class)
 	public ResponseEntity<?> getShort(@PathVariable("id") String id) {
@@ -63,6 +144,27 @@ public class ConferenceController {
 
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
+
+    @GetMapping(value = "/all/popularity")
+    @JsonView(Detailed.class)
+    public ResponseEntity<?> getAllByPopularity() {
+        List<Conference> conferences = conferenceRepository.findAll();
+
+        if (conferences.isEmpty()) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        Comparator<Conference> comparator = new Comparator<Conference>() {
+            @Override
+            public int compare(Conference c1, Conference c2) {
+                return c1.getPopularity().compareTo(c2.getPopularity());
+            }
+        };
+
+        conferences.sort(comparator);
+
+        return new ResponseEntity<>(conferences, HttpStatus.OK);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
@@ -130,4 +232,10 @@ public class ConferenceController {
 		}
 		return res;
 	}
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
+    }
 }

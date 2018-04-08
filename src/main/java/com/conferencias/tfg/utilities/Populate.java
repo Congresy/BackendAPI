@@ -226,10 +226,10 @@ public class Populate {
         // ----------------------------------------- ACTORS ---------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Actor actor1 = new Actor("Juan", "Pérez", "juan@email.com", "111111111", "http://www.juanphoto.jpg", "juan", "Sevilla", "organizator", userAccount1.getId());
-        Actor actor2 = new Actor("Luis", "López", "luis@email.com", "222222222", "http://www.luisphoto.jpg", "luis", "Madrid", "user", userAccount2.getId());
-        Actor actor3 = new Actor("María", "Pizarro", "maria@email.com", "333333333", "http://www.mariaphoto.jpg", "maria", "Barcelona", "user", userAccount3.getId());
-        Actor actor4 = new Actor("Laura", "Prieto", "laura@email.com", "444444444", "http://www.lauraphoto.jpg", "laura", "Vigo", "speaker", userAccount4.getId());
+        Actor actor1 = new Actor("Juan", "Pérez", "juan@email.com", "111111111", "http://www.juanphoto.jpg", "juan", "Sevilla", "Organizator", userAccount1.getId());
+        Actor actor2 = new Actor("Luis", "López", "luis@email.com", "222222222", "http://www.luisphoto.jpg", "luis", "Madrid", "User", userAccount2.getId());
+        Actor actor3 = new Actor("María", "Pizarro", "maria@email.com", "333333333", "http://www.mariaphoto.jpg", "maria", "Barcelona", "User", userAccount3.getId());
+        Actor actor4 = new Actor("Laura", "Prieto", "laura@email.com", "444444444", "http://www.lauraphoto.jpg", "laura", "Vigo", "Speaker", userAccount4.getId());
         Set<SocialNetwork> aux = new HashSet<>();
         aux.add(new SocialNetwork("Instagram", "https://instagram.com/juan"));
         aux.add(new SocialNetwork("facebook", "https://facebook.com/juan"));

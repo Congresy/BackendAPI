@@ -73,7 +73,7 @@ public class FolderController {
 	}
 
     @PostMapping("/create/{id}")
-    public ResponseEntity<?> createDefaults(UriComponentsBuilder ucBuilder, @PathVariable("id") String id) {
+    public ResponseEntity<?> createDefaults(@PathVariable("id") String id) {
         Actor actor = actorRepository.findOne(id);
 
         Folder folder1 = new Folder("Inbox");

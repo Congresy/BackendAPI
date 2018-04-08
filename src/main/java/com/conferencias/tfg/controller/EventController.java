@@ -1,7 +1,9 @@
 package com.conferencias.tfg.controller;
 
+import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Event;
+import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.repository.EventRepository;
 import com.conferencias.tfg.utilities.Views;
@@ -13,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -22,11 +27,54 @@ public class EventController {
 
     private EventRepository eventRepository;
     private ConferenceRepository conferenceRepository;
+    private ActorRepository actorRepository;
 
     @Autowired
-    public EventController(EventRepository eventRepository, ConferenceRepository conferenceRepository) {
+    public EventController(EventRepository eventRepository, ConferenceRepository conferenceRepository, ActorRepository actorRepository) {
         this.eventRepository = eventRepository;
         this.conferenceRepository = conferenceRepository;
+        this.actorRepository = actorRepository;
+    }
+
+    @PutMapping("/add/participant/{idEvent}/{idActor}")
+    public ResponseEntity<?> addParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
+
+        Actor actor = actorRepository.findOne(idActor);
+        Event event = eventRepository.findOne(idEvent);
+
+        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        List<String> participants = event.getParticipants();
+
+        participants.add(actor.getId());
+
+        if(event.getAllowedParticipants() != 0)
+            event.setAllowedParticipants(event.getAllowedParticipants()-1);
+
+        event.setParticipants(participants);
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/add/speaker/{idEvent}/{idActor}")
+    public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
+
+        Actor actor = actorRepository.findOne(idActor);
+        Event event = eventRepository.findOne(idEvent);
+
+        if(!actor.getRole().equals("Speaker")){
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        List<String> speakers = event.getSpeakers();
+
+        speakers.add(actor.getId());
+
+        event.setSpeakers(speakers);
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
 	@GetMapping("/all")
@@ -46,6 +94,15 @@ public class EventController {
         for(String s : eventsAux){
                 events.add(eventRepository.findOne(s));
         }
+
+        Comparator<Event> comparator = new Comparator<Event>() {
+            @Override
+            public int compare(Event c1, Event c2) {
+                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
+            }
+        };
+
+        events.sort(comparator);
 
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
@@ -200,4 +257,10 @@ public class EventController {
 		}
 		return res;
 	}
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
+    }
 }

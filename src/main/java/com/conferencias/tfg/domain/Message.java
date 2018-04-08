@@ -34,9 +34,7 @@ public class Message {
 
     public Message(){}
 
-    public Message(String receiverId, String senderId, String subject, String body, String sentMoment) {
-        this.receiverId = receiverId;
-        this.senderId = senderId;
+    public Message(String subject, String body, String sentMoment) {
         this.subject = subject;
         this.body = body;
         this.sentMoment = sentMoment;

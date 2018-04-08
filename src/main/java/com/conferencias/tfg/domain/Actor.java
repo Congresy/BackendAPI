@@ -39,7 +39,7 @@ public class Actor {
     @NotNull
     private boolean private_;
     @NotBlank
-    @Pattern(regexp = "^(organizator|speaker|user|administrator)$")
+    @Pattern(regexp = "^(Organizator|Speaker|User|Administrator)$")
     private String role;
 
     private Set<SocialNetwork> socialNetworks;
@@ -178,6 +178,16 @@ public class Actor {
     private List<String> friends;
 
     private List<String> following;
+
+    private List<String> folders;
+
+    public List<String> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(List<String> folders) {
+        this.folders = folders;
+    }
 
     public List<String> getConferences() {
         return conferences;
