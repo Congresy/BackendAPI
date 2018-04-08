@@ -1,12 +1,12 @@
 package com.conferencias.tfg.domain;
 
+import com.conferencias.tfg.utilities.Views.Default;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import com.conferencias.tfg.utilities.Views.Default;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

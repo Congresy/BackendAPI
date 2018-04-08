@@ -1,8 +1,8 @@
 package com.conferencias.tfg.configuration;
 
+import com.conferencias.tfg.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/actor/**").permitAll()
 				.antMatchers("/event/**").permitAll()
                 .antMatchers("/place/**").permitAll()
+                .antMatchers("/announcement/**").permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security",
 						"/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html",
 						"/swagger-resources/configuration/security")
@@ -29,8 +30,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	}
 
+//	@Autowired
+//	public void configureGlobal(@Lazy AuthenticationManagerBuilder auth) throws Exception {
+//		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN").and();
+//	}
+
 	@Autowired
-	public void configureGlobal(@Lazy AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN").and();
+    UserAccountService userAccountService;
+
+    @Autowired
+    public void configAuthBuilder(AuthenticationManagerBuilder builder) throws Exception {
+        builder.userDetailsService(userAccountService);
 	}
 }

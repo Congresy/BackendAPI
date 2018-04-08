@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Document
 public class Actor {
@@ -37,12 +38,30 @@ public class Actor {
     private boolean banned;
     @NotNull
     private boolean private_;
+    @NotBlank
+    @Pattern(regexp = "^(organizator|speaker|user|administrator)$")
+    private String role;
+
+    private Set<SocialNetwork> socialNetworks;
+
+
+    @NotNull
+    private String mongoUser;
+
+    public String getMongoUser() {
+        return mongoUser;
+    }
+
+    public void setMongoUser(String mongoUser) {
+        this.mongoUser = mongoUser;
+    }
+
 
     public Actor(){
 
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place) {
+    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String mongoUser) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -53,6 +72,8 @@ public class Actor {
         this.private_ = false;
         this.place = place;
         this.comments = new ArrayList<>();
+        this.role = role;
+        this.mongoUser = mongoUser;
     }
 
     public String getId() {
@@ -127,6 +148,23 @@ public class Actor {
         this.private_ = private_;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Set<SocialNetwork> getSocialNetworks() {
+        return socialNetworks;
+    }
+
+    public void setSocialNetworks(Set<SocialNetwork> socialNetworks) {
+        this.socialNetworks = socialNetworks;
+    }
+
+
     // --------------------------------------------------------------------------------------------------------------
 
     private List<String> conferences;
@@ -134,6 +172,13 @@ public class Actor {
     private String place;
     @NotNull
     private List<String> comments;
+
+    private List<String> interests;
+
+
+    private List<String> friends;
+
+    private List<String> following;
 
     public List<String> getConferences() {
         return conferences;
@@ -158,4 +203,30 @@ public class Actor {
     public void setComments(List<String> comments) {
         this.comments = comments;
     }
+
+    public List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
+    public List<String> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<String> following) {
+        this.following = following;
+    }
+
 }
+

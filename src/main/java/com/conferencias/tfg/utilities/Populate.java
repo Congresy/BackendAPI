@@ -1,15 +1,14 @@
 package com.conferencias.tfg.utilities;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.conferencias.tfg.domain.*;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
 import com.mongodb.Mongo;
 import com.mongodb.MongoURI;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Populate {
 
@@ -23,6 +22,9 @@ public class Populate {
 		mongo.dropCollection("organizator");
 		mongo.dropCollection("event");
         mongo.dropCollection("comment");
+        mongo.dropCollection("actor");
+        mongo.dropCollection("announcement");
+        mongo.dropCollection("post");
 
         // ----------------------------------------------------------------------------------------------
         // ----------------------------------------- COMMENTS -------------------------------------------
@@ -67,19 +69,19 @@ public class Populate {
 		// ----------------------------------------- SPEAKERS -------------------------------------------
 		// ----------------------------------------------------------------------------------------------
 
-		Speaker speaker1 = new Speaker("Nombre1", "Apellido1", "email1@us.es", "987678152"
-                , "http://imagen1.jpg", "nick1", place1.getId());
-
-        mongo.save(speaker1);
+//		Speaker speaker1 = new Speaker("Nombre1", "Apellido1", "email1@us.es", "987678152"
+//                , "http://imagen1.jpg", "nick1", place1.getId());
+//
+//        mongo.save(speaker1);
 
 		// ----------------------------------------------------------------------------------------------
 		// --------------------------------------- ORGANIZATORS -----------------------------------------
 		// ----------------------------------------------------------------------------------------------
 
-		Organizator organizator1 = new Organizator("Nombre1", "Apellido1", "email1@us.es", "987678152"
-				, "http://imagen1.jpg", "nick1", place1.getId());
-
-		mongo.save(organizator1);
+//		Organizator organizator1 = new Organizator("Nombre1", "Apellido1", "email1@us.es", "987678152"
+//				, "http://imagen1.jpg", "nick1", place1.getId());
+//
+//		mongo.save(organizator1);
 
         // ----------------------------------------------------------------------------------------------
         // -------------------------------------- SOCIAL EVENTS -----------------------------------------
@@ -191,5 +193,64 @@ public class Populate {
         mongo.save(conference3);
         mongo.save(conference4);
 
+        // ----------------------------------------------------------------------------------------------
+        // -------------------------------------- ANNOUNCEMENTS -----------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        Announcement announcement1 = new Announcement("http://www.picture1.jpg", "http://www.url1.com");
+        Announcement announcement2 = new Announcement("http://www.picture2.jpg", "http://www.url2.com");
+        Announcement announcement3 = new Announcement("http://www.picture3.jpg", "http://www.url3.com");
+        Announcement announcement4 = new Announcement("http://www.picture4.jpg", "http://www.url4.com");
+
+        mongo.save(announcement1);
+        mongo.save(announcement2);
+        mongo.save(announcement3);
+        mongo.save(announcement4);
+
+        // ----------------------------------------------------------------------------------------------
+        // -------------------------------------- USER ACCOUNTS------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+
+        UserAccount userAccount1 = new UserAccount("juan", "juan");
+        UserAccount userAccount2 = new UserAccount("luis", "luis");
+        UserAccount userAccount3 = new UserAccount("maria", "maria");
+        UserAccount userAccount4 = new UserAccount("laura", "laura");
+
+        mongo.save(userAccount1);
+        mongo.save(userAccount2);
+        mongo.save(userAccount3);
+        mongo.save(userAccount4);
+
+        // ----------------------------------------------------------------------------------------------
+        // ----------------------------------------- ACTORS ---------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        Actor actor1 = new Actor("Juan", "Pérez", "juan@email.com", "111111111", "http://www.juanphoto.jpg", "juan", "Sevilla", "organizator", userAccount1.getId());
+        Actor actor2 = new Actor("Luis", "López", "luis@email.com", "222222222", "http://www.luisphoto.jpg", "luis", "Madrid", "user", userAccount2.getId());
+        Actor actor3 = new Actor("María", "Pizarro", "maria@email.com", "333333333", "http://www.mariaphoto.jpg", "maria", "Barcelona", "user", userAccount3.getId());
+        Actor actor4 = new Actor("Laura", "Prieto", "laura@email.com", "444444444", "http://www.lauraphoto.jpg", "laura", "Vigo", "speaker", userAccount4.getId());
+        Set<SocialNetwork> aux = new HashSet<>();
+        aux.add(new SocialNetwork("Instagram", "https://instagram.com/juan"));
+        aux.add(new SocialNetwork("facebook", "https://facebook.com/juan"));
+        actor1.setSocialNetworks(aux);
+        mongo.save(actor1);
+        mongo.save(actor2);
+        mongo.save(actor3);
+        mongo.save(actor4);
+
+        // ----------------------------------------------------------------------------------------------
+        // ----------------------------------------- POSTS ----------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+
+        Post post1 = new Post(actor1.getId(), "Title1", "Body1", "Category1", "10/10/2018 11:20", new ArrayList<String>());
+        Post post2 = new Post(actor1.getId(), "Title2", "Body2", "Category2", "10/10/2018 11:20", new ArrayList<String>());
+        Post post3 = new Post(actor3.getId(), "Title3", "Body3", "Category3", "10/10/2018 11:20", new ArrayList<String>());
+        Post post4 = new Post(actor2.getId(), "Title4", "Body4", "Category4", "10/10/2018 11:20", new ArrayList<String>());
+
+        mongo.save(post1);
+        mongo.save(post2);
+        mongo.save(post3);
+        mongo.save(post4);
 	}
 }

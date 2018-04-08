@@ -3,11 +3,7 @@ package com.conferencias.tfg.controller;
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.repository.ActorRepository;
-import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.service.ActorService;
-import com.conferencias.tfg.utilities.Views;
-import com.fasterxml.jackson.annotation.JsonView;
-import io.swagger.models.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -85,6 +82,73 @@ public class ActorController {
         actorRepository.delete(id);
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/all/role/{role}")
+    public ResponseEntity<?> getAllByRole(@PathVariable("role") String role) {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (a.getRole().equals(role))
+                actors.add(a);
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/place/{place}")
+    public ResponseEntity<?> getAllByPlace(@PathVariable("place") String place) {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (a.getPlace().toLowerCase().contains(place.toLowerCase()))
+                actors.add(a);
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/banned")
+    public ResponseEntity<?> getBanned() {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (a.isBanned()) {
+                actors.add(a);
+            }
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/private")
+    public ResponseEntity<?> getPrivate() {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (a.isPrivate_()) {
+                actors.add(a);
+            }
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{keyword}")
+    public ResponseEntity<?> getAllByKeyword(@PathVariable("keyword") String keyword) {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if ((a.getName() + a.getSurname() + a.getNick()).toLowerCase().contains(keyword.toLowerCase())) {
+                actors.add(a);
+            }
+        }
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @GetMapping("/socialNetwork/{id}")
+    public ResponseEntity<?> getSocialByUser(@PathVariable("id") String id) {
+        Actor aux = actorRepository.findOne(id);
+
+        return new ResponseEntity<>(aux.getSocialNetworks(), HttpStatus.OK);
+    }
+
+
 
     /** Dado un actor, comprueba si existe uno igual */
     private Boolean actorExist(Actor actor){
