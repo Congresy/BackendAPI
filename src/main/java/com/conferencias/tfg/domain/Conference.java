@@ -50,117 +50,114 @@ public class Conference {
 	@NotNull
 	@JsonView(Shorted.class)
 	private Double popularity;
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonView(Shorted.class)
-	private LocalDateTime start;
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonView(Detailed.class)
-	private LocalDateTime end;
+    @NotBlank
+    @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
+    @JsonView(Shorted.class)
+	private String start;
+    @NotBlank
+    @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
+    @JsonView(Detailed.class)
+	private String end;
 	@NotBlank
 	@Length(max = 50)
 	@JsonView(Detailed.class)
-	private String guests;
+	private String speakersNames;
 	@NotBlank
 	@JsonView(Detailed.class)
 	private String description;
-	/*@URL
-	private String video_; 					//TODO incorporar API de YouTube para videos en directo
-	private List<Calendar> calendars; */	//TODO incorporar API de Google Calendar para los calendarios
 
 	public Conference() {
 	}
 
-	public Conference(String name, String theme, Double price, LocalDateTime start, LocalDateTime end,
-					  String description, String guests) {
-		this.name = name;
-		this.theme = theme;
-		this.price = price;
-		this.popularity = 0.0;
-		this.start = start;
-		this.end = end;
-		this.description = description;
-		this.guests = guests;
-		this.organizators = new ArrayList<>();
-		this.events = new ArrayList<>();
-	}
+    public Conference(String name, String theme, Double price, String start, String end, String speakersNames, String description) {
+        this.name = name;
+        this.theme = theme;
+        this.price = price;
+        this.popularity = 0.0;
+        this.start = start;
+        this.end = end;
+        this.speakersNames = speakersNames;
+        this.description = description;
+        this.organizators = new ArrayList<>();
+    }
 
-	public String getGuests() {
-		return guests;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setGuests(String guests) {
-		this.guests = guests;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getTheme() {
+        return theme;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
 
-	public String getTheme() {
-		return theme;
-	}
+    public Double getPrice() {
+        return price;
+    }
 
-	public void setTheme(String theme) {
-		this.theme = theme;
-	}
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public Double getPopularity() {
+        return popularity;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
 
-	public Double getPopularity() {
-		return popularity;
-	}
+    public String getStart() {
+        return start;
+    }
 
-	public void setPopularity(Double popularity) {
-		this.popularity = popularity;
-	}
+    public void setStart(String start) {
+        this.start = start;
+    }
 
-	public LocalDateTime getStart() {
-		return start;
-	}
+    public String getEnd() {
+        return end;
+    }
 
-	public void setStart(LocalDateTime start) {
-		this.start = start;
-	}
+    public void setEnd(String end) {
+        this.end = end;
+    }
 
-	public LocalDateTime getEnd() {
-		return end;
-	}
+    public String getSpeakersNames() {
+        return speakersNames;
+    }
 
-	public void setEnd(LocalDateTime end) {
-		this.end = end;
-	}
+    public void setSpeakersNames(String speakersNames) {
+        this.speakersNames = speakersNames;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	// -----------------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
 
-	//TODO mirar porqué no funcionan los @ aquí, popula aunque esté vacio y esté indicado @NotEmpty
 	@JsonView(Detailed.class)
 	private List<String> events;
+	@NotNull
 	@JsonView(Detailed.class)
 	private List<String> organizators;
 

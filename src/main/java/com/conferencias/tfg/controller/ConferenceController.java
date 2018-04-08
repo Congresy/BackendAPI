@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("conference")
@@ -26,7 +27,6 @@ public class ConferenceController {
         this.conferenceRepository = conferenceRepository;
     }
 
-	/** Recibe los valores de todos los atributos de todas las conferencias */
 	@GetMapping("/detailed")
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getAllDetailed() {
@@ -34,7 +34,6 @@ public class ConferenceController {
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
-	/** Recibe los valores de ciertos atributos de todas las conferencias */
 	@GetMapping("/short")
 	@JsonView(Shorted.class)
 	public ResponseEntity<?> getAllShort() {
@@ -42,7 +41,6 @@ public class ConferenceController {
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
-	/** Recibe los valores de todos los atributos de una conferencia en concreto */
 	@GetMapping(value = "/detailed/{id}")
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getDetailed(@PathVariable("id") String id) {
@@ -55,7 +53,6 @@ public class ConferenceController {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-	/** Recibe los valores de todos los atributos de una conferencia en concreto */
 	@GetMapping(value = "/short/{id}")
 	@JsonView(Shorted.class)
 	public ResponseEntity<?> getShort(@PathVariable("id") String id) {
@@ -68,7 +65,6 @@ public class ConferenceController {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-	/** Crea una conferencia según los valores que se envien en el método POST */
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
@@ -77,15 +73,13 @@ public class ConferenceController {
 		}
 
         conferenceRepository.save(conference);
-		Conference con = new Conference();
-		System.out.println(conference.getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/conference/{id}").buildAndExpand(conference.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(conference, headers, HttpStatus.CREATED);
     }
 
-    /** Modifica una conferencia con los campos que se indiquen */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Conference conference) {
 		Conference currentConference = conferenceRepository.findOne(id);
@@ -100,20 +94,18 @@ public class ConferenceController {
 		currentConference.setPrice(conference.getPrice());
 		currentConference.setTheme(conference.getTheme());
 		currentConference.setDescription(conference.getDescription());
-		currentConference.setGuests(conference.getGuests());
+		currentConference.setSpeakersNames(conference.getSpeakersNames());
 
 		conferenceRepository.save(conference);
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-	/** Borra a todos las conferencias */
 	@DeleteMapping(value = "/delete")
 	public ResponseEntity<Conference> deleteAll() {
 		conferenceRepository.deleteAll();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	/** Borra a una conferencia en concreto */
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		Conference conference = conferenceRepository.findOne(id);
@@ -121,14 +113,13 @@ public class ConferenceController {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 		conferenceRepository.delete(id);
-		return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	// ---------------------------------------------------------------------------------------------------------------//
 	// ----------------------------------------------- Métodos auxiliares --------------------------------------------//
 	// ---------------------------------------------------------------------------------------------------------------//
-	
-	/** Dada una conferencia, comprueba si existe una igual */
+
 	private Boolean conferenceExist(Conference conference){
 		Boolean res = false;
 

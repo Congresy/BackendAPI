@@ -2,8 +2,6 @@ package com.conferencias.tfg.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -12,7 +10,7 @@ import com.conferencias.tfg.utilities.Views.Default;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,31 +20,57 @@ public class Event {
     @Id
     @JsonIgnore
     private String id;
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @NotBlank
+    @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
     @JsonView(Default.class)
-    private LocalDateTime start;
+    private String start;
+    @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
+    @JsonView(Default.class)
+    private String end;
     @NotBlank
     @JsonView(Default.class)
     private String name;
-    @Min(0)
-    @JsonView(Default.class)
-    private Integer duration;
     @Min(1)
     @JsonView(Default.class)
     private Integer allowedParticipants;
+    @JsonView(Default.class)
+    private String type; // Para social events
+    @JsonView(Default.class)
+    @NotBlank
+    private String requirements;
+    @JsonView(Default.class)
+    @NotBlank
+    @Pattern(regexp = "^(socialEvent|ordinary|invitation|workshop)$")
+    private String role;
+
 
     public Event(){
 
     }
 
-    public Event(LocalDateTime start, String name, Integer duration, Integer allowedParticipants, String place) {
+    public Event(String start, String end, String name, Integer allowedParticipants, String type, String requeriments, String role, String place) {
         this.start = start;
+        this.end = end;
         this.name = name;
-        this.duration = duration;
         this.allowedParticipants = allowedParticipants;
-        this.place = place;
+        this.type = type;
+        this.requirements = requeriments;
+        this.role = role;
         this.participants = new ArrayList<>();
         this.speakers = new ArrayList<>();
+        this.place = place;
+    }
+
+    public Event(String start, String end, String name, Integer allowedParticipants, String requeriments, String role, String place) {
+        this.start = start;
+        this.end = end;
+        this.name = name;
+        this.allowedParticipants = allowedParticipants;
+        this.requirements = requeriments;
+        this.role = role;
+        this.participants = new ArrayList<>();
+        this.speakers = new ArrayList<>();
+        this.place = place;
     }
 
     public String getId() {
@@ -57,11 +81,11 @@ public class Event {
         this.id = id;
     }
 
-    public LocalDateTime getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
@@ -73,12 +97,12 @@ public class Event {
         this.name = name;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public String getEnd() {
+        return end;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setEnd(String end) {
+        this.end = end;
     }
 
     public Integer getAllowedParticipants() {
@@ -89,16 +113,38 @@ public class Event {
         this.allowedParticipants = allowedParticipants;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(String requirements) {
+        this.requirements = requirements;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     @JsonView(Default.class)
     private List<String> participants;
     @NotEmpty
+    @NotNull
     @JsonView(Default.class)
     private List<String> speakers;
     @NotNull
-    @JsonView(Default.class)
-    private String conference;
-    //@NotNull
     @JsonView(Default.class)
     private String place;
 
@@ -116,14 +162,6 @@ public class Event {
 
     public void setSpeakers(List<String> speakers) {
         this.speakers = speakers;
-    }
-
-    public String getConference() {
-        return conference;
-    }
-
-    public void setConference(String conference) {
-        this.conference = conference;
     }
 
     public String getPlace() {
