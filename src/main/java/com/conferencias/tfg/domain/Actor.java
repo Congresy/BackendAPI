@@ -133,7 +133,7 @@ public class Actor {
     //@NotNull
     private String place;
     @NotNull
-    private List<Comment> comments;
+    private List<String> comments;
 
     public List<String> getConferences() {
         return conferences;
@@ -151,11 +151,11 @@ public class Actor {
         this.place = place;
     }
 
-    public List<Comment> getComments() {
+    public List<String> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<String> comments) {
         this.comments = comments;
     }
 }
