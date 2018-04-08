@@ -91,6 +91,7 @@ public class Comment {
 
     // -----------------------------------------------------------------------------
 
+    @JsonView(Views.Default.class)
     private List<String> responses;
 
     public List<String> getResponses() {
