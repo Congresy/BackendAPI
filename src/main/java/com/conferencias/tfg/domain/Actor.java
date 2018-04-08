@@ -1,6 +1,8 @@
 package com.conferencias.tfg.domain;
 
+import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
@@ -53,6 +55,9 @@ public class Actor {
         this.private_ = false;
         this.place = place;
         this.comments = new ArrayList<>();
+        this.receivedMessages = new ArrayList<>();
+        this.sentMessages = new ArrayList<>();
+        this.folders = new ArrayList<>();
     }
 
     public String getId() {
@@ -131,9 +136,17 @@ public class Actor {
 
     private List<String> conferences;
     //@NotNull
+    @JsonView(Views.Default.class)
     private String place;
     @NotNull
+    @JsonView(Views.Default.class)
     private List<String> comments;
+    @JsonView(Views.Default.class)
+    private List<String> receivedMessages;
+    @JsonView(Views.Default.class)
+    private List<String> sentMessages;
+    @JsonView(Views.Default.class)
+    private List<String> folders;
 
     public List<String> getConferences() {
         return conferences;
@@ -157,5 +170,29 @@ public class Actor {
 
     public void setComments(List<String> comments) {
         this.comments = comments;
+    }
+
+    public List<String> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void setReceivedMessages(List<String> receivedMessages) {
+        this.receivedMessages = receivedMessages;
+    }
+
+    public List<String> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(List<String> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
+
+    public List<String> getFolders() {
+        return folders;
+    }
+
+    public void setFolders(List<String> folders) {
+        this.folders = folders;
     }
 }
