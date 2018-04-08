@@ -21,6 +21,10 @@ public class UserAccount implements UserDetails {
         this.password = password;
     }
 
+    public UserAccount() {
+
+    }
+
     public String getId() {
         return id;
     }

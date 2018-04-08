@@ -46,22 +46,21 @@ public class Actor {
 
 
     @NotNull
-    private String mongoUser;
+    private String userAccount;
 
-    public String getMongoUser() {
-        return mongoUser;
+    public String getUserAccount() {
+        return userAccount;
     }
 
-    public void setMongoUser(String mongoUser) {
-        this.mongoUser = mongoUser;
+    public void setUserAccount(String userAccount) {
+        this.userAccount = userAccount;
     }
-
 
     public Actor(){
 
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String mongoUser) {
+    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -73,7 +72,7 @@ public class Actor {
         this.place = place;
         this.comments = new ArrayList<>();
         this.role = role;
-        this.mongoUser = mongoUser;
+        this.userAccount = userAccount;
     }
 
     public String getId() {

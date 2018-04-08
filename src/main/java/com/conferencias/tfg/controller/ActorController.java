@@ -2,7 +2,9 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
+import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +26,9 @@ public class ActorController {
     @Autowired
     private ActorService actorService;
 
+    @Autowired
+    private UserAccountRepository userAccountRepository;
+
     @GetMapping("/all")
     public List<Actor> showAll() {
 
@@ -32,15 +37,20 @@ public class ActorController {
 
     /** Crea un actor según los valores que se envien en el método POST */
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody Actor actor, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<?> create(@RequestBody Actor actor, @RequestBody UserAccount userAccount, UriComponentsBuilder ucBuilder) {
 
         if (this.actorExist(actor)) {
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
+        UserAccount userAccountAux = new UserAccount();
+        userAccountAux.setUsername(userAccount.getUsername());
+        userAccountAux.setPassword(userAccount.getPassword());
+        userAccountRepository.save(userAccountAux);
         Actor aux = new Actor();
         actor.setId(aux.getId());
         actor.setBanned(false);
         actor.setPrivate_(false);
+        actor.setUserAccount(userAccountAux.getId());
         actorRepository.save(actor);
 
         HttpHeaders headers = new HttpHeaders();
