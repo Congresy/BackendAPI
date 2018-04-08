@@ -23,9 +23,10 @@ public class EventController {
     private EventRepository eventRepository;
     private ConferenceRepository conferenceRepository;
 
-	@Autowired
-    public EventController(EventRepository eventRepository) {
+    @Autowired
+    public EventController(EventRepository eventRepository, ConferenceRepository conferenceRepository) {
         this.eventRepository = eventRepository;
+        this.conferenceRepository = conferenceRepository;
     }
 
 	@GetMapping("/all")
@@ -162,24 +163,25 @@ public class EventController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") String id) {
-        Event event = eventRepository.findOne(id);
-	    List<Conference> conferences = conferenceRepository.findAll();
+	@DeleteMapping(value = "/delete/{idConference}/{idEvent}")
+	public ResponseEntity<?> delete(@PathVariable("idConference") String idConference, @PathVariable("idEvent") String idEvent) {
+        Event event = eventRepository.findOne(idEvent);
+        Conference conference = conferenceRepository.findOne(idConference);
 
-	    for(Conference c : conferences) {
-            if (c.getEvents().contains(id)) {
-                List<String> newEvents = c.getEvents();
-                newEvents.remove(id);
-                c.setEvents(newEvents);
-                conferenceRepository.save(c);
-            }
+        if (conference== null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
+
+	    List<String> newEvents = conference.getEvents();
+	    newEvents.remove(idEvent);
+	    conference.setEvents(newEvents);
+	    conferenceRepository.save(conference);
 
 		if (event == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
-		eventRepository.delete(id);
+
+		eventRepository.delete(idEvent);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	

@@ -1,36 +1,19 @@
 package com.conferencias.tfg.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import com.conferencias.tfg.utilities.Views;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.apache.tomcat.jni.Local;
-import org.bson.types.ObjectId;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.hibernate.validator.constraints.URL;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.annotation.Generated;
-import javax.jdo.annotations.Serialized;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document
 public class Conference {
@@ -79,6 +62,7 @@ public class Conference {
         this.speakersNames = speakersNames;
         this.description = description;
         this.organizators = new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public String getId() {
@@ -160,6 +144,8 @@ public class Conference {
 	@NotNull
 	@JsonView(Detailed.class)
 	private List<String> organizators;
+    @NotNull
+    private List<String> comments;
 
 	public List<String> getEvents() {
 		return events;
@@ -176,4 +162,12 @@ public class Conference {
 	public void setOrganizators(List<String> organizators) {
 		this.organizators = organizators;
 	}
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
 }

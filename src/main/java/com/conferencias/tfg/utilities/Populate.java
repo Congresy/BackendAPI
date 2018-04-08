@@ -22,6 +22,31 @@ public class Populate {
 		mongo.dropCollection("speaker");
 		mongo.dropCollection("organizator");
 		mongo.dropCollection("event");
+        mongo.dropCollection("comment");
+
+        // ----------------------------------------------------------------------------------------------
+        // ----------------------------------------- COMMENTS -------------------------------------------
+        // ---------------------------------------------
+
+        Comment comment1 = new Comment("TítuloComentario1", "TextoComentario1", "20/12/2017 10:10");
+        Comment comment2 = new Comment("TítuloComentario2", "TextoComentario2", "20/12/2017 10:10");
+        Comment comment3 = new Comment("TítuloComentario3", "TextoComentario3", "20/12/2017 10:10");
+        Comment comment4 = new Comment("TítuloComentario4", "TextoComentario4", "20/12/2017 10:10");
+        Comment comment5 = new Comment("TítuloComentario5", "TextoComentario5", "20/12/2017 10:10");
+        Comment comment6 = new Comment("TítuloComentario6", "TextoComentario6", "20/12/2017 10:10");
+        Comment comment7 = new Comment("TítuloComentario7", "TextoComentario7", "20/12/2017 10:10");
+        Comment comment8 = new Comment("TítuloComentario8", "TextoComentario8", "20/12/2017 10:10");
+        Comment comment9 = new Comment("TítuloComentario9", "TextoComentario9", "20/12/2017 10:10");
+
+        mongo.save(comment1);
+        mongo.save(comment2);
+        mongo.save(comment3);
+        mongo.save(comment4);
+        mongo.save(comment5);
+        mongo.save(comment6);
+        mongo.save(comment7);
+        mongo.save(comment8);
+        mongo.save(comment9);
 
 		// ----------------------------------------------------------------------------------------------
 		// ------------------------------------------ PLACES --------------------------------------------
@@ -124,27 +149,42 @@ public class Populate {
         events1.add(ordinary1.getId());
         events1.add(invitation1.getId());
         conference1.setEvents(events1);
+        List<String> comments1 = new ArrayList<>();
+        comments1.add(comment1.getId());
+        comments1.add(comment2.getId());
+        comments1.add(comment3.getId());
+        conference1.setComments(comments1);
+
         Conference conference2 = new Conference("NombreConferencia2", "TemaConferencia2", 2.0, "10/10/2018", "15/10/2018", "InvitadosConferencia2", "DescripciónConferencia2");
         List<String> events2 = new ArrayList<>();
-        events1.add(socialEvent2.getId());
-        events1.add(workshop2.getId());
-        events1.add(ordinary2.getId());
-        events1.add(invitation2.getId());
-        conference1.setEvents(events2);
+        events2.add(socialEvent2.getId());
+        events2.add(workshop2.getId());
+        events2.add(ordinary2.getId());
+        events2.add(invitation2.getId());
+        conference2.setEvents(events2);
+        List<String> comments2 = new ArrayList<>();
+        comments2.add(comment4.getId());
+        comments2.add(comment5.getId());
+        conference2.setComments(comments2);
+
         Conference conference3 = new Conference("NombreConferencia3", "TemaConferencia3", 5.0, "10/10/2018", "15/10/2018", "InvitadosConferencia3", "DescripciónConferencia3");
         List<String> events3 = new ArrayList<>();
-        events1.add(socialEvent3.getId());
-        events1.add(workshop3.getId());
-        events1.add(ordinary3.getId());
-        events1.add(invitation3.getId());
-        conference1.setEvents(events3);
+        events3.add(socialEvent3.getId());
+        events3.add(workshop3.getId());
+        events3.add(ordinary3.getId());
+        events3.add(invitation3.getId());
+        conference3.setEvents(events3);
+        List<String> comments3 = new ArrayList<>();
+        comments3.add(comment6.getId());
+        conference3.setComments(comments3);
+
         Conference conference4 = new Conference("NombreConferencia4", "TemaConferencia4", 8.0, "10/10/2018", "15/10/2018", "InvitadosConferencia4", "DescripciónConferencia4");
         List<String> events4 = new ArrayList<>();
-        events1.add(socialEvent4.getId());
-        events1.add(workshop4.getId());
-        events1.add(ordinary4.getId());
-        events1.add(invitation4.getId());
-        conference1.setEvents(events4);
+        events4.add(socialEvent4.getId());
+        events4.add(workshop4.getId());
+        events4.add(ordinary4.getId());
+        events4.add(invitation4.getId());
+        conference4.setEvents(events4);
 
         mongo.save(conference1);
         mongo.save(conference2);
