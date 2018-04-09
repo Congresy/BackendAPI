@@ -33,6 +33,15 @@ public class Comment {
     @NotBlank
     private String sentMoment;
 
+    public Comment(String id, String title, String text, String sentMoment) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.thumbsUp = 0;
+        this.thumbsDown = 0;
+        this.sentMoment = sentMoment;
+    }
+
     public Comment(String title, String text, String sentMoment) {
         this.title = title;
         this.text = text;

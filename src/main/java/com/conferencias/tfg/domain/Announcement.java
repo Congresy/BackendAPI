@@ -18,6 +18,12 @@ public class Announcement {
 
     }
 
+    public Announcement(String id, String picture, String url) {
+        this.id = id;
+        this.picture = picture;
+        this.url = url;
+    }
+
     public Announcement(String picture, String url) {
         this.picture = picture;
         this.url = url;

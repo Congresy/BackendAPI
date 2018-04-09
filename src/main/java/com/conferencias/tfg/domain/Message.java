@@ -34,6 +34,13 @@ public class Message {
 
     public Message(){}
 
+    public Message(String id, String subject, String body, String sentMoment) {
+        this.id = id;
+        this.subject = subject;
+        this.body = body;
+        this.sentMoment = sentMoment;
+    }
+
     public Message(String subject, String body, String sentMoment) {
         this.subject = subject;
         this.body = body;

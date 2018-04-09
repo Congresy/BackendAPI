@@ -40,12 +40,26 @@ public class Event {
     private String requirements;
     @JsonView(Default.class)
     @NotBlank
-    @Pattern(regexp = "^(socialEvent|ordinary|invitation|workshop)$")
+    @Pattern(regexp = "^(SocialEvent|Ordinary|Invitation|Workshop)$")
     private String role;
 
 
     public Event(){
 
+    }
+
+    public Event(String id, String start, String end, String name, Integer allowedParticipants, String type, String requeriments, String role, String place) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.name = name;
+        this.allowedParticipants = allowedParticipants;
+        this.type = type;
+        this.requirements = requeriments;
+        this.role = role;
+        this.participants = new ArrayList<>();
+        this.speakers = new ArrayList<>();
+        this.place = place;
     }
 
     public Event(String start, String end, String name, Integer allowedParticipants, String type, String requeriments, String role, String place) {
@@ -54,6 +68,19 @@ public class Event {
         this.name = name;
         this.allowedParticipants = allowedParticipants;
         this.type = type;
+        this.requirements = requeriments;
+        this.role = role;
+        this.participants = new ArrayList<>();
+        this.speakers = new ArrayList<>();
+        this.place = place;
+    }
+
+    public Event(String id, String start, String end, String name, Integer allowedParticipants, String requeriments, String role, String place) {
+        this.id = id;
+        this.start = start;
+        this.end = end;
+        this.name = name;
+        this.allowedParticipants = allowedParticipants;
         this.requirements = requeriments;
         this.role = role;
         this.participants = new ArrayList<>();

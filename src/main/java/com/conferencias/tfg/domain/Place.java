@@ -35,6 +35,14 @@ public class Place {
 
     }
 
+    public Place(String id, String town, String country, String address, String postalCode) {
+        this.id = id;
+        this.town = town;
+        this.country = country;
+        this.address = address;
+        this.postalCode = postalCode;
+    }
+
     public Place(String town, String country, String address, String postalCode) {
         this.town = town;
         this.country = country;

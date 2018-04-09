@@ -60,6 +60,22 @@ public class Actor {
 
     }
 
+    public Actor(String id, String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone = phone;
+        this.photo = photo;
+        this.nick = nick;
+        this.banned = false;
+        this.private_ = false;
+        this.place = place;
+        this.comments = new ArrayList<>();
+        this.role = role;
+        this.userAccount = userAccount;
+    }
+
     public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount) {
         this.name = name;
         this.surname = surname;

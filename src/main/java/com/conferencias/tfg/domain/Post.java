@@ -28,6 +28,16 @@ public class Post {
 
     }
 
+    public Post(String id, String author, String title, String body, String category, String posted, List<String> comments) {
+        this.id = id;
+        this.author = author;
+        this.body = body;
+        this.category = category;
+        this.comments = comments;
+        this.title = title;
+        this.posted = posted;
+    }
+
 
     public Post(String author, String title, String body, String category, String posted, List<String> comments) {
         this.author = author;

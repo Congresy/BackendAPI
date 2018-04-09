@@ -52,6 +52,20 @@ public class Conference {
 	public Conference() {
 	}
 
+    public Conference(String id, String name, String theme, Double price, String start, String end, String speakersNames, String description) {
+        this.id = id;
+	    this.name = name;
+        this.theme = theme;
+        this.price = price;
+        this.popularity = 0.0;
+        this.start = start;
+        this.end = end;
+        this.speakersNames = speakersNames;
+        this.description = description;
+        this.organizators = new ArrayList<>();
+        this.comments = new ArrayList<>();
+    }
+
     public Conference(String name, String theme, Double price, String start, String end, String speakersNames, String description) {
         this.name = name;
         this.theme = theme;
