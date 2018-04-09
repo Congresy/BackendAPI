@@ -40,6 +40,15 @@ public class Populate {
         Comment comment8 = new Comment("8", "TítuloComentario8", "TextoComentario8", "20/12/2017 10:10");
         Comment comment9 = new Comment("9", "TítuloComentario9", "TextoComentario9", "20/12/2017 10:10");
 
+        List<String> respones1 = new ArrayList<>();
+        respones1.add(comment6.getId());
+        respones1.add(comment7.getId());
+        respones1.add(comment8.getId());
+        comment1.setResponses(respones1);
+        List<String> respones2 = new ArrayList<>();
+        respones2.add(comment9.getId());
+        comment2.setResponses(respones2);
+
         mongo.save(comment1);
         mongo.save(comment2);
         mongo.save(comment3);

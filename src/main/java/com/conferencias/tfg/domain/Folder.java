@@ -22,6 +22,8 @@ public class Folder {
     @Pattern(regexp = "^(Inbox|Outbox|Bin)$")
     private String name;
 
+    public Folder(){}
+
     public Folder(String id, String name) {
         this.id = id;
         this.name = name;
