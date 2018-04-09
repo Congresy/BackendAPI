@@ -259,7 +259,7 @@ public class EventController {
 	}
 
     private LocalDateTime parseDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
         return dateTime;
     }
