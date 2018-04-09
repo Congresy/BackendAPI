@@ -2,8 +2,12 @@ package com.conferencias.tfg.domain;
 
 import org.hibernate.validator.constraints.URL;
 
+import javax.validation.constraints.Pattern;
+
 public class SocialNetwork {
 
+
+    @Pattern(regexp = "^(TWITTER|INSTAGRAM|FACEBOOK|LINKEDIN|GOOGLE)$")
     private String name;
     @URL
     private String url;

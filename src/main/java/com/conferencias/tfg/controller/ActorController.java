@@ -2,6 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.SocialNetwork;
 import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.UserAccountRepository;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("actor")
@@ -158,6 +160,16 @@ public class ActorController {
         return new ResponseEntity<>(aux.getSocialNetworks(), HttpStatus.OK);
     }
 
+    /** Añade una red social a un actor */
+    @PostMapping("/socialNetwork/create")
+    public ResponseEntity<?> createSocialNetwork(@RequestBody SocialNetwork socialNetwork, @RequestBody Actor actor, UriComponentsBuilder ucBuilder) {
+        Set<SocialNetwork> aux = actor.getSocialNetworks();
+        aux.add(socialNetwork);
+        actor.setSocialNetworks(aux);
+        actorRepository.save(actor);
+
+        return new ResponseEntity<>(actor.getSocialNetworks(), HttpStatus.CREATED);
+    }
 
 
     /** Dado un actor, comprueba si existe uno igual */
