@@ -74,6 +74,8 @@ public class EventController {
 
         event.setSpeakers(speakers);
 
+        eventRepository.save(event);
+
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 

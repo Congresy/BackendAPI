@@ -153,7 +153,7 @@ public class Populate {
         // --------------------------------------- CONFERENCES ------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Conference conference1 = new Conference("1","NombreConferencia1", "TemaConferencia1", 0.0, "10/10/2018", "15/10/2018", "InvitadosConferencia1", "DescripciónConferencia1");
+        Conference conference1 = new Conference("1","NombreConferencia1", "TemaConferencia1", 0.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia1", "DescripciónConferencia1");
         List<String> events1 = new ArrayList<>();
         events1.add(socialEvent1.getId());
         events1.add(workshop1.getId());
@@ -166,7 +166,7 @@ public class Populate {
         comments1.add(comment3.getId());
         conference1.setComments(comments1);
 
-        Conference conference2 = new Conference("2","NombreConferencia2", "TemaConferencia2", 2.0, "10/10/2018", "15/10/2018", "InvitadosConferencia2", "DescripciónConferencia2");
+        Conference conference2 = new Conference("2","NombreConferencia2", "TemaConferencia2", 2.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia2", "DescripciónConferencia2");
         List<String> events2 = new ArrayList<>();
         events2.add(socialEvent2.getId());
         events2.add(workshop2.getId());
@@ -178,7 +178,7 @@ public class Populate {
         comments2.add(comment5.getId());
         conference2.setComments(comments2);
 
-        Conference conference3 = new Conference("3","NombreConferencia3", "TemaConferencia3", 5.0, "10/10/2018", "15/10/2018", "InvitadosConferencia3", "DescripciónConferencia3");
+        Conference conference3 = new Conference("3","NombreConferencia3", "TemaConferencia3", 5.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia3", "DescripciónConferencia3");
         List<String> events3 = new ArrayList<>();
         events3.add(socialEvent3.getId());
         events3.add(workshop3.getId());
@@ -189,7 +189,7 @@ public class Populate {
         comments3.add(comment6.getId());
         conference3.setComments(comments3);
 
-        Conference conference4 = new Conference("4", "NombreConferencia4", "TemaConferencia4", 8.0, "10/10/2018", "15/10/2018", "InvitadosConferencia4", "DescripciónConferencia4");
+        Conference conference4 = new Conference("4", "NombreConferencia4", "TemaConferencia4", 8.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia4", "DescripciónConferencia4");
         List<String> events4 = new ArrayList<>();
         events4.add(socialEvent4.getId());
         events4.add(workshop4.getId());
@@ -271,10 +271,10 @@ public class Populate {
         // ----------------------------------------- ACTORS ---------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Actor actor1 = new Actor("1", "Juan", "Pérez", "juan@email.com", "111111111", "http://www.juanphoto.jpg", "juan", "Sevilla", "Organizator", userAccount1.getId());
-        Actor actor2 = new Actor("2", "Luis", "López", "luis@email.com", "222222222", "http://www.luisphoto.jpg", "luis", "Madrid", "User", userAccount2.getId());
-        Actor actor3 = new Actor("3", "María", "Pizarro", "maria@email.com", "333333333", "http://www.mariaphoto.jpg", "maria", "Barcelona", "User", userAccount3.getId());
-        Actor actor4 = new Actor("4", "Laura", "Prieto", "laura@email.com", "444444444", "http://www.lauraphoto.jpg", "laura", "Vigo", "Speaker", userAccount4.getId());
+        Actor actor1 = new Actor("5", "Juan", "Pérez", "juan@email.com", "111111111", "http://www.juanphoto.jpg", "juan", "Sevilla", "Organizator", userAccount1.getId());
+        Actor actor2 = new Actor("6", "Luis", "López", "luis@email.com", "222222222", "http://www.luisphoto.jpg", "luis", "Madrid", "User", userAccount2.getId());
+        Actor actor3 = new Actor("7", "María", "Pizarro", "maria@email.com", "333333333", "http://www.mariaphoto.jpg", "maria", "Barcelona", "User", userAccount3.getId());
+        Actor actor4 = new Actor("8", "Laura", "Prieto", "laura@email.com", "444444444", "http://www.lauraphoto.jpg", "laura", "Vigo", "Speaker", userAccount4.getId());
         Set<SocialNetwork> aux = new HashSet<>();
         aux.add(new SocialNetwork("Instagram", "https://instagram.com/juan"));
         aux.add(new SocialNetwork("facebook", "https://facebook.com/juan"));
@@ -313,10 +313,10 @@ public class Populate {
         // ----------------------------------------- POSTS ----------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Post post1 = new Post("1",actor1.getId(), "Title1", "Body1", "Category1", "10/10/2018 11:20", new ArrayList<String>());
-        Post post2 = new Post("2",actor1.getId(), "Title2", "Body2", "Category2", "10/10/2018 11:20", new ArrayList<String>());
-        Post post3 = new Post("3",actor3.getId(), "Title3", "Body3", "Category3", "10/10/2018 11:20", new ArrayList<String>());
-        Post post4 = new Post("4", actor2.getId(), "Title4", "Body4", "Category4", "10/10/2018 11:20", new ArrayList<String>());
+        Post post1 = new Post("9",actor1.getId(), "Title1", "Body1", "Category1", "10/10/2018 11:20", new ArrayList<String>());
+        Post post2 = new Post("10",actor1.getId(), "Title2", "Body2", "Category2", "10/10/2018 11:20", new ArrayList<String>());
+        Post post3 = new Post("11",actor3.getId(), "Title3", "Body3", "Category3", "10/10/2018 11:20", new ArrayList<String>());
+        Post post4 = new Post("12", actor2.getId(), "Title4", "Body4", "Category4", "10/10/2018 11:20", new ArrayList<String>());
 
         mongo.save(post1);
         mongo.save(post2);

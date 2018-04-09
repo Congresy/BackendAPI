@@ -2,9 +2,7 @@ package com.conferencias.tfg.controller;
 
 
 import com.conferencias.tfg.domain.Actor;
-import com.conferencias.tfg.domain.Comment;
 import com.conferencias.tfg.domain.Conference;
-import com.conferencias.tfg.domain.Message;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.utilities.Views.Detailed;
