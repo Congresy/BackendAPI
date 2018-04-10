@@ -3,4 +3,4 @@ API de gestión de la información para el sistema de gestión de conferencias y
 
 ### Deploy
 
-Enlace para acceder a la aplicación desplegada -> https://gestor-conferencias.herokuapp.com
+Enlace para acceder a la aplicación desplegada -> https://congresy.herokuapp.com/
