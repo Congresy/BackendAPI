@@ -3,6 +3,7 @@ package com.conferencias.tfg.configuration;
 import com.conferencias.tfg.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +20,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/").permitAll()
 				.antMatchers("/actor/**").permitAll()
 				.antMatchers("/event/**").permitAll()
-                .antMatchers("/place/**").permitAll()
-                .antMatchers("/**").permitAll()
                 .antMatchers("/announcement/**").permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security",
 						"/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html",
@@ -35,6 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	public void configureGlobal(@Lazy AuthenticationManagerBuilder auth) throws Exception {
 //		auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN").and();
 //	}
+@Autowired
+public void configureGlobal(AuthenticationManagerBuilder auth)
+		throws Exception {
+	auth.userDetailsService(userAccountService).passwordEncoder(new Md5PasswordEncoder());
+}
 
 	@Autowired
     UserAccountService userAccountService;

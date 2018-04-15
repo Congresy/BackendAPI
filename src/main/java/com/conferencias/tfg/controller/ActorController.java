@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,24 +41,42 @@ public class ActorController {
 
     /** Crea un actor según los valores que se envien en el método POST */
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody Actor actor, @RequestBody UserAccount userAccount, UriComponentsBuilder ucBuilder) {
-
-        if (this.actorExist(actor)) {
+    public ResponseEntity<?> create(@RequestBody ActorWrapper actorWrapper, UriComponentsBuilder ucBuilder) {
+        String generatedPassword = "";
+        if (this.actorExist(actorWrapper.getActor())) {
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
+        try {
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            //Add password bytes to digest
+            md.update(actorWrapper.getUserAccount().getPassword().getBytes());
+            //Get the hash's bytes
+            byte[] bytes = md.digest();
+            //This bytes[] has bytes in decimal format;
+            //Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            //Get complete hashed password in hex format
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         UserAccount userAccountAux = new UserAccount();
-        userAccountAux.setUsername(userAccount.getUsername());
-        userAccountAux.setPassword(userAccount.getPassword());
+        userAccountAux.setUsername(actorWrapper.getUserAccount().getUsername());
+        userAccountAux.setPassword(generatedPassword);
         userAccountRepository.save(userAccountAux);
         Actor aux = new Actor();
-        actor.setId(aux.getId());
-        actor.setBanned(false);
-        actor.setPrivate_(false);
-        actor.setUserAccount(userAccountAux.getId());
-        actorRepository.save(actor);
+        actorWrapper.getActor().setId(aux.getId());
+        actorWrapper.getActor().setBanned(false);
+        actorWrapper.getActor().setPrivate_(false);
+        actorWrapper.getActor().setUserAccount(userAccountAux.getId());
+        actorRepository.save(actorWrapper.getActor());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/actor/{id}").buildAndExpand(actor.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/actor/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
