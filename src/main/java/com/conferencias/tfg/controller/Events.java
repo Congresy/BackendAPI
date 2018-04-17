@@ -22,15 +22,15 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("event")
-public class EventController {
+@RequestMapping("events")
+public class Events {
 
     private EventRepository eventRepository;
     private ConferenceRepository conferenceRepository;
     private ActorRepository actorRepository;
 
     @Autowired
-    public EventController(EventRepository eventRepository, ConferenceRepository conferenceRepository, ActorRepository actorRepository) {
+    public Events(EventRepository eventRepository, ConferenceRepository conferenceRepository, ActorRepository actorRepository) {
         this.eventRepository = eventRepository;
         this.conferenceRepository = conferenceRepository;
         this.actorRepository = actorRepository;

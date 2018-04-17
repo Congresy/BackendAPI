@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/place")
-public class PlaceController {
+@RequestMapping("/places")
+public class Places {
 
     private PlaceRepository placeRepository;
 
 	@Autowired
-    public PlaceController(PlaceRepository placeRepository) {
+    public Places(PlaceRepository placeRepository) {
         this.placeRepository = placeRepository;
     }
 

@@ -13,7 +13,6 @@ import javax.validation.constraints.Pattern;
 public class Message {
 
     @Id
-    @JsonIgnore
     private String id;
     @NotBlank
     @JsonView(Views.Default.class)

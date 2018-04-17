@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("folder")
-public class FolderController {
+@RequestMapping("folders")
+public class Folders {
 
     private FolderRepository folderRepository;
     private ActorRepository actorRepository;
 
     @Autowired
-    public FolderController(FolderRepository folderRepository, ActorRepository actorRepository) {
+    public Folders(FolderRepository folderRepository, ActorRepository actorRepository) {
         this.folderRepository = folderRepository;
         this.actorRepository = actorRepository;
     }

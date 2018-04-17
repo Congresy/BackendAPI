@@ -14,8 +14,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("announcement")
-public class AnnouncementController {
+@RequestMapping("announcements")
+public class Announcements {
 
     @Autowired
     private AnnouncementService announcementService;

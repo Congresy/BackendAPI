@@ -13,7 +13,6 @@ import javax.validation.constraints.Pattern;
 public class Place {
 
     @Id
-    @JsonIgnore
     @JsonView(Views.Default.class)
     private String id;
     @NotBlank

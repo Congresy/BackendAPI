@@ -17,7 +17,6 @@ import java.util.Set;
 public class Actor {
 
     @Id
-    @JsonIgnore
     private String id;
     @NotBlank
     private String name;

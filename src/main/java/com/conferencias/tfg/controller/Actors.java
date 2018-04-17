@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("actor")
-public class ActorController {
+@RequestMapping("actors")
+public class Actors {
 
     @Autowired
     private ActorRepository actorRepository;

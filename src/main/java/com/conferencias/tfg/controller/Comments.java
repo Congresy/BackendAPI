@@ -24,8 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("comment")
-public class CommentController {
+@RequestMapping("comments")
+public class Comments {
 
     private CommentRepository commentRepository;
     private ConferenceRepository conferenceRepository;
@@ -33,7 +33,7 @@ public class CommentController {
     private ActorRepository actorRepository;
 
     @Autowired
-    public CommentController(CommentRepository commentRepository, ConferenceRepository conferenceRepository, PostRepository postRepository, ActorRepository actorRepository) {
+    public Comments(CommentRepository commentRepository, ConferenceRepository conferenceRepository, PostRepository postRepository, ActorRepository actorRepository) {
         this.commentRepository = commentRepository;
         this.conferenceRepository = conferenceRepository;
         this.postRepository = postRepository;

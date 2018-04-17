@@ -15,7 +15,6 @@ import java.util.List;
 public class Comment {
 
     @Id
-    @JsonIgnore
     private String id;
     @NotBlank
     @JsonView(Views.Default.class)

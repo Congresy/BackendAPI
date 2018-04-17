@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("post")
-public class PostController {
+@RequestMapping("posts")
+public class Posts {
 
     @Autowired
     private PostRepository postRepository;

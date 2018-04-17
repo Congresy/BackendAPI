@@ -19,7 +19,6 @@ import java.util.List;
 public class Conference {
 
 	@Id
-	@JsonIgnore
 	private String id;
 	@NotBlank
 	@JsonView(Shorted.class)

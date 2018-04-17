@@ -15,7 +15,6 @@ import java.util.List;
 public class Folder {
 
     @Id
-    @JsonIgnore
     private String id;
     @NotBlank
     @JsonView(Views.Default.class)

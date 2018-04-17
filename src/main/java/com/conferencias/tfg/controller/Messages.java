@@ -23,15 +23,15 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("message")
-public class MessageController {
+@RequestMapping("messages")
+public class Messages {
 
     private MessageRepository messageRepository;
     private FolderRepository folderRepository;
     private ActorRepository actorRepository;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository, FolderRepository folderRepository, ActorRepository actorRepository) {
+    public Messages(MessageRepository messageRepository, FolderRepository folderRepository, ActorRepository actorRepository) {
         this.messageRepository = messageRepository;
         this.folderRepository = folderRepository;
         this.actorRepository = actorRepository;
