@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
+import java.util.Objects;
 
 @Document
 public class Comment {
@@ -110,5 +111,21 @@ public class Comment {
 
     public void setResponses(List<String> responses) {
         this.responses = responses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id) &&
+                Objects.equals(title, comment.title) &&
+                Objects.equals(text, comment.text);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, title, text);
     }
 }

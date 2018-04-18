@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 @Document
 public class Place {
@@ -87,5 +88,20 @@ public class Place {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Place place = (Place) o;
+        return Objects.equals(id, place.id) &&
+                Objects.equals(address, place.address);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, address);
     }
 }

@@ -3,6 +3,7 @@ package com.conferencias.tfg.domain;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
 
 public class SocialNetwork {
 
@@ -35,5 +36,19 @@ public class SocialNetwork {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SocialNetwork that = (SocialNetwork) o;
+        return Objects.equals(url, that.url);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(url);
     }
 }

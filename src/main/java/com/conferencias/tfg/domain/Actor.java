@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Document
@@ -252,5 +253,27 @@ public class Actor {
         this.following = following;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return Objects.equals(id, actor.id) &&
+                Objects.equals(name, actor.name) &&
+                Objects.equals(surname, actor.surname) &&
+                Objects.equals(email, actor.email) &&
+                Objects.equals(phone, actor.phone) &&
+                Objects.equals(photo, actor.photo) &&
+                Objects.equals(nick, actor.nick) &&
+                Objects.equals(role, actor.role) &&
+                Objects.equals(userAccount, actor.userAccount) &&
+                Objects.equals(place, actor.place);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name, surname, email, phone, photo, nick, role, userAccount, place);
+    }
 }
 

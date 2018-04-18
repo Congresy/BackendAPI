@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Document
 public class Event {
@@ -196,5 +197,23 @@ public class Event {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) &&
+                Objects.equals(start, event.start) &&
+                Objects.equals(end, event.end) &&
+                Objects.equals(name, event.name) &&
+                Objects.equals(place, event.place);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, start, end, name, place);
     }
 }
