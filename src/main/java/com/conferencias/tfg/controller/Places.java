@@ -34,9 +34,9 @@ public class Places {
 	}
 
 	/** Recibe un lugar */
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{idPlace}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") String id) {
+	public ResponseEntity<?> get(@PathVariable("idPlace") String id) {
 		Place place = placeRepository.findOne(id);
 
 		if (place == null) {
@@ -47,7 +47,7 @@ public class Places {
 	}
 
 	/** Crea un lugar según los valores que se envien en el método POST */
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody Place place, UriComponentsBuilder ucBuilder) {
 
 		if (this.placeExist(place)) {
@@ -62,8 +62,8 @@ public class Places {
     }
 
     /** Modifica un lugar con los campos que se indiquen */
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Place place) {
+	@PutMapping(value = "/{idPlace}")
+	public ResponseEntity<?> edit(@PathVariable("idPlace") String id, @RequestBody Place place) {
 		Place currentPlace = placeRepository.findOne(id);
 
 		if (currentPlace == null) { //TODO Check si existe uno igual
@@ -80,15 +80,15 @@ public class Places {
 	}
 
 	/** Borra todos los lugares*/
-	@DeleteMapping(value = "/delete")
+	@DeleteMapping(value = "")
 	public ResponseEntity<Place> deleteAll() {
 		placeRepository.deleteAll();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	/** Borra un lugar */
-	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") String id) {
+	@DeleteMapping(value = "/{idPlace}")
+	public ResponseEntity<?> delete(@PathVariable("idPlace") String id) {
 		Place place = placeRepository.findOne(id);
 		if (place == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);

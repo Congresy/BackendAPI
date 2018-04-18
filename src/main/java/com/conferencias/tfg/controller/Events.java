@@ -36,7 +36,7 @@ public class Events {
         this.actorRepository = actorRepository;
     }
 
-    @PutMapping("/add/participant/{idEvent}/{idActor}")
+    @PutMapping("/add/{idEvent}/participants/{idActor}")
     public ResponseEntity<?> addParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
 
         Actor actor = actorRepository.findOne(idActor);
@@ -58,8 +58,8 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
-    @PutMapping("/add/speaker/{idEvent}/{idActor}")
-    public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
+    @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
+    public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
 
         Actor actor = actorRepository.findOne(idActor);
         Event event = eventRepository.findOne(idEvent);
@@ -86,9 +86,9 @@ public class Events {
 		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
 
-    @GetMapping("/all/conference/{id}")
+    @GetMapping("/all/conferences/{idConference}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfConference(@PathVariable("id") String id) {
+    public ResponseEntity<?> getAllOfConference(@PathVariable("idConference") String id) {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
@@ -109,9 +109,9 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{idEvent}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") String id) {
+	public ResponseEntity<?> get(@PathVariable("idEvent") String id) {
 		Event event = eventRepository.findOne(id);
 
 		if (event == null) {
@@ -133,9 +133,9 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/all/conference{role}/{id}/")
+    @GetMapping("/all/conferences/{idConference}/{role}/")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getSocialEventsOfConference(@PathVariable("id") String id, @PathVariable("role") String role) {
+    public ResponseEntity<?> getSpecificTypeOfEventsOfConference(@PathVariable("idConference") String id, @PathVariable("role") String role) {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
@@ -148,7 +148,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/talk/all")
+    @GetMapping("/talks/all")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getTalks() {
         List<Event> eventsAux = eventRepository.findAll();
@@ -160,9 +160,9 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @GetMapping("/talk/all/conference/{id}")
+    @GetMapping("/talks/all/conferences/{idConference}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getTalksOfConference(@PathVariable("id") String id) {
+    public ResponseEntity<?> getTalksOfConference(@PathVariable("idConference") String id) {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
@@ -175,7 +175,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody Event event, UriComponentsBuilder ucBuilder) {
 
 		if (this.eventExist(event)) {
@@ -188,13 +188,13 @@ public class Events {
         eventRepository.save(event);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/event/{id}").buildAndExpand(event.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/events/{idEvent}").buildAndExpand(event.getId()).toUri());
 
         return new ResponseEntity<>(event, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Event event) {
+	@PutMapping(value = "/{idEvent}")
+	public ResponseEntity<?> edit(@PathVariable("idEvent") String id, @RequestBody Event event) {
 		Event currentEvent = eventRepository.findOne(id);
 
 		if (currentEvent == null) {
@@ -216,13 +216,7 @@ public class Events {
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/delete")
-	public ResponseEntity<Event> deleteAll() {
-		eventRepository.deleteAll();
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
-	@DeleteMapping(value = "/delete/{idConference}/{idEvent}")
+	@DeleteMapping(value = "/{idConference}/{idEvent}")
 	public ResponseEntity<?> delete(@PathVariable("idConference") String idConference, @PathVariable("idEvent") String idEvent) {
         Event event = eventRepository.findOne(idEvent);
         Conference conference = conferenceRepository.findOne(idConference);

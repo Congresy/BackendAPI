@@ -47,9 +47,9 @@ public class Comments {
 		return new ResponseEntity<>(comments, HttpStatus.OK);
 	}
 
-    @GetMapping("/commentable/search/{keyword}/{commentableId}")
+    @GetMapping("/commentable/{idCommentable}/search/{keyword}/")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> searchInCommentable(@PathVariable("commentableId") String commentableId, @PathVariable("keyword") String keyword) {
+    public ResponseEntity<?> searchInCommentable(@PathVariable("idCommentable") String commentableId, @PathVariable("keyword") String keyword) {
         List<Comment> comments = new ArrayList<>();
         List<String> commentsAux = new ArrayList<>();
         Object commentable = null;
@@ -82,9 +82,9 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @GetMapping("/commentable/{id}")
+    @GetMapping("/commentable/{idCommentable}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfCommentable(@PathVariable("id") String id) {
+    public ResponseEntity<?> getAllOfCommentable(@PathVariable("idCommentable") String id) {
         List<Comment> comments = new ArrayList<>();
         List<String> commentsAux = new ArrayList<>();
         Object commentable = null;
@@ -126,9 +126,9 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @GetMapping("/comment/{id}")
+    @GetMapping("/{idComment}/responses")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getResponses(@PathVariable("id") String id) {
+    public ResponseEntity<?> getResponses(@PathVariable("idComment") String id) {
         Comment comment = commentRepository.findOne(id);
         List<String> commentsAux = comment.getResponses();
         List<Comment> comments = new ArrayList<>();
@@ -149,9 +149,9 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{commentId}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") String id) {
+	public ResponseEntity<?> get(@PathVariable("commentId") String id) {
 		Comment comment = commentRepository.findOne(id);
 
 		if (comment == null) {
@@ -161,7 +161,7 @@ public class Comments {
 		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
 
 		if (this.commentExist(comment)) {
@@ -171,13 +171,13 @@ public class Comments {
         commentRepository.save(comment);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/comment/{id}").buildAndExpand(comment.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/comment/{idComment}").buildAndExpand(comment.getId()).toUri());
 
         return new ResponseEntity<>(comment, headers, HttpStatus.CREATED);
     }
 
-    @PostMapping("/create/response/{id}")
-    public ResponseEntity<?> createResponse(@PathVariable("id") String id, @RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
+    @PostMapping("/{idCommentToRespond}/response")
+    public ResponseEntity<?> createResponse(@PathVariable("idCommentToRespond") String id, @RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
         Comment commentToResponse = commentRepository.findOne(id);
         List<String> responses = commentToResponse.getResponses();
 
@@ -188,13 +188,13 @@ public class Comments {
         commentRepository.save(commentToResponse);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/comment/{id}").buildAndExpand(comment.getId()).toUri());
+        headers.setLocation(ucBuilder.path("/comment/{idComment}").buildAndExpand(comment.getId()).toUri());
 
         return new ResponseEntity<>(comment, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Comment comment) {
+	@PutMapping(value = "/{idComment}")
+	public ResponseEntity<?> edit(@PathVariable("idComment") String id, @RequestBody Comment comment) {
 		Comment currentComment = commentRepository.findOne(id);
 
 		if (currentComment == null) {
@@ -211,7 +211,7 @@ public class Comments {
 		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/delete/{idCommentable}/{idComment}")
+	@DeleteMapping(value = "/{idCommentable}/{idComment}")
 	public ResponseEntity<?> delete(@PathVariable("idCommentable") String idCommentable, @PathVariable("idComment") String idComment) {
         Comment comment = commentRepository.findOne(idComment);
         Object commentable = null;

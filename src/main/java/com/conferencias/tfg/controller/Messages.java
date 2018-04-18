@@ -37,9 +37,9 @@ public class Messages {
         this.actorRepository = actorRepository;
     }
 
-    @GetMapping("/search/{folder}/{idActor}/{keyword}")
+    @GetMapping("/search/{idActor}/{folderName}/{keyword}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> searchInFolderOfActor(@PathVariable("folder") String folder, @PathVariable("idActor") String idActor, @PathVariable("keyword") String keyword) {
+    public ResponseEntity<?> searchInFolderOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor, @PathVariable("keyword") String keyword) {
         Actor actor = actorRepository.findOne(idActor);
         Folder folderToShow = null;
         List<Message> messages = new ArrayList<>();
@@ -70,9 +70,9 @@ public class Messages {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
-    @GetMapping("/all/{folder}/{idActor}")
+    @GetMapping("/all/{idActor}/{folderName}/")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfFolderOfActor(@PathVariable("folder") String folder, @PathVariable("idActor") String idActor) {
+    public ResponseEntity<?> getAllOfFolderOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
         Actor actor = actorRepository.findOne(idActor);
         Folder folderToShow = null;
         List<Message> messages = new ArrayList<>();
@@ -98,9 +98,9 @@ public class Messages {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{idMessage}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> get(@PathVariable("id") String id) {
+    public ResponseEntity<?> get(@PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
 
         if (message == null) {
@@ -110,7 +110,7 @@ public class Messages {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @PostMapping("/create/{idSender}/{idReceiver}")
+    @PostMapping("/{idSender}/{idReceiver}")
     public ResponseEntity<?> create(@RequestBody Message message, @PathVariable("idSender") String idSender, @PathVariable("idReceiver") String idReceiver, UriComponentsBuilder ucBuilder) {
 
         Actor sender = actorRepository.findOne(idSender);
@@ -150,9 +150,9 @@ public class Messages {
         return new ResponseEntity<>(message, headers, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/toBin/{id}/{idActor}")
+    @DeleteMapping(value = "/bin/{idActor}/idMessage")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> toBin(@PathVariable("idActor") String idActor, @PathVariable("id") String id) {
+    public ResponseEntity<?> toBin(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
         Actor actor = actorRepository.findOne(idActor);
 
@@ -197,9 +197,9 @@ public class Messages {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}/{idActor}")
+    @DeleteMapping(value = "/{idActor}/{idMessage}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> delete(@PathVariable("idActor") String idActor, @PathVariable("id") String id) {
+    public ResponseEntity<?> delete(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
         Actor actor = actorRepository.findOne(idActor);
 

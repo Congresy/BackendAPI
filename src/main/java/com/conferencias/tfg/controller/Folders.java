@@ -31,9 +31,9 @@ public class Folders {
         this.actorRepository = actorRepository;
     }
 
-    @GetMapping("/actor/{id}")
+    @GetMapping("/actors/{idActor}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfActor(@PathVariable("id") String id) {
+    public ResponseEntity<?> getAllOfActor(@PathVariable("idActor") String id) {
         Actor actor = actorRepository.findOne(id);
         List<String> foldersAux = actor.getFolders();
         List<Folder> folders = new ArrayList<>();
@@ -45,9 +45,9 @@ public class Folders {
         return new ResponseEntity<>(folders, HttpStatus.OK);
     }
 
-    @GetMapping("/actor/one/{folder}/{idActor}")
+    @GetMapping("/actors/{idActor}/{folderName}/")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getSpecificOfActor(@PathVariable("folder") String folder, @PathVariable("idActor") String idActor) {
+    public ResponseEntity<?> getSpecificOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
         Actor actor = actorRepository.findOne(idActor);
         List<String> foldersAux = actor.getFolders();
         List<Folder> folders = new ArrayList<>();
@@ -60,9 +60,9 @@ public class Folders {
         return new ResponseEntity<>(folders, HttpStatus.OK);
     }
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/{idFolder}")
 	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("id") String id) {
+	public ResponseEntity<?> get(@PathVariable("idFolder") String id) {
 		Folder folder = folderRepository.findOne(id);
 
 		if (folder == null) {
@@ -72,8 +72,8 @@ public class Folders {
 		return new ResponseEntity<>(folder, HttpStatus.OK);
 	}
 
-    @PostMapping("/create/{id}")
-    public ResponseEntity<?> createDefaults(@PathVariable("id") String id) {
+    @PostMapping("/{idActor}")
+    public ResponseEntity<?> createDefaults(@PathVariable("idActor") String id) {
         Actor actor = actorRepository.findOne(id);
 
         Folder folder1 = new Folder("Inbox");
