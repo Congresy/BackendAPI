@@ -8,6 +8,7 @@ import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,26 +35,43 @@ public class Conferences {
         this.actorRepository = actorRepository;
     }
 
-	@GetMapping("/detailed/date")
+	@GetMapping(value = "/detailed", params = "order")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getAllDetailedByDate() {
+	public ResponseEntity<?> getAllDetailed(@RequestParam("order") String order) {
 		List<Conference> conferences = conferenceRepository.findAll();
 
-        Comparator<Conference> comparator = new Comparator<Conference>() {
-            @Override
-            public int compare(Conference c1, Conference c2) {
-                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
-            }
-        };
-
-        conferences.sort(comparator);
+		if (order.equals("date"))
+            conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
+        else if (order.equals("popularity"))
+            conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
+        else if (order.equals("price"))
+            conferences.sort((Conference c1, Conference c2)->c1.getPrice().compareTo(c2.getPrice()));
+        else
+            conferences.sort((Conference c1, Conference c2)->c2.getName().compareTo(c1.getName()));
 
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
-    @GetMapping("/detailed/search/{keyword}")
+    @GetMapping(value = "/short", params = "order")
+    @JsonView(Short.class)
+    public ResponseEntity<?> getAllShort(@RequestParam("order") String order) {
+        List<Conference> conferences = conferenceRepository.findAll();
+
+        if (order.equals("date"))
+            conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
+        else if (order.equals("popularity"))
+            conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
+        else if (order.equals("price"))
+            conferences.sort((Conference c1, Conference c2)->c1.getPrice().compareTo(c2.getPrice()));
+        else
+            conferences.sort((Conference c1, Conference c2)->c2.getName().compareTo(c1.getName()));
+
+        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{keyword}")
     @JsonView(Detailed.class)
-    public ResponseEntity<?> getAllDetailedByDate(@PathVariable("keyword") String keyword) {
+    public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
         List<Conference> conferences = new ArrayList<>();
 
         for(Conference c : conferenceRepository.findAll())
@@ -64,46 +82,9 @@ public class Conferences {
         return new ResponseEntity<Object>(conferences, HttpStatus.OK);
     }
 
-    @GetMapping("/shorted/search/{keyword}")
-    @JsonView(Shorted.class)
-    public ResponseEntity<?> getAllShortedByDate(@PathVariable("keyword") String keyword) {
-        List<Conference> conferences = new ArrayList<>();
-
-        for(Conference c : conferenceRepository.findAll())
-            if((c.getName() + c.getDescription() + c.getPrice().toString() + c.getSpeakersNames() + c.getTheme()).toLowerCase().contains(keyword.toLowerCase())){
-                conferences.add(c);
-            }
-
-        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
-    }
-
-	@GetMapping("/short")
-	@JsonView(Shorted.class)
-	public ResponseEntity<?> getAllShort() {
-		List<Conference> conferences = conferenceRepository.findAll();
-		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
-	}
-
-    @GetMapping("/short/date")
-    @JsonView(Shorted.class)
-    public ResponseEntity<?> getAllShortByDate() {
-        List<Conference> conferences = conferenceRepository.findAll();
-
-        Comparator<Conference> comparator = new Comparator<Conference>() {
-            @Override
-            public int compare(Conference c1, Conference c2) {
-                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
-            }
-        };
-
-        conferences.sort(comparator);
-
-        return new ResponseEntity<Object>(conferences, HttpStatus.OK);
-    }
-
-	@GetMapping(value = "/detailed/{id}")
+	@GetMapping(value = "/detailed/{idConference}")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getDetailed(@PathVariable("id") String id) {
+	public ResponseEntity<?> getDetailed(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 
 		if (conference == null) {
@@ -113,7 +94,7 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-    @PutMapping("/add/{idConference}/{idActor}")
+    @PutMapping("/{idConference}/{idActor}")
     public ResponseEntity<?> addOrganizator(@PathVariable("idConference") String idConferece, @PathVariable("idActor") String idActor) {
 
 	    Actor actor = actorRepository.findOne(idActor);
@@ -131,9 +112,9 @@ public class Conferences {
         return new ResponseEntity<>(conference, HttpStatus.CREATED);
     }
 
-	@GetMapping(value = "/short/{id}")
+	@GetMapping(value = "/short/{idConference}")
 	@JsonView(Shorted.class)
-	public ResponseEntity<?> getShort(@PathVariable("id") String id) {
+	public ResponseEntity<?> getShort(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 
 		if (conference == null) {
@@ -143,28 +124,7 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-    @GetMapping(value = "/all/popularity")
-    @JsonView(Detailed.class)
-    public ResponseEntity<?> getAllByPopularity() {
-        List<Conference> conferences = conferenceRepository.findAll();
-
-        if (conferences.isEmpty()) {
-            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-        }
-
-        Comparator<Conference> comparator = new Comparator<Conference>() {
-            @Override
-            public int compare(Conference c1, Conference c2) {
-                return c1.getPopularity().compareTo(c2.getPopularity());
-            }
-        };
-
-        conferences.sort(comparator);
-
-        return new ResponseEntity<>(conferences, HttpStatus.OK);
-    }
-
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
 		if (this.conferenceExist(conference)) {
@@ -179,8 +139,8 @@ public class Conferences {
         return new ResponseEntity<>(conference, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Conference conference) {
+	@PutMapping(value = "/{idConference}")
+	public ResponseEntity<?> edit(@PathVariable("idConference") String id, @RequestBody Conference conference) {
 		Conference currentConference = conferenceRepository.findOne(id);
 
 		if (currentConference == null) {
@@ -199,14 +159,14 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/delete")
+	@DeleteMapping(value = "")
 	public ResponseEntity<Conference> deleteAll() {
 		conferenceRepository.deleteAll();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	@DeleteMapping(value = "/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") String id) {
+	@DeleteMapping(value = "/{idConference}")
+	public ResponseEntity<?> delete(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 		if (conference == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
