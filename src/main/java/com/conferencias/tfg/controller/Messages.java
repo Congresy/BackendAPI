@@ -8,6 +8,8 @@ import com.conferencias.tfg.repository.FolderRepository;
 import com.conferencias.tfg.repository.MessageRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("messages")
+@Api(value="congresy", description="Operations pertaining to messages in Congresy")
 public class Messages {
 
     private MessageRepository messageRepository;
@@ -37,6 +40,7 @@ public class Messages {
         this.actorRepository = actorRepository;
     }
 
+    @ApiOperation(value = "Search a message in a certain folder by keyword", response = Iterable.class)
     @GetMapping("/search/{idActor}/{folderName}/{keyword}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> searchInFolderOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor, @PathVariable("keyword") String keyword) {
@@ -70,6 +74,7 @@ public class Messages {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all messages of a certain folder of an actor", response = Iterable.class)
     @GetMapping("/all/{idActor}/{folderName}/")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfFolderOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
@@ -98,6 +103,7 @@ public class Messages {
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a certain message", response = Message.class)
     @GetMapping(value = "/{idMessage}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> get(@PathVariable("idMessage") String id) {
@@ -110,7 +116,8 @@ public class Messages {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @PostMapping("/{idSender}/{idReceiver}")
+    @ApiOperation(value = "Create a new message")
+    @PostMapping(value = "/{idSender}/{idReceiver}", produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Message message, @PathVariable("idSender") String idSender, @PathVariable("idReceiver") String idReceiver, UriComponentsBuilder ucBuilder) {
 
         Actor sender = actorRepository.findOne(idSender);
@@ -150,7 +157,8 @@ public class Messages {
         return new ResponseEntity<>(message, headers, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/bin/{idActor}/idMessage")
+    @ApiOperation(value = "Send message to bin folder of a certain actor")
+    @DeleteMapping(value = "/bin/{idActor}/idMessage", produces = "application/json")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> toBin(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
@@ -197,7 +205,8 @@ public class Messages {
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{idActor}/{idMessage}")
+    @ApiOperation(value = "Delete a certain message of an actor")
+    @DeleteMapping(value = "/{idActor}/{idMessage}", produces = "application/json")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> delete(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);

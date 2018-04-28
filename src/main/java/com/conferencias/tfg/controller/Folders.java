@@ -8,6 +8,8 @@ import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.FolderRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("folders")
+@Api(value="congresy", description="Operations pertaining to folders in Congresy")
 public class Folders {
 
     private FolderRepository folderRepository;
@@ -31,6 +34,7 @@ public class Folders {
         this.actorRepository = actorRepository;
     }
 
+    @ApiOperation(value = "List all folders of an certain actor", response = Iterable.class)
     @GetMapping("/actors/{idActor}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfActor(@PathVariable("idActor") String id) {
@@ -45,6 +49,7 @@ public class Folders {
         return new ResponseEntity<>(folders, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get certain folder of an actor", response = Folder.class)
     @GetMapping("/actors/{idActor}/{folderName}/")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getSpecificOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
@@ -60,6 +65,7 @@ public class Folders {
         return new ResponseEntity<>(folders, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a certain folder", response = Folder.class)
 	@GetMapping(value = "/{idFolder}")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("idFolder") String id) {
@@ -72,7 +78,8 @@ public class Folders {
 		return new ResponseEntity<>(folder, HttpStatus.OK);
 	}
 
-    @PostMapping("/{idActor}")
+    @ApiOperation(value = "Create all default folders for an actor")
+    @PostMapping(value = "/{idActor}", produces = "application/json")
     public ResponseEntity<?> createDefaults(@PathVariable("idActor") String id) {
         Actor actor = actorRepository.findOne(id);
 

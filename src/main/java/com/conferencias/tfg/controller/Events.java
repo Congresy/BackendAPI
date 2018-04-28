@@ -8,6 +8,8 @@ import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.repository.EventRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("events")
+@Api(value="congresy", description="Operations pertaining to events in Congresy")
 public class Events {
 
     private EventRepository eventRepository;
@@ -36,7 +39,8 @@ public class Events {
         this.actorRepository = actorRepository;
     }
 
-    @PutMapping("/add/{idEvent}/participants/{idActor}")
+    @ApiOperation(value = "Add an attendee to a certain conference")
+    @PutMapping(value = "/add/{idEvent}/participants/{idActor}", produces = "application/json")
     public ResponseEntity<?> addParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
 
         Actor actor = actorRepository.findOne(idActor);
@@ -58,6 +62,7 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Add an speaker to a certain event")
     @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
     public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
 
@@ -79,6 +84,7 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "List all events", response = Iterable.class)
 	@GetMapping("/all")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAll() {
@@ -86,6 +92,7 @@ public class Events {
 		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
 
+    @ApiOperation(value = "List all events of a certain conference", response = Iterable.class)
     @GetMapping("/all/conferences/{idConference}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfConference(@PathVariable("idConference") String id) {
@@ -109,6 +116,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a certain event", response = Event.class)
 	@GetMapping(value = "/{idEvent}")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("idEvent") String id) {
@@ -121,6 +129,7 @@ public class Events {
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
+    @ApiOperation(value = "List all events of a specific role", response = Iterable.class)
     @GetMapping("/all/{role}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getSpecificEvents(@PathVariable("role") String role) {
@@ -133,6 +142,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all events of certain role of certain event", response = Iterable.class)
     @GetMapping("/all/conferences/{idConference}/{role}/")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getSpecificTypeOfEventsOfConference(@PathVariable("idConference") String id, @PathVariable("role") String role) {
@@ -148,6 +158,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all events that are talks", response = Iterable.class)
     @GetMapping("/talks/all")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getTalks() {
@@ -160,6 +171,7 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all events that are talks of a certain conference", response = Iterable.class)
     @GetMapping("/talks/all/conferences/{idConference}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getTalksOfConference(@PathVariable("idConference") String id) {
@@ -175,7 +187,8 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @ApiOperation(value = "Create a new event")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Event event, UriComponentsBuilder ucBuilder) {
 
 		if (this.eventExist(event)) {
@@ -193,7 +206,8 @@ public class Events {
         return new ResponseEntity<>(event, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{idEvent}")
+    @ApiOperation(value = "Edit a certain event")
+	@PutMapping(value = "/{idEvent}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idEvent") String id, @RequestBody Event event) {
 		Event currentEvent = eventRepository.findOne(id);
 
@@ -216,7 +230,8 @@ public class Events {
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/{idConference}/{idEvent}")
+    @ApiOperation(value = "Delete a certain event")
+	@DeleteMapping(value = "/{idConference}/{idEvent}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idConference") String idConference, @PathVariable("idEvent") String idEvent) {
         Event event = eventRepository.findOne(idEvent);
         Conference conference = conferenceRepository.findOne(idConference);

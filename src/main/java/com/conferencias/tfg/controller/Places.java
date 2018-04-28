@@ -4,6 +4,9 @@ import com.conferencias.tfg.domain.Place;
 import com.conferencias.tfg.repository.PlaceRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.sun.deploy.panel.ITreeNode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/places")
+@Api(value="congresy", description="Operations pertaining to places in Congresy")
 public class Places {
 
     private PlaceRepository placeRepository;
@@ -26,6 +30,7 @@ public class Places {
     }
 
 	/** Recibe todas los lugares */
+    @ApiOperation(value = "List all system's places", response = Iterable.class)
 	@GetMapping("/all")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAllShort() {
@@ -34,6 +39,7 @@ public class Places {
 	}
 
 	/** Recibe un lugar */
+    @ApiOperation(value = "Get a certain place", response = Place.class)
 	@GetMapping(value = "/{idPlace}")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("idPlace") String id) {
@@ -47,7 +53,8 @@ public class Places {
 	}
 
 	/** Crea un lugar según los valores que se envien en el método POST */
-    @PostMapping("")
+    @ApiOperation(value = "Create a new place")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Place place, UriComponentsBuilder ucBuilder) {
 
 		if (this.placeExist(place)) {
@@ -62,7 +69,8 @@ public class Places {
     }
 
     /** Modifica un lugar con los campos que se indiquen */
-	@PutMapping(value = "/{idPlace}")
+    @ApiOperation(value = "Edit a certain place")
+	@PutMapping(value = "/{idPlace}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idPlace") String id, @RequestBody Place place) {
 		Place currentPlace = placeRepository.findOne(id);
 
@@ -80,14 +88,16 @@ public class Places {
 	}
 
 	/** Borra todos los lugares*/
-	@DeleteMapping(value = "")
+    @ApiOperation(value = "Delete all places")
+	@DeleteMapping(produces = "application/json")
 	public ResponseEntity<Place> deleteAll() {
 		placeRepository.deleteAll();
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	/** Borra un lugar */
-	@DeleteMapping(value = "/{idPlace}")
+    @ApiOperation(value = "Delete a certain place")
+	@DeleteMapping(value = "/{idPlace}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idPlace") String id) {
 		Place place = placeRepository.findOne(id);
 		if (place == null) {
@@ -97,7 +107,8 @@ public class Places {
 		return new ResponseEntity<Place>(HttpStatus.NO_CONTENT);
 	}
 
-    @GetMapping("/search/{keyword}")
+    @ApiOperation(value = "Search a place by keyword")
+    @GetMapping(value = "/search/{keyword}", produces = "application/json")
     public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
         List<Place> places = new ArrayList<>();
 

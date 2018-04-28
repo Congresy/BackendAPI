@@ -10,6 +10,10 @@ import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.repository.PostRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("comments")
+@Api(value="congresy", description="Operations pertaining to comments in Congresy")
 public class Comments {
 
     private CommentRepository commentRepository;
@@ -40,6 +45,7 @@ public class Comments {
         this.actorRepository = actorRepository;
     }
 
+    @ApiOperation(value = "List all of system's comments", response = Iterable.class)
 	@GetMapping("/all")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAll() {
@@ -47,6 +53,7 @@ public class Comments {
 		return new ResponseEntity<>(comments, HttpStatus.OK);
 	}
 
+    @ApiOperation(value = "Search a comments in a commentable element by keyword", response = Iterable.class)
     @GetMapping("/commentable/{idCommentable}/search/{keyword}/")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> searchInCommentable(@PathVariable("idCommentable") String commentableId, @PathVariable("keyword") String keyword) {
@@ -82,6 +89,7 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all the comments of a certain commentable element", response = Iterable.class)
     @GetMapping("/commentable/{idCommentable}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfCommentable(@PathVariable("idCommentable") String id) {
@@ -126,6 +134,7 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all of the responses of a certain comment", response = Iterable.class)
     @GetMapping("/{idComment}/responses")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getResponses(@PathVariable("idComment") String id) {
@@ -149,6 +158,7 @@ public class Comments {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a certain comment", response = Comment.class)
 	@GetMapping(value = "/{commentId}")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> get(@PathVariable("commentId") String id) {
@@ -161,7 +171,8 @@ public class Comments {
 		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 
-    @PostMapping("")
+    @ApiOperation(value = "Create a new comment")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
 
 		if (this.commentExist(comment)) {
@@ -176,7 +187,8 @@ public class Comments {
         return new ResponseEntity<>(comment, headers, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{idCommentToRespond}/response")
+    @ApiOperation(value = "Create a response to a certain comment")
+    @PostMapping(value = "/{idCommentToRespond}/response", produces = "application/json")
     public ResponseEntity<?> createResponse(@PathVariable("idCommentToRespond") String id, @RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
         Comment commentToResponse = commentRepository.findOne(id);
         List<String> responses = commentToResponse.getResponses();
@@ -193,7 +205,8 @@ public class Comments {
         return new ResponseEntity<>(comment, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{idComment}")
+    @ApiOperation(value = "Edit a certain comment")
+	@PutMapping(value = "/{idComment}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idComment") String id, @RequestBody Comment comment) {
 		Comment currentComment = commentRepository.findOne(id);
 
@@ -211,7 +224,8 @@ public class Comments {
 		return new ResponseEntity<>(comment, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "/{idCommentable}/{idComment}")
+    @ApiOperation(value = "Delete a certain comment of a certan commentable element")
+	@DeleteMapping(value = "/{idCommentable}/{idComment}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idCommentable") String idCommentable, @PathVariable("idComment") String idComment) {
         Comment comment = commentRepository.findOne(idComment);
         Object commentable = null;

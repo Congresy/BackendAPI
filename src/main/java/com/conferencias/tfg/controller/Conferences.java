@@ -9,6 +9,8 @@ import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("conferences")
+@Api(value="congresy", description="Operations pertaining to conferences in Congresy")
 public class Conferences {
 
     private ConferenceRepository conferenceRepository;
@@ -35,6 +38,7 @@ public class Conferences {
         this.actorRepository = actorRepository;
     }
 
+    @ApiOperation(value = "List all system's conferences in detailed view", response = Conference.class)
 	@GetMapping(value = "/detailed", params = "order")
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getAllDetailed(@RequestParam("order") String order) {
@@ -52,6 +56,7 @@ public class Conferences {
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
+    @ApiOperation(value = "List all system's conferences in short view", response = Conference.class)
     @GetMapping(value = "/short", params = "order")
     @JsonView(Short.class)
     public ResponseEntity<?> getAllShort(@RequestParam("order") String order) {
@@ -69,6 +74,7 @@ public class Conferences {
         return new ResponseEntity<Object>(conferences, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Search conferences by keyword", response = Iterable.class)
     @GetMapping("/search/{keyword}")
     @JsonView(Detailed.class)
     public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
@@ -82,6 +88,7 @@ public class Conferences {
         return new ResponseEntity<Object>(conferences, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get certain conference in detailed view", response = Conference.class)
 	@GetMapping(value = "/detailed/{idConference}")
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getDetailed(@PathVariable("idConference") String id) {
@@ -94,7 +101,8 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-    @PutMapping("/{idConference}/{idActor}")
+    @ApiOperation(value = "Add an organizator to a certain conference")
+    @PutMapping(value = "/{idConference}/{idActor}", produces = "application/json")
     public ResponseEntity<?> addOrganizator(@PathVariable("idConference") String idConferece, @PathVariable("idActor") String idActor) {
 
 	    Actor actor = actorRepository.findOne(idActor);
@@ -112,6 +120,7 @@ public class Conferences {
         return new ResponseEntity<>(conference, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Get a certain conference in short view", response = Conference.class)
 	@GetMapping(value = "/short/{idConference}")
 	@JsonView(Shorted.class)
 	public ResponseEntity<?> getShort(@PathVariable("idConference") String id) {
@@ -124,7 +133,8 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-    @PostMapping("")
+    @ApiOperation(value = "Create a new conference")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
 		if (this.conferenceExist(conference)) {
@@ -139,7 +149,8 @@ public class Conferences {
         return new ResponseEntity<>(conference, headers, HttpStatus.CREATED);
     }
 
-	@PutMapping(value = "/{idConference}")
+    @ApiOperation(value = "Edit a certain conference")
+	@PutMapping(value = "/{idConference}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idConference") String id, @RequestBody Conference conference) {
 		Conference currentConference = conferenceRepository.findOne(id);
 
@@ -159,13 +170,8 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
-	@DeleteMapping(value = "")
-	public ResponseEntity<Conference> deleteAll() {
-		conferenceRepository.deleteAll();
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
-	@DeleteMapping(value = "/{idConference}")
+    @ApiOperation(value = "Delete a certain conference")
+	@DeleteMapping(value = "/{idConference}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
 		if (conference == null) {
@@ -174,7 +180,7 @@ public class Conferences {
 		conferenceRepository.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-	
+
 	// ---------------------------------------------------------------------------------------------------------------//
 	// ----------------------------------------------- Métodos auxiliares --------------------------------------------//
 	// ---------------------------------------------------------------------------------------------------------------//
