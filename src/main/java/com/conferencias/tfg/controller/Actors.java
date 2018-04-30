@@ -34,15 +34,15 @@ public class Actors {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
-    @GetMapping("")
+    @GetMapping()
     @ApiOperation("View a list of all available actors")
     public List<Actor> showAll() {
 
         return actorRepository.findAll();
     }
 
-    /** Crea un actor según los valores que se envien en el método POST */
-    @PostMapping("")
+    @ApiOperation(value = "Create an actor")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody ActorWrapper actorWrapper, UriComponentsBuilder ucBuilder) {
         if (this.actorExist(actorWrapper.getActor())) {
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
@@ -64,9 +64,9 @@ public class Actors {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    /** Recibe una id para devolver un actor */
+    @ApiOperation(value = "Get an actor by ID", response = Actor.class)
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getDetailed(@PathVariable("id") String id) {
+    public ResponseEntity<?> getOne(@PathVariable("id") String id) {
         Actor actor = actorRepository.findOne(id);
 
         if (actor == null) {
@@ -76,8 +76,8 @@ public class Actors {
         return new ResponseEntity<>(actor, HttpStatus.OK);
     }
 
-    /** Modifica un actor con los campos que se indiquen */
-    @PutMapping(value = "/{id}")
+    @ApiOperation(value = "Update an actor by ID")
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Actor actor) {
         Actor currentActor = actorRepository.findOne(id);
 
@@ -88,8 +88,8 @@ public class Actors {
         return new ResponseEntity<>(currentActor, HttpStatus.OK);
     }
 
-    /** Borra un actor por ID*/
-    @DeleteMapping(value = "/{id}")
+    @ApiOperation(value = "Delete an actor by ID")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         Actor actor = actorRepository.findOne(id);
         if (actor == null) {
@@ -99,6 +99,7 @@ public class Actors {
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
     }
 
+    @ApiOperation(value = "Get all actors by role", response = Iterable.class)
     @GetMapping("/role/{role}")
     public ResponseEntity<?> getAllByRole(@PathVariable("role") String role) {
         List<Actor> actorsAux = actorRepository.findAll();
@@ -110,6 +111,7 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all actors by place", response = Iterable.class)
     @GetMapping("/place/{place}")
     public ResponseEntity<?> getAllByPlace(@PathVariable("place") String place) {
         List<Actor> actorsAux = actorRepository.findAll();
@@ -121,6 +123,7 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all actors with banned status", response = Iterable.class)
     @GetMapping("/banned")
     public ResponseEntity<?> getBanned() {
         List<Actor> actorsAux = actorRepository.findAll();
@@ -133,6 +136,7 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all actors with private status", response = Iterable.class)
     @GetMapping("/private")
     public ResponseEntity<?> getPrivate() {
         List<Actor> actorsAux = actorRepository.findAll();
@@ -145,6 +149,7 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all actors by keyword", response = Iterable.class)
     @GetMapping("/search/{keyword}")
     public ResponseEntity<?> getAllByKeyword(@PathVariable("keyword") String keyword) {
         List<Actor> actorsAux = actorRepository.findAll();
@@ -157,6 +162,7 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all social networks for an actor", response = Iterable.class)
     @GetMapping("/socialNetwork/{id}")
     public ResponseEntity<?> getSocialByUser(@PathVariable("id") String id) {
         Actor aux = actorRepository.findOne(id);
@@ -164,8 +170,8 @@ public class Actors {
         return new ResponseEntity<>(aux.getSocialNetworks(), HttpStatus.OK);
     }
 
-    /** Añade una red social a un actor */
-    @PostMapping("/socialNetwork/create")
+    @ApiOperation(value = "Create an actor a social network")
+    @PostMapping(value = "/socialNetwork/create", produces = "application/json")
     public ResponseEntity<?> createSocialNetwork(@RequestBody SocialNetwork socialNetwork, @RequestBody Actor actor, UriComponentsBuilder ucBuilder) {
         Set<SocialNetwork> aux = actor.getSocialNetworks();
         aux.add(socialNetwork);
@@ -175,8 +181,6 @@ public class Actors {
         return new ResponseEntity<>(actor.getSocialNetworks(), HttpStatus.CREATED);
     }
 
-
-    /** Dado un actor, comprueba si existe uno igual */
     private Boolean actorExist(Actor actor){
         Boolean res = false;
 
