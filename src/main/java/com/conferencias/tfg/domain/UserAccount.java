@@ -23,7 +23,7 @@ public class UserAccount implements UserDetails {
 
     public UserAccount(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.password = actorService.encryptPassword(password);
     }
 
     public UserAccount() {
