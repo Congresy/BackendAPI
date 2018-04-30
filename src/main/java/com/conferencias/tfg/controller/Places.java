@@ -4,7 +4,6 @@ import com.conferencias.tfg.domain.Place;
 import com.conferencias.tfg.repository.PlaceRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sun.deploy.panel.ITreeNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
