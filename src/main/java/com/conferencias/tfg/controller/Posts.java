@@ -5,6 +5,7 @@ import com.conferencias.tfg.domain.Post;
 import com.conferencias.tfg.repository.PostRepository;
 import com.conferencias.tfg.service.PostService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,15 @@ public class Posts {
     @Autowired
     private PostService postService;
 
+    @ApiOperation(value = "List all system's posts", response = Iterable.class)
     @GetMapping()
     public List<Post> showAll() {
 
         return postRepository.findAll();
     }
 
-    /**
-     * Crea un post según los valores que se envien en el método POST
-     */
-    @PostMapping()
+    @ApiOperation(value = "Create a post")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
 
         if (this.postExist(post)) {
@@ -50,11 +50,9 @@ public class Posts {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    /**
-     * Recibe una id para devolver un post
-     */
+    @ApiOperation(value = "Get a post by ID", response = Post.class)
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getDetailed(@PathVariable("id") String id) {
+    public ResponseEntity<?> getOne(@PathVariable("id") String id) {
         Post post = postRepository.findOne(id);
 
         if (post == null) {
@@ -64,10 +62,8 @@ public class Posts {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    /**
-     * Modifica un post con los campos que se indiquen
-     */
-    @PutMapping(value = "/{id}")
+    @ApiOperation(value = "Update a post by ID")
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Post post) {
         Post currentpost = postRepository.findOne(id);
 
@@ -78,10 +74,8 @@ public class Posts {
         return new ResponseEntity<>(currentpost, HttpStatus.OK);
     }
 
-    /**
-     * Borra un post por ID
-     */
-    @DeleteMapping(value = "/{id}")
+    @ApiOperation(value = "Delete a post by ID")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         Post post = postRepository.findOne(id);
         if (post == null) {
@@ -91,6 +85,7 @@ public class Posts {
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
     }
 
+    @ApiOperation(value = "Get a post searching by keyword", response = Post.class)
     @GetMapping(value = "/search/{keyword}")
     public ResponseEntity<?> getByKeyword(@PathVariable("keyword") String keyword) {
         List<Post> postAux = postRepository.findAll();
@@ -104,6 +99,7 @@ public class Posts {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a post searching by category", response = Post.class)
     @GetMapping("/category/{category}")
     public ResponseEntity<?> getAllByCategory(@PathVariable("category") String category) {
         List<Post> postsAux = postRepository.findAll();
@@ -115,6 +111,7 @@ public class Posts {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get a post searching by title", response = Post.class)
     @GetMapping("/title/{title}")
     public ResponseEntity<?> getAllByTitle(@PathVariable("title") String title) {
         List<Post> postsAux = postRepository.findAll();

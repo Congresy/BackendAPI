@@ -5,6 +5,7 @@ import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.repository.AnnouncementRepository;
 import com.conferencias.tfg.service.AnnouncementService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,14 @@ public class Announcements {
     @Autowired
     private AnnouncementRepository announcementRepository;
 
+    @ApiOperation(value = "List all system's announcements", response = Iterable.class)
     @GetMapping()
     public List<Announcement> showAll() {
         return announcementRepository.findAll();
     }
 
-    @PostMapping()
+    @ApiOperation(value = "Create an announcement")
+    @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Announcement announcement, UriComponentsBuilder ucBuilder) {
 
         if (this.actorExist(announcement)) {
@@ -45,7 +48,8 @@ public class Announcements {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}")
+    @ApiOperation(value = "Update an announcement by ID")
+    @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Announcement announcement) {
         Announcement currentAnnouncement = announcementRepository.findOne(id);
 
@@ -56,8 +60,8 @@ public class Announcements {
         return new ResponseEntity<>(currentAnnouncement, HttpStatus.OK);
     }
 
-
-    @DeleteMapping(value = "/{id}")
+    @ApiOperation(value = "Delete an announcement by ID")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         Announcement announcement = announcementRepository.findOne(id);
         if (announcement == null) {
