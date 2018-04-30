@@ -1,9 +1,10 @@
 package com.conferencias.tfg.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.conferencias.tfg.service.ActorService;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,6 +17,9 @@ import java.util.Set;
 
 @Document
 public class Actor {
+
+    @Autowired
+    private ActorService actorService;
 
     @Id
     private String id;

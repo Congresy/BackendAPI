@@ -4,6 +4,7 @@ import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Post;
 import com.conferencias.tfg.repository.PostRepository;
 import com.conferencias.tfg.service.PostService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("posts")
+@Api(value = "Posts", description = "Operations related with posts")
 public class Posts {
 
     @Autowired
@@ -24,7 +26,7 @@ public class Posts {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/all")
+    @GetMapping()
     public List<Post> showAll() {
 
         return postRepository.findAll();
@@ -33,7 +35,7 @@ public class Posts {
     /**
      * Crea un post según los valores que se envien en el método POST
      */
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
 
         if (this.postExist(post)) {
@@ -79,7 +81,7 @@ public class Posts {
     /**
      * Borra un post por ID
      */
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         Post post = postRepository.findOne(id);
         if (post == null) {

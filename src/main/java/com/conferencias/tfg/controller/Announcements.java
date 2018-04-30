@@ -4,6 +4,7 @@ import com.conferencias.tfg.domain.Announcement;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.repository.AnnouncementRepository;
 import com.conferencias.tfg.service.AnnouncementService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("announcements")
+@Api(value = "Announcements", description = "Operations related with announcements")
 public class Announcements {
 
     @Autowired
@@ -23,12 +25,12 @@ public class Announcements {
     @Autowired
     private AnnouncementRepository announcementRepository;
 
-    @GetMapping("/all")
+    @GetMapping()
     public List<Announcement> showAll() {
         return announcementRepository.findAll();
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<?> create(@RequestBody Announcement announcement, UriComponentsBuilder ucBuilder) {
 
         if (this.actorExist(announcement)) {
@@ -55,7 +57,7 @@ public class Announcements {
     }
 
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         Announcement announcement = announcementRepository.findOne(id);
         if (announcement == null) {

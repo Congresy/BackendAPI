@@ -1,5 +1,7 @@
 package com.conferencias.tfg.domain;
 
+import com.conferencias.tfg.service.ActorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +13,8 @@ import java.util.Objects;
 @Document
 public class UserAccount implements UserDetails {
 
+    @Autowired
+    private ActorService actorService;
 
     @Id
     private String id;
@@ -72,7 +76,7 @@ public class UserAccount implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = actorService.encryptPassword(password);
     }
 
     @Override
