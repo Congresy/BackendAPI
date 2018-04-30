@@ -37,7 +37,6 @@ public class Actors {
     @GetMapping()
     @ApiOperation("View a list of all available actors")
     public List<Actor> showAll() {
-
         return actorRepository.findAll();
     }
 
