@@ -85,7 +85,13 @@ public class Actors {
     @ApiOperation(value = "Get user account of an actor by username", response = UserAccount.class)
     @GetMapping(value = "/userAccount/{username}")
     public ResponseEntity<?> getUserAccountByUsername(@PathVariable("username") String id) {
-        UserAccount actor = userAccountRepository.findOne(id);
+        UserAccount actor = null;
+
+        for(UserAccount u : userAccountRepository.findAll()){
+            if(u.getUsername().equals(id)){
+                actor = u;
+            }
+        }
 
         if (actor == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
