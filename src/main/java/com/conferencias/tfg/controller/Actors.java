@@ -1,5 +1,6 @@
 package com.conferencias.tfg.controller;
 
+import com.conferencias.tfg.configuration.CustomPasswordEncoder;
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.SocialNetwork;
@@ -9,7 +10,6 @@ import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.service.ActorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.conferencias.tfg.service.ActorService.encryptPassword;
-
 @RestController
 @RequestMapping("actors")
 @Api(value = "Actors", description = "Operations related with actors")
@@ -33,6 +31,8 @@ public class Actors {
     private final ActorService actorService;
 
     private final UserAccountRepository userAccountRepository;
+
+    CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
 
     @Autowired
     public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository) {
@@ -56,7 +56,7 @@ public class Actors {
 
         UserAccount userAccountAux = new UserAccount();
         userAccountAux.setUsername(actorWrapper.getUserAccount().getUsername());
-        userAccountAux.setPassword(encryptPassword(actorWrapper.getUserAccount().getPassword()));
+        userAccountAux.setPassword(customPasswordEncoder.encode(actorWrapper.getUserAccount().getPassword()));
         userAccountRepository.save(userAccountAux);
         Actor aux = new Actor();
         actorWrapper.getActor().setId(aux.getId());
