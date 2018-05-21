@@ -30,7 +30,6 @@ public class Conference {
 	@DecimalMin("0.0")
 	@JsonView(Detailed.class)
 	private Double price;
-	@NotNull
 	@JsonView(Shorted.class)
 	private Double popularity;
     @NotBlank
