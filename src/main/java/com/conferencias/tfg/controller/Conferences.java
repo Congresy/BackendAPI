@@ -137,9 +137,23 @@ public class Conferences {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Conference conference, UriComponentsBuilder ucBuilder) {
 
+	    String end;
+	    String start;
+
 		if (this.conferenceExist(conference)) {
 			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
 		}
+
+		if(conference.getStart().contains("\\\\")){
+		    start = conference.getStart().replaceAll("\\\\", "");
+		    conference.setStart(start);
+        }
+
+        if(conference.getEnd().contains("\\")){
+            end = conference.getStart().replaceAll("\\\\", "");
+            conference.setStart(end);
+        }
+
 
         conferenceRepository.save(conference);
 
