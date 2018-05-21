@@ -33,6 +33,7 @@ public class Actor {
     @NotBlank
     @Pattern(regexp = "^(\\d{9}|\\d{14})$")
     private String phone;
+    @URL
     @NotBlank
     private String photo;
     @NotBlank
