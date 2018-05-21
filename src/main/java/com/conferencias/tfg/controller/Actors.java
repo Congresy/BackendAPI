@@ -59,7 +59,7 @@ public class Actors {
         actorWrapper.getActor().setId(aux.getId());
         actorWrapper.getActor().setBanned(false);
         actorWrapper.getActor().setPrivate_(false);
-        actorWrapper.getActor().setUserAccount(userAccountAux.getId());
+        actorWrapper.getActor().setUserAccount_(userAccountAux.getId());
         actorRepository.save(actorWrapper.getActor());
 
         HttpHeaders headers = new HttpHeaders();

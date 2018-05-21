@@ -51,21 +51,21 @@ public class Actor {
     private Set<SocialNetwork> socialNetworks;
 
 
-    private String userAccount;
+    private String userAccount_;
 
-    public String getUserAccount() {
-        return userAccount;
+    public String getUserAccount_() {
+        return userAccount_;
     }
 
-    public void setUserAccount(String userAccount) {
-        this.userAccount = userAccount;
+    public void setUserAccount_(String userAccount_) {
+        this.userAccount_ = userAccount_;
     }
 
     public Actor(){
 
     }
 
-    public Actor(String id, String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount) {
+    public Actor(String id, String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount_) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -78,10 +78,10 @@ public class Actor {
         this.place = place;
         this.comments = new ArrayList<>();
         this.role = role;
-        this.userAccount = userAccount;
+        this.userAccount_ = userAccount_;
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount) {
+    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount_) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -93,7 +93,7 @@ public class Actor {
         this.place = place;
         this.comments = new ArrayList<>();
         this.role = role;
-        this.userAccount = userAccount;
+        this.userAccount_ = userAccount_;
     }
 
     public String getId() {
@@ -270,14 +270,14 @@ public class Actor {
                 Objects.equals(photo, actor.photo) &&
                 Objects.equals(nick, actor.nick) &&
                 Objects.equals(role, actor.role) &&
-                Objects.equals(userAccount, actor.userAccount) &&
+                Objects.equals(userAccount_, actor.userAccount_) &&
                 Objects.equals(place, actor.place);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, surname, email, phone, photo, nick, role, userAccount, place);
+        return Objects.hash(id, name, surname, email, phone, photo, nick, role, userAccount_, place);
     }
 }
 
