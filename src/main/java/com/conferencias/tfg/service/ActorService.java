@@ -14,8 +14,12 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class ActorService{
 
+    private final ActorRepository actorRepository;
+
     @Autowired
-    private ActorRepository actorRepository;
+    public ActorService(ActorRepository actorRepository) {
+        this.actorRepository = actorRepository;
+    }
 
     public Actor edit(Actor currentActor,Actor actor){
         currentActor.setName(actor.getName());
@@ -28,7 +32,7 @@ public class ActorService{
         return res;
     }
 
-    public String encryptPassword(String password) {
+    public static String encryptPassword(String password) {
         String generatedPassword = "";
         try {
             // Create MessageDigest instance for MD5

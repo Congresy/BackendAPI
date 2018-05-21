@@ -13,9 +13,6 @@ import java.util.Objects;
 @Document
 public class UserAccount implements UserDetails {
 
-    @Autowired
-    private ActorService actorService;
-
     @Id
     private String id;
     private String username;
@@ -76,7 +73,7 @@ public class UserAccount implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = actorService.encryptPassword(password);
+        this.password = ActorService.encryptPassword(password);
     }
 
     @Override

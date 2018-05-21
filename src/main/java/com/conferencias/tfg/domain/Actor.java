@@ -33,7 +33,6 @@ public class Actor {
     @NotBlank
     @Pattern(regexp = "^(\\d{9}|\\d{14})$")
     private String phone;
-    @URL
     @NotBlank
     private String photo;
     @NotBlank
@@ -49,7 +48,6 @@ public class Actor {
     private Set<SocialNetwork> socialNetworks;
 
 
-    @NotNull
     private String userAccount;
 
     public String getUserAccount() {
@@ -187,13 +185,12 @@ public class Actor {
     // --------------------------------------------------------------------------------------------------------------
 
     private List<String> conferences;
-    //@NotNull
+
     private String place;
-    @NotNull
+
     private List<String> comments;
 
     private List<String> interests;
-
 
     private List<String> friends;
 

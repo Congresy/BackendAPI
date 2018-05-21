@@ -25,14 +25,18 @@ import java.util.Set;
 @Api(value = "Actors", description = "Operations related with actors")
 public class Actors {
 
-    @Autowired
-    private ActorRepository actorRepository;
+    private final ActorRepository actorRepository;
+
+    private final ActorService actorService;
+
+    private final UserAccountRepository userAccountRepository;
 
     @Autowired
-    private ActorService actorService;
-
-    @Autowired
-    private UserAccountRepository userAccountRepository;
+    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository) {
+        this.actorRepository = actorRepository;
+        this.actorService = actorService;
+        this.userAccountRepository = userAccountRepository;
+    }
 
     @GetMapping()
     @ApiOperation("View a list of all available actors")
@@ -59,7 +63,7 @@ public class Actors {
         actorRepository.save(actorWrapper.getActor());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/actor/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
+        headers.setLocation(ucBuilder.path("/actors/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
