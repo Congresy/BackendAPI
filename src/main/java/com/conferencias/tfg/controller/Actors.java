@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.conferencias.tfg.service.ActorService.encryptPassword;
+
 @RestController
 @RequestMapping("actors")
 @Api(value = "Actors", description = "Operations related with actors")
@@ -53,7 +55,7 @@ public class Actors {
 
         UserAccount userAccountAux = new UserAccount();
         userAccountAux.setUsername(actorWrapper.getUserAccount().getUsername());
-        userAccountAux.setPassword(actorService.encryptPassword(actorWrapper.getUserAccount().getPassword()));
+        userAccountAux.setPassword(encryptPassword(actorWrapper.getUserAccount().getPassword()));
         userAccountRepository.save(userAccountAux);
         Actor aux = new Actor();
         actorWrapper.getActor().setId(aux.getId());

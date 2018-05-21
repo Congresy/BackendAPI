@@ -23,6 +23,7 @@ public class Populate {
 		mongo.dropCollection("event");
         mongo.dropCollection("comment");
         mongo.dropCollection("actor");
+        mongo.dropCollection("userAccount");
         mongo.dropCollection("announcement");
         mongo.dropCollection("post");
 
