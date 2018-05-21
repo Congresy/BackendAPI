@@ -9,6 +9,7 @@ import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.service.ActorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -73,6 +74,18 @@ public class Actors {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getOne(@PathVariable("id") String id) {
         Actor actor = actorRepository.findOne(id);
+
+        if (actor == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actor, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get user account of an actor by username", response = UserAccount.class)
+    @GetMapping(value = "/userAccount/{username}")
+    public ResponseEntity<?> getUserAccountByUsername(@PathVariable("username") String id) {
+        UserAccount actor = userAccountRepository.findOne(id);
 
         if (actor == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
