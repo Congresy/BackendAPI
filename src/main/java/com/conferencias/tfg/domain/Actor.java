@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.jdo.annotations.Unique;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class Actor {
     @URL
     @NotBlank
     private String photo;
+    @Unique
     @NotBlank
     private String nick;
     @NotNull
