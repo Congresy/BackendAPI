@@ -158,7 +158,6 @@ public class Conference {
 	@NotNull
 	@JsonView(Detailed.class)
 	private List<String> organizators;
-    @NotNull
     @JsonView(Detailed.class)
     private List<String> comments;
 
