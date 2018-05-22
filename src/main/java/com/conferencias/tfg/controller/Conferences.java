@@ -198,23 +198,23 @@ public class Conferences {
 
         String organizator = conference.getOrganizator();
 		List<Actor> actors = actorRepository.findAll();
-		UserAccount userAccount = null;
 		Actor actor = null;
 
 		for(Actor a : actors){
-			userAccount = userAccountRepository.findOne(a.getUserAccount_());
-			if(userAccount.getId().equals(organizator)){
+			if(a.getUserAccount_().equals(organizator)){
 				actor = a;
 			}
 		}
 
-		if(actor.getConferences() == null){
-			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
-		} else {
+		try {
 			List<String> aux = actor.getConferences();
 			aux.add(conference.getId());
 			actor.setConferences(aux);
 			actorRepository.save(actor);
+		} catch (Exception e){
+			List<String> aux = new ArrayList<>();
+			aux.add(conference.getId());
+			actor.setConferences(aux);
 			actorRepository.save(actor);
 		}
 
