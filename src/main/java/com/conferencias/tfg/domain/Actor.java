@@ -11,10 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.jdo.annotations.Unique;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Document
 public class Actor {
@@ -77,6 +74,12 @@ public class Actor {
         this.private_ = false;
         this.place = place;
         this.comments = new ArrayList<>();
+        this.conferences = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.following = new ArrayList<>();
+        this.folders = new ArrayList<>();
+        this.socialNetworks = new HashSet<>();
         this.role = role;
         this.userAccount_ = userAccount_;
     }
@@ -92,6 +95,12 @@ public class Actor {
         this.private_ = false;
         this.place = place;
         this.comments = new ArrayList<>();
+        this.conferences = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.following = new ArrayList<>();
+        this.folders = new ArrayList<>();
+        this.socialNetworks = new HashSet<>();
         this.role = role;
         this.userAccount_ = userAccount_;
     }
