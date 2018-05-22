@@ -196,10 +196,17 @@ public class Conferences {
 			if(a.getRole().equals("Organizator")){
 				for (String s : organizators){
 					if(s.equals(a.getUserAccount_())){
-						List<String> actualConferences = a.getConferences();
-						actualConferences.add(conference.getId());
-						a.setConferences(actualConferences);
-						actorRepository.save(a);
+						if(a.getConferences() != null){
+							List<String> actualConferences = a.getConferences();
+							actualConferences.add(conference.getId());
+							a.setConferences(actualConferences);
+							actorRepository.save(a);
+						} else {
+							List<String> actualConferences = new ArrayList<>();
+							actualConferences.add(conference.getId());
+							a.setConferences(actualConferences);
+							actorRepository.save(a);
+						}
 					}
 				}
 			}
