@@ -86,13 +86,13 @@ public class Actors {
     @GetMapping(value = "/username/{username}")
     public ResponseEntity<?> get(@PathVariable("username") String username) {
         List<Actor> actors = actorRepository.findAll();
+        UserAccount userAccount = null;
         Actor actor = null;
 
         for(Actor a : actors){
-            for(UserAccount u : userAccountRepository.findAll()){
-                if(a.getUserAccount_().equals(u.getId())){
-                    actor = a;
-                }
+            userAccount = userAccountRepository.findOne(a.getUserAccount_());
+            if(userAccount.getUsername().equals(username)){
+                actor = a;
             }
         }
 
