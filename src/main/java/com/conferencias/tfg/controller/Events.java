@@ -39,29 +39,6 @@ public class Events {
         this.actorRepository = actorRepository;
     }
 
-    @ApiOperation(value = "Add an attendee to a certain conference")
-    @PutMapping(value = "/add/{idEvent}/participants/{idActor}", produces = "application/json")
-    public ResponseEntity<?> addParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
-
-        Actor actor = actorRepository.findOne(idActor);
-        Event event = eventRepository.findOne(idEvent);
-
-        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
-            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        List<String> participants = event.getParticipants();
-
-        participants.add(actor.getId());
-
-        if(event.getAllowedParticipants() != 0)
-            event.setAllowedParticipants(event.getAllowedParticipants()-1);
-
-        event.setParticipants(participants);
-
-        return new ResponseEntity<>(event, HttpStatus.CREATED);
-    }
-
     @ApiOperation(value = "Add an speaker to a certain event")
     @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
     public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
@@ -215,9 +192,7 @@ public class Events {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		currentEvent.setAllowedParticipants(event.getAllowedParticipants());
 		currentEvent.setName(event.getName());
-		currentEvent.setParticipants(event.getParticipants());
 		currentEvent.setPlace(event.getPlace());
 		currentEvent.setStart(event.getStart());
 		currentEvent.setSpeakers(event.getSpeakers());

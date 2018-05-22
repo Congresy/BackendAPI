@@ -97,10 +97,10 @@ public class Populate {
         // -------------------------------------- SOCIAL EVENTS -----------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Event socialEvent1 = new Event("1","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial1", 100, "TipoActividadSocial1", "RequisitosEventoSocial1", "socialEvent", place1.getId());
-        Event socialEvent2 = new Event("2", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial2", 8, "TipoActividadSocial2", "RequisitosEventoSocial2", "socialEvent", place2.getId());
-        Event socialEvent3 = new Event("3", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial3", 60, "TipoActividadSocial3", "RequisitosEventoSocial3", "socialEvent", place3.getId());
-        Event socialEvent4 = new Event("4", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial4", 11, "TipoActividadSocial4", "RequisitosEventoSocial4", "socialEvent", place4.getId());
+        Event socialEvent1 = new Event("1","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial1", "TipoActividadSocial1", "RequisitosEventoSocial1", "socialEvent", place1.getId());
+        Event socialEvent2 = new Event("2", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial2", "TipoActividadSocial2", "RequisitosEventoSocial2", "socialEvent", place2.getId());
+        Event socialEvent3 = new Event("3", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial3", "TipoActividadSocial3", "RequisitosEventoSocial3", "socialEvent", place3.getId());
+        Event socialEvent4 = new Event("4", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoSocial4", "TipoActividadSocial4", "RequisitosEventoSocial4", "socialEvent", place4.getId());
 
         mongo.save(socialEvent1);
         mongo.save(socialEvent2);
@@ -150,58 +150,6 @@ public class Populate {
         mongo.save(workshop3);
         mongo.save(workshop4);
 
-        // ----------------------------------------------------------------------------------------------
-        // --------------------------------------- CONFERENCES ------------------------------------------
-        // ----------------------------------------------------------------------------------------------
-
-        Conference conference1 = new Conference("1","NombreConferencia1", "TemaConferencia1", 0.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia1", "DescripciónConferencia1");
-        List<String> events1 = new ArrayList<>();
-        events1.add(socialEvent1.getId());
-        events1.add(workshop1.getId());
-        events1.add(ordinary1.getId());
-        events1.add(invitation1.getId());
-        conference1.setEvents(events1);
-        List<String> comments1 = new ArrayList<>();
-        comments1.add(comment1.getId());
-        comments1.add(comment2.getId());
-        comments1.add(comment3.getId());
-        conference1.setComments(comments1);
-
-        Conference conference2 = new Conference("2","NombreConferencia2", "TemaConferencia2", 2.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia2", "DescripciónConferencia2");
-        List<String> events2 = new ArrayList<>();
-        events2.add(socialEvent2.getId());
-        events2.add(workshop2.getId());
-        events2.add(ordinary2.getId());
-        events2.add(invitation2.getId());
-        conference2.setEvents(events2);
-        List<String> comments2 = new ArrayList<>();
-        comments2.add(comment4.getId());
-        comments2.add(comment5.getId());
-        conference2.setComments(comments2);
-
-        Conference conference3 = new Conference("3","NombreConferencia3", "TemaConferencia3", 5.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia3", "DescripciónConferencia3");
-        List<String> events3 = new ArrayList<>();
-        events3.add(socialEvent3.getId());
-        events3.add(workshop3.getId());
-        events3.add(ordinary3.getId());
-        events3.add(invitation3.getId());
-        conference3.setEvents(events3);
-        List<String> comments3 = new ArrayList<>();
-        comments3.add(comment6.getId());
-        conference3.setComments(comments3);
-
-        Conference conference4 = new Conference("4", "NombreConferencia4", "TemaConferencia4", 8.0, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia4", "DescripciónConferencia4");
-        List<String> events4 = new ArrayList<>();
-        events4.add(socialEvent4.getId());
-        events4.add(workshop4.getId());
-        events4.add(ordinary4.getId());
-        events4.add(invitation4.getId());
-        conference4.setEvents(events4);
-
-        mongo.save(conference1);
-        mongo.save(conference2);
-        mongo.save(conference3);
-        mongo.save(conference4);
 
         // ----------------------------------------------------------------------------------------------
         // -------------------------------------- ANNOUNCEMENTS -----------------------------------------
@@ -324,6 +272,58 @@ public class Populate {
         mongo.save(post3);
         mongo.save(post4);
 
+            // ----------------------------------------------------------------------------------------------
+            // --------------------------------------- CONFERENCES ------------------------------------------
+            // ----------------------------------------------------------------------------------------------
+
+            Conference conference1 = new Conference("1","NombreConferencia1", "TemaConferencia1", 0.0, 20, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia1", "DescripciónConferencia1", actor1.getId());
+            List<String> events1 = new ArrayList<>();
+            events1.add(socialEvent1.getId());
+            events1.add(workshop1.getId());
+            events1.add(ordinary1.getId());
+            events1.add(invitation1.getId());
+            conference1.setEvents(events1);
+            List<String> comments1 = new ArrayList<>();
+            comments1.add(comment1.getId());
+            comments1.add(comment2.getId());
+            comments1.add(comment3.getId());
+            conference1.setComments(comments1);
+
+            Conference conference2 = new Conference("2","NombreConferencia2", "TemaConferencia2", 2.0, 20, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia2", "DescripciónConferencia2", actor1.getId());
+            List<String> events2 = new ArrayList<>();
+            events2.add(socialEvent2.getId());
+            events2.add(workshop2.getId());
+            events2.add(ordinary2.getId());
+            events2.add(invitation2.getId());
+            conference2.setEvents(events2);
+            List<String> comments2 = new ArrayList<>();
+            comments2.add(comment4.getId());
+            comments2.add(comment5.getId());
+            conference2.setComments(comments2);
+
+            Conference conference3 = new Conference("3","NombreConferencia3", "TemaConferencia3", 5.0, 20, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia3", "DescripciónConferencia3", actor1.getId());
+            List<String> events3 = new ArrayList<>();
+            events3.add(socialEvent3.getId());
+            events3.add(workshop3.getId());
+            events3.add(ordinary3.getId());
+            events3.add(invitation3.getId());
+            conference3.setEvents(events3);
+            List<String> comments3 = new ArrayList<>();
+            comments3.add(comment6.getId());
+            conference3.setComments(comments3);
+
+            Conference conference4 = new Conference("4", "NombreConferencia4", "TemaConferencia4", 8.0, 15, "10/10/2018 00:00", "15/10/2018 00:00", "InvitadosConferencia4", "DescripciónConferencia4", actor1.getId());
+            List<String> events4 = new ArrayList<>();
+            events4.add(socialEvent4.getId());
+            events4.add(workshop4.getId());
+            events4.add(ordinary4.getId());
+            events4.add(invitation4.getId());
+            conference4.setEvents(events4);
+
+            mongo.save(conference1);
+            mongo.save(conference2);
+            mongo.save(conference3);
+            mongo.save(conference4);
 
 
 	}

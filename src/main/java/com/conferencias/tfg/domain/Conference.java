@@ -1,5 +1,6 @@
 package com.conferencias.tfg.domain;
 
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -47,11 +49,14 @@ public class Conference {
 	@NotBlank
 	@JsonView(Detailed.class)
 	private String description;
+    @Min(1)
+    @JsonView(Views.Default.class)
+    private Integer allowedParticipants;
 
 	public Conference() {
 	}
 
-    public Conference(String id, String name, String theme, Double price, String start, String end, String speakersNames, String description) {
+    public Conference(String id, String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator) {
         this.id = id;
 	    this.name = name;
         this.theme = theme;
@@ -59,23 +64,33 @@ public class Conference {
         this.popularity = 0.0;
         this.start = start;
         this.end = end;
+        this.allowedParticipants = allowedParticipants;
         this.speakersNames = speakersNames;
         this.description = description;
-        this.organizators = new ArrayList<>();
         this.comments = new ArrayList<>();
+        this.organizator = organizator;
     }
 
-    public Conference(String name, String theme, Double price, String start, String end, String speakersNames, String description) {
+    public Conference(String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator) {
         this.name = name;
         this.theme = theme;
         this.price = price;
         this.popularity = 0.0;
         this.start = start;
         this.end = end;
+        this.allowedParticipants = allowedParticipants;
         this.speakersNames = speakersNames;
         this.description = description;
-        this.organizators = new ArrayList<>();
         this.comments = new ArrayList<>();
+        this.organizator = organizator;
+    }
+
+    public Integer getAllowedParticipants() {
+        return allowedParticipants;
+    }
+
+    public void setAllowedParticipants(Integer allowedParticipants) {
+        this.allowedParticipants = allowedParticipants;
     }
 
     public String getId() {
@@ -156,11 +171,21 @@ public class Conference {
 	private List<String> events;
 	@NotNull
 	@JsonView(Detailed.class)
-	private List<String> organizators;
+    private String organizator;
+    @JsonView(Detailed.class)
+    private List<String> participants;
     @JsonView(Detailed.class)
     private List<String> comments;
 
-	public List<String> getEvents() {
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public List<String> getEvents() {
 		return events;
 	}
 
@@ -168,13 +193,13 @@ public class Conference {
 		this.events = events;
 	}
 
-	public List<String> getOrganizators() {
-		return organizators;
-	}
+    public String getOrganizator() {
+        return organizator;
+    }
 
-	public void setOrganizators(List<String> organizators) {
-		this.organizators = organizators;
-	}
+    public void setOrganizator(String organizator) {
+        this.organizator = organizator;
+    }
 
     public List<String> getComments() {
         return comments;

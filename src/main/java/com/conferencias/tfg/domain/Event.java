@@ -30,9 +30,6 @@ public class Event {
     @NotBlank
     @JsonView(Default.class)
     private String name;
-    @Min(1)
-    @JsonView(Default.class)
-    private Integer allowedParticipants;
     @JsonView(Default.class)
     private String type; // Para social events
     @JsonView(Default.class)
@@ -48,29 +45,25 @@ public class Event {
 
     }
 
-    public Event(String id, String start, String end, String name, Integer allowedParticipants, String type, String requeriments, String role, String place) {
+    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.name = name;
-        this.allowedParticipants = allowedParticipants;
         this.type = type;
         this.requirements = requeriments;
         this.role = role;
-        this.participants = new ArrayList<>();
         this.speakers = new ArrayList<>();
         this.place = place;
     }
 
-    public Event(String start, String end, String name, Integer allowedParticipants, String type, String requeriments, String role, String place) {
+    public Event(String start, String end, String name, String type, String requeriments, String role, String place) {
         this.start = start;
         this.end = end;
         this.name = name;
-        this.allowedParticipants = allowedParticipants;
         this.type = type;
         this.requirements = requeriments;
         this.role = role;
-        this.participants = new ArrayList<>();
         this.speakers = new ArrayList<>();
         this.place = place;
     }
@@ -80,10 +73,8 @@ public class Event {
         this.start = start;
         this.end = end;
         this.name = name;
-        this.allowedParticipants = allowedParticipants;
         this.requirements = requeriments;
         this.role = role;
-        this.participants = new ArrayList<>();
         this.speakers = new ArrayList<>();
         this.place = place;
     }
@@ -92,10 +83,8 @@ public class Event {
         this.start = start;
         this.end = end;
         this.name = name;
-        this.allowedParticipants = allowedParticipants;
         this.requirements = requeriments;
         this.role = role;
-        this.participants = new ArrayList<>();
         this.speakers = new ArrayList<>();
         this.place = place;
     }
@@ -132,14 +121,6 @@ public class Event {
         this.end = end;
     }
 
-    public Integer getAllowedParticipants() {
-        return allowedParticipants;
-    }
-
-    public void setAllowedParticipants(Integer allowedParticipants) {
-        this.allowedParticipants = allowedParticipants;
-    }
-
     public String getType() {
         return type;
     }
@@ -165,8 +146,6 @@ public class Event {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @JsonView(Default.class)
-    private List<String> participants;
     @NotEmpty
     @NotNull
     @JsonView(Default.class)
@@ -174,14 +153,6 @@ public class Event {
     @NotNull
     @JsonView(Default.class)
     private String place;
-
-    public List<String> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<String> participants) {
-        this.participants = participants;
-    }
 
     public List<String> getSpeakers() {
         return speakers;

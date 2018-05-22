@@ -3,6 +3,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.Event;
 import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
@@ -136,25 +137,6 @@ public class Conferences {
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
-    @ApiOperation(value = "Add an organizator to a certain conference")
-    @PutMapping(value = "/{idConference}/{idActor}", produces = "application/json")
-    public ResponseEntity<?> addOrganizator(@PathVariable("idConference") String idConferece, @PathVariable("idActor") String idActor) {
-
-	    Actor actor = actorRepository.findOne(idActor);
-	    Conference conference = conferenceRepository.findOne(idConferece);
-
-	    if(!actor.getRole().equals("Organizator")){
-	        new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-
-	    List<String> organizators = conference.getOrganizators();
-
-        organizators.add(actor.getId());
-        conference.setOrganizators(organizators);
-
-        return new ResponseEntity<>(conference, HttpStatus.CREATED);
-    }
-
     @ApiOperation(value = "Get a certain conference in short view", response = Conference.class)
 	@GetMapping(value = "/short/{idConference}")
 	@JsonView(Shorted.class)
@@ -166,6 +148,31 @@ public class Conferences {
 		}
 
 		return new ResponseEntity<>(conference, HttpStatus.OK);
+	}
+
+
+	@ApiOperation(value = "Add an attendee to a certain conference")
+	@PutMapping(value = "/add/{idConference}/participants/{idActor}", produces = "application/json")
+	public ResponseEntity<?> addParticipant(@PathVariable("idConference") String idEvent, @PathVariable("idActor") String idActor) {
+
+		Actor actor = actorRepository.findOne(idActor);
+		Conference event = conferenceRepository.findOne(idEvent);
+
+		if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
+			new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		List<String> participants = event.getParticipants();
+
+		participants.add(actor.getId());
+
+		if(event.getAllowedParticipants() != 0)
+			event.setAllowedParticipants(event.getAllowedParticipants()-1);
+
+		event.setParticipants(participants);
+		conferenceRepository.save(event);
+
+		return new ResponseEntity<>(event, HttpStatus.CREATED);
 	}
 
     @ApiOperation(value = "Create a new conference")
@@ -189,27 +196,26 @@ public class Conferences {
             conference.setStart(end);
         }
 
-        List<String> organizators = conference.getOrganizators();
+        String organizator = conference.getOrganizator();
 		List<Actor> actors = actorRepository.findAll();
+		UserAccount userAccount = null;
+		Actor actor = null;
 
-		for (Actor a : actors){
-			if(a.getRole().equals("Organizator")){
-				for (String s : organizators){
-					if(s.equals(a.getUserAccount_())){
-						if(a.getConferences() != null){
-							List<String> actualConferences = a.getConferences();
-							actualConferences.add(conference.getId());
-							a.setConferences(actualConferences);
-							actorRepository.save(a);
-						} else {
-							List<String> actualConferences = new ArrayList<>();
-							actualConferences.add(conference.getId());
-							a.setConferences(actualConferences);
-							actorRepository.save(a);
-						}
-					}
-				}
+		for(Actor a : actors){
+			userAccount = userAccountRepository.findOne(a.getUserAccount_());
+			if(userAccount.getId().equals(organizator)){
+				actor = a;
 			}
+		}
+
+		if(actor.getConferences() == null){
+			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+		} else {
+			List<String> aux = actor.getConferences();
+			aux.add(conference.getId());
+			actor.setConferences(aux);
+			actorRepository.save(actor);
+			actorRepository.save(actor);
 		}
 
         conferenceRepository.save(conference);
@@ -229,6 +235,7 @@ public class Conferences {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
+		currentConference.setAllowedParticipants(conference.getAllowedParticipants());
 		currentConference.setEnd(conference.getEnd());
 		currentConference.setName(conference.getName());
 		currentConference.setStart(conference.getStart());
