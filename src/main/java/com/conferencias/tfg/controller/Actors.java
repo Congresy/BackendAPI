@@ -83,7 +83,7 @@ public class Actors {
     }
 
     @ApiOperation(value = "Get an actor by username", response = Actor.class)
-    @GetMapping(value = "/{username}")
+    @GetMapping(value = "/username/{username}")
     public ResponseEntity<?> get(@PathVariable("username") String username) {
         List<Actor> actors = actorRepository.findAll();
         Actor actor = null;
