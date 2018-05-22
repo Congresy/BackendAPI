@@ -120,9 +120,7 @@ public class Conferences {
 		}
 
 		List<String> conferences = new ArrayList<>();
-		if (actor != null) {
-			conferences = actor.getConferences();
-		}
+		conferences = actor.getConferences();
 
 		List<Conference> res = new ArrayList<>();
 
@@ -200,6 +198,8 @@ public class Conferences {
 		List<Actor> actors = actorRepository.findAll();
 		Actor actor = null;
 
+        conferenceRepository.save(conference);
+
 		for(Actor a : actors){
 			if(a.getUserAccount_().equals(organizator)){
 				actor = a;
@@ -217,8 +217,6 @@ public class Conferences {
 			actor.setConferences(aux);
 			actorRepository.save(actor);
 		}
-
-        conferenceRepository.save(conference);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/conference/{id}").buildAndExpand(conference.getId()).toUri());
