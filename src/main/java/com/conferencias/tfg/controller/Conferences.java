@@ -189,6 +189,21 @@ public class Conferences {
             conference.setStart(end);
         }
 
+        List<String> organizators = conference.getOrganizators();
+		List<Actor> actors = actorRepository.findAll();
+
+		for (Actor a : actors){
+			if(a.getRole().equals("Organizator")){
+				for (String s : organizators){
+					if(s.equals(a.getUserAccount_())){
+						List<String> actualConferences = a.getConferences();
+						actualConferences.add(conference.getId());
+						a.setConferences(actualConferences);
+						actorRepository.save(a);
+					}
+				}
+			}
+		}
 
         conferenceRepository.save(conference);
 
