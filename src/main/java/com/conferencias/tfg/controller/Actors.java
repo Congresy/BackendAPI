@@ -82,6 +82,27 @@ public class Actors {
         return new ResponseEntity<>(actor, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get an actor by username", response = Actor.class)
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<?> get(@PathVariable("username") String username) {
+        List<Actor> actors = actorRepository.findAll();
+        Actor actor = null;
+
+        for(Actor a : actors){
+            for(UserAccount u : userAccountRepository.findAll()){
+                if(a.getUserAccount_().equals(u.getId())){
+                    actor = a;
+                }
+            }
+        }
+
+        if (actor == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actor, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get user account of an actor by username", response = UserAccount.class)
     @GetMapping(value = "/userAccount/{username}")
     public ResponseEntity<?> getUserAccountByUsername(@PathVariable("username") String id) {
