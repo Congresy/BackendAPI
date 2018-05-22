@@ -3,12 +3,13 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
+import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -31,11 +31,13 @@ public class Conferences {
 
     private ConferenceRepository conferenceRepository;
     private ActorRepository actorRepository;
+    private UserAccountRepository userAccountRepository;
 
 	@Autowired
-    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository) {
+    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository) {
         this.conferenceRepository = conferenceRepository;
         this.actorRepository = actorRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
     @ApiOperation(value = "List all system's conferences in detailed view", response = Conference.class)
@@ -99,6 +101,39 @@ public class Conferences {
 		}
 
 		return new ResponseEntity<>(conference, HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "Get conferences of an organizator by username", response = Iterable.class)
+	@GetMapping(value = "/organizator/{username}")
+	@JsonView(Detailed.class)
+	public ResponseEntity<?> getOwnConferences(@PathVariable("username") String username) {
+		List<Actor> actors = actorRepository.findAll();
+		UserAccount userAccount;
+		Actor actor = null;
+
+		for(Actor a : actors){
+			userAccount = userAccountRepository.findOne(a.getUserAccount_());
+			if(userAccount.getUsername().equals(username)){
+				actor = a;
+			}
+		}
+
+		List<String> conferences = new ArrayList<>();
+		if (actor != null) {
+			conferences = actor.getConferences();
+		}
+
+		List<Conference> res = new ArrayList<>();
+
+		for(String s : conferences){
+			res.add(conferenceRepository.findOne(s));
+		}
+
+		if (res.isEmpty()) {
+			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
     @ApiOperation(value = "Add an organizator to a certain conference")
