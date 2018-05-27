@@ -160,14 +160,18 @@ public class Conferences {
 			new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		List<String> participants = event.getParticipants();
-
-		participants.add(actor.getId());
+		try {
+			List<String> participants = event.getParticipants();
+			participants.add(actor.getId());
+			event.setParticipants(participants);
+		} catch (Exception e){
+			List<String> aux = new ArrayList<>();
+			aux.add(event.getId());
+			event.setParticipants(aux);
+		}
 
 		if(event.getAllowedParticipants() != 0)
 			event.setAllowedParticipants(event.getAllowedParticipants()-1);
-
-		event.setParticipants(participants);
 		conferenceRepository.save(event);
 
 		try {
