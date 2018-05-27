@@ -170,6 +170,18 @@ public class Conferences {
 		event.setParticipants(participants);
 		conferenceRepository.save(event);
 
+		try {
+			List<String> aux = actor.getConferences();
+			aux.add(event.getId());
+			actor.setConferences(aux);
+			actorRepository.save(actor);
+		} catch (Exception e){
+			List<String> aux = new ArrayList<>();
+			aux.add(event.getId());
+			actor.setConferences(aux);
+			actorRepository.save(actor);
+		}
+
 		return new ResponseEntity<>(event, HttpStatus.CREATED);
 	}
 
