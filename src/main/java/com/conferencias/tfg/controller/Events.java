@@ -172,6 +172,19 @@ public class Events {
 			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
 		}
 
+        String end;
+        String start;
+
+        if(event.getStart().contains("\\\\")){
+            start = event.getStart().replaceAll("\\\\", "");
+            event.setStart(start);
+        }
+
+        if(event.getEnd().contains("\\")){
+            end = event.getStart().replaceAll("\\\\", "");
+            event.setStart(end);
+        }
+
         if(!event.getRole().equals("socialEvent"))
             event.setType(null);
 
