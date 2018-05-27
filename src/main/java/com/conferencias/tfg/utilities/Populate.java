@@ -18,8 +18,6 @@ public class Populate {
 		MongoTemplate mongo = new MongoTemplate(new Mongo(uri), "conferencias");
 		mongo.dropCollection("conference");
 		mongo.dropCollection("place");
-		mongo.dropCollection("speaker");
-		mongo.dropCollection("organizator");
 		mongo.dropCollection("event");
         mongo.dropCollection("comment");
         mongo.dropCollection("actor");
@@ -111,10 +109,10 @@ public class Populate {
         // ----------------------------------------- REGULARS -------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Event ordinary1 = new Event("5","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario1", 56, "RequisitosEventoOrdinario1", "ordinary", place1.getId());
-        Event ordinary2 = new Event("6","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario2", 31, "RequisitosEventoOrdinario2", "ordinary", place2.getId());
-        Event ordinary3 = new Event("7", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario3", 72, "RequisitosEventoOrdinario3", "ordinary", place3.getId());
-        Event ordinary4 = new Event("8","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario4", 17, "RequisitosEventoOrdinario4", "ordinary", place4.getId());
+        Event ordinary1 = new Event("5","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario1", "RequisitosEventoOrdinario1", "ordinary", place1.getId());
+        Event ordinary2 = new Event("6","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario2", "RequisitosEventoOrdinario2", "ordinary", place2.getId());
+        Event ordinary3 = new Event("7", "10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario3", "RequisitosEventoOrdinario3", "ordinary", place3.getId());
+        Event ordinary4 = new Event("8","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoOrdinario4", "RequisitosEventoOrdinario4", "ordinary", place4.getId());
 
         mongo.save(ordinary1);
         mongo.save(ordinary2);
@@ -126,10 +124,10 @@ public class Populate {
         // ------------------------------------------ GUESTS --------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Event invitation1 = new Event("9","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados1", 17, "RequisitosEventoInvitados1", "invitation", place1.getId());
-        Event invitation2 = new Event("10","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados2", 52, "RequisitosEventoInvitados2", "invitation", place2.getId());
-        Event invitation3 = new Event("11","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados3", 55, "RequisitosEventoInvitados3", "invitation", place3.getId());
-        Event invitation4 = new Event("12","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados4", 12, "RequisitosEventoInvitados4", "invitation", place4.getId());
+        Event invitation1 = new Event("9","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados1", "RequisitosEventoInvitados1", "invitation", place1.getId());
+        Event invitation2 = new Event("10","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados2", "RequisitosEventoInvitados2", "invitation", place2.getId());
+        Event invitation3 = new Event("11","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados3", "RequisitosEventoInvitados3", "invitation", place3.getId());
+        Event invitation4 = new Event("12","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoInvitados4", "RequisitosEventoInvitados4", "invitation", place4.getId());
 
         mongo.save(invitation1);
         mongo.save(invitation2);
@@ -140,10 +138,10 @@ public class Populate {
         // ------------------------------------------ COURSES -------------------------------------------
         // ----------------------------------------------------------------------------------------------
 
-        Event workshop1 = new Event("13","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller1", 16, "RequisitosEventoTaller1", "workshop", place1.getId());
-        Event workshop2 = new Event("14","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller2", 21, "RequisitosEventoTaller1", "workshop", place2.getId());
-        Event workshop3 = new Event("15","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller3", 56, "RequisitosEventoTaller1", "workshop", place3.getId());
-        Event workshop4 = new Event("16","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller4", 71, "RequisitosEventoTaller1", "workshop", place4.getId());
+        Event workshop1 = new Event("13","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller1",  "RequisitosEventoTaller1", "workshop", place1.getId());
+        Event workshop2 = new Event("14","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller2",  "RequisitosEventoTaller1", "workshop", place2.getId());
+        Event workshop3 = new Event("15","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller3", "RequisitosEventoTaller1", "workshop", place3.getId());
+        Event workshop4 = new Event("16","10/10/2018 11:20", "10/10/2018 14:20", "NombreEventoTaller4", "RequisitosEventoTaller1", "workshop", place4.getId());
 
         mongo.save(workshop1);
         mongo.save(workshop2);

@@ -177,6 +177,26 @@ public class Events {
 
         eventRepository.save(event);
 
+        String conference = event.getConference();
+        Conference conferenceUsed = null;
+
+        for(Conference c : conferenceRepository.findAll()){
+            if(c.getId().equals(conference)){
+                conferenceUsed = c;
+                try {
+                    List<String> events = c.getEvents();
+                    events.add(event.getId());
+                    c.setEvents(events);
+                } catch (Exception e){
+                    List<String> events = new ArrayList<>();
+                    events.add(event.getId());
+                    c.setEvents(events);
+                }
+                conferenceRepository.save(conferenceUsed);
+                break;
+            }
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/events/{idEvent}").buildAndExpand(event.getId()).toUri());
 

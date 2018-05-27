@@ -68,18 +68,7 @@ public class Event {
         this.place = place;
     }
 
-    public Event(String id, String start, String end, String name, Integer allowedParticipants, String requeriments, String role, String place) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.name = name;
-        this.requirements = requeriments;
-        this.role = role;
-        this.speakers = new ArrayList<>();
-        this.place = place;
-    }
-
-    public Event(String start, String end, String name, Integer allowedParticipants, String requeriments, String role, String place) {
+    public Event(String start, String end, String name, String requeriments, String role, String place) {
         this.start = start;
         this.end = end;
         this.name = name;
@@ -153,6 +142,16 @@ public class Event {
     @NotNull
     @JsonView(Default.class)
     private String place;
+    @JsonView(Default.class)
+    private String conference;
+
+    public String getConference() {
+        return conference;
+    }
+
+    public void setConference(String conference) {
+        this.conference = conference;
+    }
 
     public List<String> getSpeakers() {
         return speakers;
