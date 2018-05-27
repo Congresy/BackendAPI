@@ -166,7 +166,7 @@ public class Conferences {
 			event.setParticipants(participants);
 		} catch (Exception e){
 			List<String> aux = new ArrayList<>();
-			aux.add(event.getId());
+			aux.add(actor.getId());
 			event.setParticipants(aux);
 		}
 
