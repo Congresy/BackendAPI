@@ -22,6 +22,7 @@ import java.util.Objects;
 public class Conference {
 
 	@Id
+    @JsonView(Detailed.class)
 	private String id;
 	@NotBlank
 	@JsonView(Shorted.class)
