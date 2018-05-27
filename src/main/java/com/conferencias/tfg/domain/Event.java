@@ -135,8 +135,7 @@ public class Event {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    @NotEmpty
-    @NotNull
+
     @JsonView(Default.class)
     private List<String> speakers;
     @NotNull
