@@ -7,6 +7,7 @@ import com.conferencias.tfg.domain.Event;
 import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.ConferenceRepository;
+import com.conferencias.tfg.repository.EventRepository;
 import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
@@ -33,12 +34,14 @@ public class Conferences {
     private ConferenceRepository conferenceRepository;
     private ActorRepository actorRepository;
     private UserAccountRepository userAccountRepository;
+    private EventRepository eventRepository;
 
 	@Autowired
-    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository) {
+    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository) {
         this.conferenceRepository = conferenceRepository;
         this.actorRepository = actorRepository;
         this.userAccountRepository = userAccountRepository;
+        this.eventRepository = eventRepository;
     }
 
     @ApiOperation(value = "List all system's conferences in detailed view", response = Conference.class)
@@ -266,9 +269,36 @@ public class Conferences {
 	@DeleteMapping(value = "/{idConference}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
+		List<String> events = new ArrayList<>();
+
 		if (conference == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
+
+		//TODO Delete events of speakers
+
+		// Delete events related to conference
+		if (conference.getEvents() != null){
+			events = conference.getEvents();
+
+			for (String s : events){
+				Event e = eventRepository.findOne(s);
+				eventRepository.delete(e);
+			}
+		}
+
+		// Delete form actors
+		for (Actor a : actorRepository.findAll()){
+			if (a.getConferences() != null){
+				if (a.getConferences().contains(conference.getId())){
+					List<String> conferences = a.getConferences();
+					conferences.remove(conference.getId());
+					a.setConferences(conferences);
+					actorRepository.save(a);
+				}
+			}
+		}
+
 		conferenceRepository.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
