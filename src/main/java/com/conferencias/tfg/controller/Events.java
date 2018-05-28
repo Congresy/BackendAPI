@@ -240,7 +240,7 @@ public class Events {
 		if(currentEvent.getRole().equals("socialEvent"))
 		    currentEvent.setType(event.getType());
 
-		eventRepository.save(event);
+		eventRepository.save(currentEvent);
 		return new ResponseEntity<>(currentEvent, HttpStatus.OK);
 	}
 

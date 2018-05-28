@@ -262,7 +262,7 @@ public class Conferences {
 		currentConference.setSpeakersNames(conference.getSpeakersNames());
 
 		conferenceRepository.save(currentConference);
-		return new ResponseEntity<>(conference, HttpStatus.OK);
+		return new ResponseEntity<>(currentConference, HttpStatus.OK);
 	}
 
     @ApiOperation(value = "Delete a certain conference")
