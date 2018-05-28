@@ -51,7 +51,7 @@ public class Conference {
 	@JsonView(Detailed.class)
 	private String description;
     @Min(1)
-    @JsonView(Views.Default.class)
+    @JsonView(Detailed.class)
     private Integer allowedParticipants;
 
 	public Conference() {
