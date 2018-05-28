@@ -50,13 +50,19 @@ public class Events {
             new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        List<String> speakers = event.getSpeakers();
+        try {
+            List<String> speakers = event.getSpeakers();
+            speakers.add(actor.getId());
+            event.setSpeakers(speakers);
+            eventRepository.save(event);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.add(actor.getId());
+            event.setSpeakers(aux);
+            eventRepository.save(event);
+        }
 
-        speakers.add(actor.getId());
-
-        event.setSpeakers(speakers);
-
-        eventRepository.save(event);
+        //TODO
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
@@ -239,23 +245,23 @@ public class Events {
 	}
 
     @ApiOperation(value = "Delete a certain event")
-	@DeleteMapping(value = "/{idConference}/{idEvent}", produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable("idConference") String idConference, @PathVariable("idEvent") String idEvent) {
+	@DeleteMapping(value = "/{idEvent}", produces = "application/json")
+	public ResponseEntity<?> delete(@PathVariable("idEvent") String idEvent) {
         Event event = eventRepository.findOne(idEvent);
-        Conference conference = conferenceRepository.findOne(idConference);
+        Conference conference = conferenceRepository.findOne(event.getConference());
 
         if (conference== null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
-	    List<String> newEvents = conference.getEvents();
-	    newEvents.remove(idEvent);
-	    conference.setEvents(newEvents);
-	    conferenceRepository.save(conference);
+        // TODO speakers
 
-		if (event == null) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-		}
+	    if(conference.getEvents() != null){
+            List<String> newEvents = conference.getEvents();
+            newEvents.remove(idEvent);
+            conference.setEvents(newEvents);
+            conferenceRepository.save(conference);
+        }
 
 		eventRepository.delete(idEvent);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
