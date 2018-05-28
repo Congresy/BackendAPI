@@ -241,7 +241,7 @@ public class Events {
 		    currentEvent.setType(event.getType());
 
 		eventRepository.save(event);
-		return new ResponseEntity<>(event, HttpStatus.OK);
+		return new ResponseEntity<>(currentEvent, HttpStatus.OK);
 	}
 
     @ApiOperation(value = "Delete a certain event")
