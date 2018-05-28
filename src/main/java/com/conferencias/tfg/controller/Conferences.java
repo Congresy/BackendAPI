@@ -261,7 +261,7 @@ public class Conferences {
 		currentConference.setDescription(conference.getDescription());
 		currentConference.setSpeakersNames(conference.getSpeakersNames());
 
-		conferenceRepository.save(conference);
+		conferenceRepository.save(currentConference);
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
