@@ -19,6 +19,7 @@ import java.util.Objects;
 public class Event {
 
     @Id
+    @JsonView(Default.class)
     private String id;
     @NotBlank
     @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
