@@ -39,6 +39,47 @@ public class Events {
         this.actorRepository = actorRepository;
     }
 
+    @ApiOperation(value = "Add an attendee to a certain conference")
+    @PutMapping(value = "/add/{idEvent}/participants/{idActor}", produces = "application/json")
+    public ResponseEntity<?> addParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
+
+        Actor actor = actorRepository.findOne(idActor);
+        Event event = eventRepository.findOne(idEvent);
+
+        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        try {
+            List<String> participants = event.getParticipants();
+            participants.add(actor.getId());
+            event.setParticipants(participants);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.add(actor.getId());
+            event.setParticipants(aux);
+        }
+
+        if(event.getAllowedParticipants() != 0) {
+            event.setAllowedParticipants(event.getAllowedParticipants()-1);
+            eventRepository.save(event);
+        }
+
+        try {
+            List<String> aux = actor.getEvents();
+            aux.add(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.add(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        }
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
+    }
+
     @ApiOperation(value = "Add an speaker to a certain event")
     @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
     public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
@@ -237,6 +278,7 @@ public class Events {
 		currentEvent.setSpeakers(event.getSpeakers());
 		currentEvent.setEnd(event.getEnd());
 		currentEvent.setRequirements(event.getRequirements());
+        currentEvent.setAllowedParticipants(event.getAllowedParticipants());
 		if(currentEvent.getRole().equals("socialEvent"))
 		    currentEvent.setType(event.getType());
 

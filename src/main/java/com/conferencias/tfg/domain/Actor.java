@@ -210,6 +210,16 @@ public class Actor {
 
     private List<String> folders;
 
+    private List<String> events;
+
+    public List<String> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<String> events) {
+        this.events = events;
+    }
+
     public List<String> getFolders() {
         return folders;
     }

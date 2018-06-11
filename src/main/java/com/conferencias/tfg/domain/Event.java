@@ -1,5 +1,6 @@
 package com.conferencias.tfg.domain;
 
+import com.conferencias.tfg.utilities.Views;
 import com.conferencias.tfg.utilities.Views.Default;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -38,15 +39,18 @@ public class Event {
     private String requirements;
     @JsonView(Default.class)
     @NotBlank
-    @Pattern(regexp = "^(SocialEvent|Ordinary|Invitation|Workshop)$")
+    @Pattern(regexp = "^(Social Event|Ordinary|Invitation|Workshop)$")
     private String role;
+    @Min(1)
+    @JsonView(Default.class)
+    private Integer allowedParticipants;
 
 
     public Event(){
 
     }
 
-    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place) {
+    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -56,9 +60,10 @@ public class Event {
         this.role = role;
         this.speakers = new ArrayList<>();
         this.place = place;
+        this.allowedParticipants = allowedParticipants;
     }
 
-    public Event(String start, String end, String name, String type, String requeriments, String role, String place) {
+    public Event(String start, String end, String name, String type, String requeriments, String role, String plac, Integer allowedParticipants) {
         this.start = start;
         this.end = end;
         this.name = name;
@@ -67,9 +72,10 @@ public class Event {
         this.role = role;
         this.speakers = new ArrayList<>();
         this.place = place;
+        this.allowedParticipants = allowedParticipants;
     }
 
-    public Event(String start, String end, String name, String requeriments, String role, String place) {
+    public Event(String start, String end, String name, String requeriments, String role, String place, Integer allowedParticipants) {
         this.start = start;
         this.end = end;
         this.name = name;
@@ -77,6 +83,15 @@ public class Event {
         this.role = role;
         this.speakers = new ArrayList<>();
         this.place = place;
+        this.allowedParticipants = allowedParticipants;
+    }
+
+    public Integer getAllowedParticipants() {
+        return allowedParticipants;
+    }
+
+    public void setAllowedParticipants(Integer allowedParticipants) {
+        this.allowedParticipants = allowedParticipants;
     }
 
     public String getId() {
@@ -144,6 +159,8 @@ public class Event {
     private String place;
     @JsonView(Default.class)
     private String conference;
+    @JsonView(Views.Default.class)
+    private List<String> participants;
 
     public String getConference() {
         return conference;
@@ -167,6 +184,14 @@ public class Event {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
     }
 
     @Override

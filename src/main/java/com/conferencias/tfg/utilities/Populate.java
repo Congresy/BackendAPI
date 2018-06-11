@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class Populate {
 
-	public static void main(String[] args) {
+	/* public static void main(String[] args) {
 		MongoURI uri = new MongoURI(
 				"mongodb://tfgconferenciasus:OAwlar8I9wkSvQFH@clusterconferencias-shard-00-00-gkx6b.mongodb.net:27017,clusterconferencias-shard-00-01-gkx6b.mongodb.net:27017,clusterconferencias-shard-00-02-gkx6b.mongodb.net:27017/conferencias?ssl=true&replicaSet=ClusterConferencias-shard-0&authSource=admin");
 		MongoTemplate mongo = new MongoTemplate(new Mongo(uri), "conferencias");
@@ -324,5 +324,5 @@ public class Populate {
             mongo.save(conference4);
 
 
-	}
+	}*/
 }
