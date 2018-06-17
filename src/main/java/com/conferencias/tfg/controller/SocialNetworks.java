@@ -32,12 +32,17 @@ public class SocialNetworks {
     @GetMapping("/{id}")
     public ResponseEntity<?> getSocialNetworksByActor(@PathVariable("id") String id) {
         Actor aux = actorRepository.findOne(id);
+        List<SocialNetwork> socialNetworks = new ArrayList<>();
 
         if (aux.getSocialNetworks().isEmpty() || aux.getSocialNetworks() == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(aux.getSocialNetworks(), HttpStatus.FOUND);
         }
+
+        for(String sn : aux.getSocialNetworks()){
+                socialNetworks.add(socialNetworkRepository.findOne(sn));
+        }
+
+        return new ResponseEntity<>(socialNetworks, HttpStatus.FOUND);
     }
 
     @ApiOperation(value = "Create a social network")
