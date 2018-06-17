@@ -110,14 +110,17 @@ public class SocialNetworks {
         }
 
         List<String> socialNetworks = actor.getSocialNetworks();
+        List<String> socialNetworksAux = new ArrayList<>();
 
         for (String s : socialNetworks){
             if(s.equals(idSocialNetwork)){
-                List<String> socialNetworksAux = actor.getSocialNetworks();
-                socialNetworksAux.remove(s);
-                actorRepository.save(actor);
+                socialNetworksAux.add(s);
             }
         }
+
+        socialNetworks.removeAll(socialNetworksAux);
+        actor.setSocialNetworks(socialNetworks);
+        actorRepository.save(actor);
 
         socialNetworkRepository.delete(socialNetwork);
 
