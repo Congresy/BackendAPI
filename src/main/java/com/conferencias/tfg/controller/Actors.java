@@ -3,7 +3,6 @@ package com.conferencias.tfg.controller;
 import com.conferencias.tfg.configuration.CustomPasswordEncoder;
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
-import com.conferencias.tfg.domain.SocialNetwork;
 import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.UserAccountRepository;
@@ -19,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("actors")
@@ -207,24 +205,6 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get all social networks for an actor", response = Iterable.class)
-    @GetMapping("/socialNetwork/{id}")
-    public ResponseEntity<?> getSocialByUser(@PathVariable("id") String id) {
-        Actor aux = actorRepository.findOne(id);
-
-        return new ResponseEntity<>(aux.getSocialNetworks(), HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Create an actor a social network")
-    @PostMapping(value = "/socialNetwork/create", produces = "application/json")
-    public ResponseEntity<?> createSocialNetwork(@RequestBody SocialNetwork socialNetwork, @RequestBody Actor actor, UriComponentsBuilder ucBuilder) {
-        Set<SocialNetwork> aux = actor.getSocialNetworks();
-        aux.add(socialNetwork);
-        actor.setSocialNetworks(aux);
-        actorRepository.save(actor);
-
-        return new ResponseEntity<>(actor.getSocialNetworks(), HttpStatus.CREATED);
-    }
 
     private Boolean actorExist(Actor actor){
         Boolean res = false;

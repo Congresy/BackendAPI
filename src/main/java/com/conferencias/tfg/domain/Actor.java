@@ -1,23 +1,20 @@
 package com.conferencias.tfg.domain;
 
-import com.conferencias.tfg.service.ActorService;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.jdo.annotations.Unique;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Document
 public class Actor {
-
-    @Autowired
-    private ActorService actorService;
 
     @Id
     private String id;
@@ -44,8 +41,6 @@ public class Actor {
     @NotBlank
     @Pattern(regexp = "^(Organizator|Speaker|User|Administrator)$")
     private String role;
-
-    private Set<SocialNetwork> socialNetworks;
 
 
     private String userAccount_;
@@ -79,7 +74,6 @@ public class Actor {
         this.friends = new ArrayList<>();
         this.following = new ArrayList<>();
         this.folders = new ArrayList<>();
-        this.socialNetworks = new HashSet<>();
         this.role = role;
         this.userAccount_ = userAccount_;
     }
@@ -100,7 +94,6 @@ public class Actor {
         this.friends = new ArrayList<>();
         this.following = new ArrayList<>();
         this.folders = new ArrayList<>();
-        this.socialNetworks = new HashSet<>();
         this.role = role;
         this.userAccount_ = userAccount_;
     }
@@ -185,14 +178,6 @@ public class Actor {
         this.role = role;
     }
 
-    public Set<SocialNetwork> getSocialNetworks() {
-        return socialNetworks;
-    }
-
-    public void setSocialNetworks(Set<SocialNetwork> socialNetworks) {
-        this.socialNetworks = socialNetworks;
-    }
-
 
     // --------------------------------------------------------------------------------------------------------------
 
@@ -211,6 +196,16 @@ public class Actor {
     private List<String> folders;
 
     private List<String> events;
+
+    private List<String> socialNetworks;
+
+    public List<String> getSocialNetworks() {
+        return socialNetworks;
+    }
+
+    public void setSocialNetworks(List<String> socialNetworks) {
+        this.socialNetworks = socialNetworks;
+    }
 
     public List<String> getEvents() {
         return events;
