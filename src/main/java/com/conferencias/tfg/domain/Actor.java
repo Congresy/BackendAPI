@@ -29,7 +29,6 @@ public class Actor {
     @Pattern(regexp = "^(\\d{9}|\\d{14})$")
     private String phone;
     @URL
-    @NotBlank
     private String photo;
     @Unique
     @NotBlank
@@ -84,6 +83,25 @@ public class Actor {
         this.email = email;
         this.phone = phone;
         this.photo = photo;
+        this.nick = nick;
+        this.banned = false;
+        this.private_ = false;
+        this.place = place;
+        this.comments = new ArrayList<>();
+        this.conferences = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.friends = new ArrayList<>();
+        this.following = new ArrayList<>();
+        this.folders = new ArrayList<>();
+        this.role = role;
+        this.userAccount_ = userAccount_;
+    }
+
+    public Actor(String name, String surname, String email, String phone, String nick, String place, String role, String userAccount_) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.phone = phone;
         this.nick = nick;
         this.banned = false;
         this.private_ = false;
