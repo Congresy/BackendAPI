@@ -122,17 +122,16 @@ public class Conferences {
 			}
 		}
 
-		List<String> conferences = new ArrayList<>();
-		conferences = actor.getConferences();
-
 		List<Conference> res = new ArrayList<>();
 
-		for(String s : conferences){
-			res.add(conferenceRepository.findOne(s));
-		}
-
-		if (res.isEmpty()) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+		List<String> conferences = new ArrayList<>();
+		try {
+			conferences = actor.getConferences();
+			for(String s : conferences){
+				res.add(conferenceRepository.findOne(s));
+			}
+		} catch (Exception e){
+			res = new ArrayList<>();
 		}
 
 		return new ResponseEntity<>(res, HttpStatus.OK);
