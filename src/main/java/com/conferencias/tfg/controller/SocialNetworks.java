@@ -42,7 +42,7 @@ public class SocialNetworks {
                 socialNetworks.add(socialNetworkRepository.findOne(sn));
         }
 
-        return new ResponseEntity<>(socialNetworks, HttpStatus.FOUND);
+        return new ResponseEntity<>(socialNetworks, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Create a social network")
