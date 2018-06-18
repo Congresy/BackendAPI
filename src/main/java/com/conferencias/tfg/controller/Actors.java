@@ -65,7 +65,7 @@ public class Actors {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/actors/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(actorWrapper.getActor(), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get an actor by ID", response = Actor.class)
