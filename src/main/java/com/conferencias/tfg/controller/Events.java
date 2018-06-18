@@ -119,6 +119,42 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Delete an speaker of a certain event")
+    @PutMapping("/delete/{idEvent}/speakers/{idSpeaker}")
+    public ResponseEntity<?> deleteSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
+
+        Actor actor = actorRepository.findOne(idActor);
+        Event event = eventRepository.findOne(idEvent);
+
+        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        try {
+            List<String> speakers = event.getSpeakers();
+            speakers.remove(actor.getId());
+            event.setSpeakers(speakers);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.remove(actor.getId());
+            event.setSpeakers(aux);
+        }
+
+        try {
+            List<String> aux = actor.getEvents();
+            aux.remove(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.remove(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        }
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
+    }
+
     @ApiOperation(value = "Add an speaker to a certain event")
     @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
     public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
@@ -126,7 +162,7 @@ public class Events {
         Actor actor = actorRepository.findOne(idActor);
         Event event = eventRepository.findOne(idEvent);
 
-        if(!actor.getRole().equals("Speaker")){
+        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
             new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -134,15 +170,23 @@ public class Events {
             List<String> speakers = event.getSpeakers();
             speakers.add(actor.getId());
             event.setSpeakers(speakers);
-            eventRepository.save(event);
         } catch (Exception e){
             List<String> aux = new ArrayList<>();
             aux.add(actor.getId());
             event.setSpeakers(aux);
-            eventRepository.save(event);
         }
 
-        //TODO
+        try {
+            List<String> aux = actor.getEvents();
+            aux.add(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.add(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        }
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
