@@ -80,6 +80,45 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Delete an attendee of a certain conference")
+    @PutMapping(value = "/delete/{idEvent}/participants/{idActor}", produces = "application/json")
+    public ResponseEntity<?> deleteParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {
+
+        Actor actor = actorRepository.findOne(idActor);
+        Event event = eventRepository.findOne(idEvent);
+
+        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
+            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        try {
+            List<String> participants = event.getParticipants();
+            participants.remove(actor.getId());
+            event.setParticipants(participants);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.remove(actor.getId());
+            event.setParticipants(aux);
+        }
+
+        event.setAllowedParticipants(event.getAllowedParticipants() + 1);
+        eventRepository.save(event);
+
+        try {
+            List<String> aux = actor.getEvents();
+            aux.remove(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.remove(event.getId());
+            actor.setEvents(aux);
+            actorRepository.save(actor);
+        }
+
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
+    }
+
     @ApiOperation(value = "Add an speaker to a certain event")
     @PutMapping("/add/{idEvent}/speakers/{idSpeaker}")
     public ResponseEntity<?> addSpeaker(@PathVariable("idEvent") String idEvent, @PathVariable("idSpeaker") String idActor) {
@@ -178,7 +217,6 @@ public class Events {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
-        List<Event> toDelete = new ArrayList<>();
 
         for(String s : eventsAux){
                 events.add(eventRepository.findOne(s));
@@ -198,7 +236,6 @@ public class Events {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
-        List<Event> toDelete = new ArrayList<>();
         Actor actor = actorRepository.findOne(idActor);
 
         for(String s : eventsAux){
