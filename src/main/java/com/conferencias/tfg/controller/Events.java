@@ -109,6 +109,61 @@ public class Events {
     }
 
     @ApiOperation(value = "List all events", response = Iterable.class)
+    @GetMapping("/own/{idActor}")
+    @JsonView(Views.Default.class)
+    public ResponseEntity<?> getEventsOfActor(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Event> events = new ArrayList<>();
+        List<String> eventsString = new ArrayList<>();
+        List<Conference> conferences = new ArrayList<>();
+
+        try {
+
+            if (actor.getRole().equals("Organizator")){
+
+                for(String s: actor.getConferences()){
+                    for(Conference c : conferenceRepository.findAll()){
+                        if (s.equals(c.getId())){
+                            conferences.add(c);
+                        }
+                    }
+                }
+
+                for (Conference c : conferences){
+                    eventsString.addAll(c.getEvents());
+                }
+
+                for (String s : eventsString){
+                    for (Event e : eventRepository.findAll()){
+                        if(s.equals(e.getId())){
+                            events.add(e);
+                        }
+                    }
+                }
+
+            } else {
+
+                for (String s : actor.getEvents()){
+                    for (Event e : eventRepository.findAll()){
+                        if(s.equals(e.getId())){
+                            events.add(e);
+                        }
+                    }
+                }
+
+            }
+
+        } catch (Exception e){
+
+            events = new ArrayList<>();
+
+        }
+
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "List all events", response = Iterable.class)
 	@GetMapping("/all")
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAll() {
@@ -123,17 +178,40 @@ public class Events {
         Conference conference = conferenceRepository.findOne(id);
         List<String> eventsAux = conference.getEvents();
         List<Event> events = new ArrayList<>();
+        List<Event> toDelete = new ArrayList<>();
 
         for(String s : eventsAux){
                 events.add(eventRepository.findOne(s));
         }
 
-        Comparator<Event> comparator = new Comparator<Event>() {
-            @Override
-            public int compare(Event c1, Event c2) {
-                return parseDate(c1.getStart()).compareTo(parseDate(c2.getStart()));
+        Comparator<Event> comparator = Comparator.comparing(c -> parseDate(c.getStart()));
+
+        events.sort(comparator);
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "List all events of a certain conference, depends of users and organizators", response = Iterable.class)
+    @GetMapping("/all/conferences/{idConference}/actor/{idActor}")
+    @JsonView(Views.Default.class)
+    public ResponseEntity<?> getAllOfConferenceByUser(@PathVariable("idConference") String id, @PathVariable("idActor") String idActor) {
+        Conference conference = conferenceRepository.findOne(id);
+        List<String> eventsAux = conference.getEvents();
+        List<Event> events = new ArrayList<>();
+        List<Event> toDelete = new ArrayList<>();
+        Actor actor = actorRepository.findOne(idActor);
+
+        for(String s : eventsAux){
+            if (actor.getRole().equals("User")){
+                if(actor.getEvents().contains(s)) {
+                    events.add(eventRepository.findOne(s));
+                }
+            } else {
+                events.add(eventRepository.findOne(s));
             }
-        };
+        }
+
+        Comparator<Event> comparator = Comparator.comparing(c -> parseDate(c.getStart()));
 
         events.sort(comparator);
 
@@ -256,6 +334,8 @@ public class Events {
                 break;
             }
         }
+
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/events/{idEvent}").buildAndExpand(event.getId()).toUri());
