@@ -134,10 +134,12 @@ public class Events {
             List<String> speakers = event.getSpeakers();
             speakers.remove(actor.getId());
             event.setSpeakers(speakers);
+            eventRepository.save(event);
         } catch (Exception e){
             List<String> aux = new ArrayList<>();
             aux.remove(actor.getId());
             event.setSpeakers(aux);
+            eventRepository.save(event);
         }
 
         try {
@@ -170,10 +172,12 @@ public class Events {
             List<String> speakers = event.getSpeakers();
             speakers.add(actor.getId());
             event.setSpeakers(speakers);
+            eventRepository.save(event);
         } catch (Exception e){
             List<String> aux = new ArrayList<>();
             aux.add(actor.getId());
             event.setSpeakers(aux);
+            eventRepository.save(event);
         }
 
         try {
