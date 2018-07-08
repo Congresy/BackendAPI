@@ -3,8 +3,10 @@ package com.conferencias.tfg.controller;
 import com.conferencias.tfg.configuration.CustomPasswordEncoder;
 import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.Event;
 import com.conferencias.tfg.domain.UserAccount;
 import com.conferencias.tfg.repository.ActorRepository;
+import com.conferencias.tfg.repository.EventRepository;
 import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.service.ActorService;
 import io.swagger.annotations.Api;
@@ -30,13 +32,16 @@ public class Actors {
 
     private final UserAccountRepository userAccountRepository;
 
+    private final EventRepository eventRepository;
+
     CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
 
     @Autowired
-    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository) {
+    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository, EventRepository eventRepository) {
         this.actorRepository = actorRepository;
         this.actorService = actorService;
         this.userAccountRepository = userAccountRepository;
+        this.eventRepository = eventRepository;
     }
 
     @GetMapping()
@@ -151,6 +156,25 @@ public class Actors {
             if (a.getRole().equals(role))
                 actors.add(a);
         }
+
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get all speakers so they can be added to an event", response = Iterable.class)
+    @GetMapping("/speakers/event/{idEvent}")
+    public ResponseEntity<?> getAllSpeakers(@PathVariable("idEvent") String idEvent) {
+        Event event = eventRepository.findOne(idEvent);
+
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (a.getRole().equals("Speaker")){
+                if(!event.getSpeakers().contains(a.getId())){
+                    actors.add(a);
+                }
+            }
+        }
+
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
