@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,12 +39,12 @@ public class Post {
 
     }
 
-    public Post(String id, String author, String title, String body, String category, String posted, List<String> comments) {
+    public Post(String id, String author, String title, String body, String category, String posted) {
         this.id = id;
         this.author = author;
         this.body = body;
         this.category = category;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.title = title;
         this.posted = posted;
         this.votes = 0;
@@ -52,11 +53,11 @@ public class Post {
     }
 
 
-    public Post(String author, String title, String body, String category, String posted, List<String> comments) {
+    public Post(String author, String title, String body, String category, String posted) {
         this.author = author;
         this.body = body;
         this.category = category;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.title = title;
         this.posted = posted;
         this.votes = 0;
