@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,9 +32,12 @@ public class Posts {
 
     @ApiOperation(value = "List all system's posts", response = Iterable.class)
     @GetMapping()
-    public List<Post> showAll() {
+    public ResponseEntity<?> showAll() {
+        List<Post> res = new ArrayList<>(postRepository.findAll());
 
-        return postRepository.findAll();
+        res.sort(Comparator.comparingInt((Post c) -> parseDate(c.getPosted()).getNano()));
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Create a post")
@@ -156,21 +161,6 @@ public class Posts {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete vote from post ")
-    @PutMapping(value = "/votes/delete/{idPost}/", produces = "application/json")
-    public ResponseEntity<?> addVote(@PathVariable("idPost") String idPost) {
-        Post post = postRepository.findOne(idPost);
-
-        if (post == null) {
-            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-        }
-
-        post.setVotes(post.getVotes() - 1);
-        postRepository.save(post);
-
-        return new ResponseEntity<>(post, HttpStatus.OK);
-    }
-
 
     private Boolean postExist(Post post) {
         Boolean res = false;
@@ -182,5 +172,11 @@ public class Posts {
             }
         }
         return res;
+    }
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
     }
 }
