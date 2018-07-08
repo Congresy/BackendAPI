@@ -31,6 +31,8 @@ public class Post {
     @NotNull
     @Min(0)
     private Integer views;
+    @NotNull
+    private Boolean draft;
 
     public Post(){
 
@@ -46,6 +48,7 @@ public class Post {
         this.posted = posted;
         this.votes = 0;
         this.views = 0;
+        this.draft = true;
     }
 
 
@@ -58,6 +61,15 @@ public class Post {
         this.posted = posted;
         this.votes = 0;
         this.views = 0;
+        this.draft = true;
+    }
+
+    public Boolean getDraft() {
+        return draft;
+    }
+
+    public void setDraft(Boolean draft) {
+        this.draft = draft;
     }
 
     public Integer getViews() {

@@ -48,13 +48,25 @@ public class Posts {
         if (this.postExist(post)) {
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
-        Post aux = new Post();
-        post.setId(aux.getId());
+
         postRepository.save(post);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "Make a post public")
+    @PutMapping("/public/{idPost}")
+    public ResponseEntity<?> makePublic(@PathVariable("idPost") String idPost, UriComponentsBuilder ucBuilder) {
+
+        Post post = postRepository.findOne(idPost);
+
+        post.setDraft(false);
+
+        postRepository.save(post);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get a post by ID", response = Post.class)
