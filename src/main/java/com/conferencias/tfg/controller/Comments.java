@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("comments")
 @Api(value="congresy", description="Operations pertaining to comments in Congresy")

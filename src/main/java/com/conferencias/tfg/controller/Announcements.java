@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("announcements")
 @Api(value = "Announcements", description = "Operations related with announcements")
