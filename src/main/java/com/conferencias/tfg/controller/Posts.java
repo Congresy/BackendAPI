@@ -52,8 +52,6 @@ public class Posts {
 
         Actor actor = actorRepository.findOne(post.getAuthor());
 
-        post.setAuthor(actor.getName() + " " + actor.getSurname());
-
         postRepository.save(post);
 
         try {
