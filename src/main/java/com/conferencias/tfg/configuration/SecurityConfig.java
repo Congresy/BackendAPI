@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.mapping.event.ValidatingMongoEventListener;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,15 +37,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/actors/all").permitAll().antMatchers("/conference/**").permitAll()
+		http.authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/**").permitAll().antMatchers("/actors/all").permitAll().antMatchers("/conference/**").permitAll()
 				.antMatchers("/**").permitAll()
 				.antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security",
 						"/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html",
 						"/swagger-resources/configuration/security")
 				.permitAll().antMatchers("/webjars/springfox-swagger-ui/**").permitAll().anyRequest().authenticated()
 				.and().formLogin()//
-				.and().logout().permitAll();
+				.and().logout().permitAll()
+				;
 
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception{
+		web.ignoring()
+				.antMatchers(HttpMethod.OPTIONS,"/**");
 	}
 
 //	@Autowired

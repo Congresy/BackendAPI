@@ -19,7 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("folders")
 @Api(value="congresy", description="Operations pertaining to folders in Congresy")

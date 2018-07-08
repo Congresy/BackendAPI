@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("socialNetworks")
 @Api(value = "SocialNetworks", description = "Operations related with social networks")

@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("messages")
 @Api(value="congresy", description="Operations pertaining to messages in Congresy")

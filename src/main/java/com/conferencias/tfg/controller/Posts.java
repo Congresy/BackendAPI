@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("posts")
 @Api(value = "Posts", description = "Operations related with posts")
