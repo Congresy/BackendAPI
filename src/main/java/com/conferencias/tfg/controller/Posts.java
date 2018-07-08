@@ -1,9 +1,10 @@
 package com.conferencias.tfg.controller;
 
+import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Post;
+import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.PostRepository;
-import com.conferencias.tfg.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,15 @@ import java.util.List;
 @Api(value = "Posts", description = "Operations related with posts")
 public class Posts {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+
+    private final ActorRepository actorRepository;
 
     @Autowired
-    private PostService postService;
+    public Posts(PostRepository postRepository, ActorRepository actorRepository) {
+        this.postRepository = postRepository;
+        this.actorRepository = actorRepository;
+    }
 
     @ApiOperation(value = "List all system's posts", response = Iterable.class)
     @GetMapping()
@@ -45,11 +50,12 @@ public class Posts {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
 
-        if (this.postExist(post)) {
-            return new ResponseEntity<Error>(HttpStatus.CONFLICT);
-        }
+        Actor actor = actorRepository.findOne(post.getAuthor());
+
+        post.setAuthor(actor.getName() + " " + actor.getSurname());
 
         postRepository.save(post);
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
@@ -61,6 +67,10 @@ public class Posts {
     public ResponseEntity<?> makePublic(@PathVariable("idPost") String idPost, UriComponentsBuilder ucBuilder) {
 
         Post post = postRepository.findOne(idPost);
+
+        Actor actor = actorRepository.findOne(post.getAuthor());
+
+        post.setAuthor(actor.getName() + " " + actor.getSurname());
 
         post.setDraft(false);
 
@@ -91,7 +101,13 @@ public class Posts {
         if (currentpost == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
-        postService.edit(currentpost, post);
+
+        currentpost.setTitle(post.getTitle());
+        currentpost.setBody(post.getBody());
+        currentpost.setCategory(post.getCategory());
+
+        postRepository.save(currentpost);
+
         return new ResponseEntity<>(currentpost, HttpStatus.OK);
     }
 
