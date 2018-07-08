@@ -56,21 +56,19 @@ public class Posts {
 
         postRepository.save(post);
 
-        if (actor.getPosts() != null){
-            List<String> add = new ArrayList<>();
+        try {
+            List<String> add = actor.getPosts();
             add.add(post.getId());
             actor.setPosts(add);
             actorRepository.save(actor);
-        } else {
-            List<String> add = actor.getPosts();
+        } catch (Exception e) {
+            List<String> add = new ArrayList<>();
             add.add(post.getId());
             actor.setPosts(add);
             actorRepository.save(actor);
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Make a post public")
@@ -129,6 +127,23 @@ public class Posts {
         if (post == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
+
+        Actor actor = null;
+
+        for (Actor a : actorRepository.findAll()){
+            if(a.getPosts() != null){
+                if(a.getPosts().contains(id)){
+                    actor = a;
+                    break;
+                }
+            }
+        }
+
+        List<String> add = actor.getPosts();
+        add.remove(id);
+        actor.setPosts(add);
+        actorRepository.save(actor);
+
         postRepository.delete(id);
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
     }
