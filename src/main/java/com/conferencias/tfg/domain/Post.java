@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +26,11 @@ public class Post {
     @NotBlank
     @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
     private String posted;
+    @NotNull
+    private Integer votes;
+    @NotNull
+    @Min(0)
+    private Integer views;
 
     public Post(){
 
@@ -37,6 +44,8 @@ public class Post {
         this.comments = comments;
         this.title = title;
         this.posted = posted;
+        this.votes = 0;
+        this.views = 0;
     }
 
 
@@ -47,6 +56,24 @@ public class Post {
         this.comments = comments;
         this.title = title;
         this.posted = posted;
+        this.votes = 0;
+        this.views = 0;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
+    }
+
+    public Integer getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Integer votes) {
+        this.votes = votes;
     }
 
     public String getId() {
@@ -114,14 +141,14 @@ public class Post {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Post post = (Post) o;
-        return Objects.equals(id, post.id) &&
-                Objects.equals(title, post.title) &&
-                Objects.equals(body, post.body);
+        return Objects.equals(posted, post.posted) &&
+                Objects.equals(votes, post.votes) &&
+                Objects.equals(views, post.views);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, title, body);
+        return Objects.hash(posted, votes, views);
     }
 }

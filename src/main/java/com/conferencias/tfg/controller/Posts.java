@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -58,6 +59,8 @@ public class Posts {
         if (post == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
+
+        post.setViews(post.getViews() + 1);
 
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
@@ -121,6 +124,51 @@ public class Posts {
                 posts.add(p);
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get most voted posts", response = Iterable.class)
+    @GetMapping("/votes")
+    public ResponseEntity<?> getMostVoted() {
+        List<Post> posts = postRepository.findAll();
+
+        posts.sort(Comparator.comparing(Post::getVotes));
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Vote a post")
+    @PutMapping(value = "/votes/{action}/{idPost}/", produces = "application/json")
+    public ResponseEntity<?> vote(@PathVariable("idPost") String idPost, @PathVariable("action") String action) {
+        Post post = postRepository.findOne(idPost);
+
+        if (post == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        if (action.equals("add")){
+            post.setVotes(post.getVotes() + 1);
+            postRepository.save(post);
+        } else if (action.equals("delete")) {
+            post.setVotes(post.getVotes() - 1);
+            postRepository.save(post);
+        }
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Delete vote from post ")
+    @PutMapping(value = "/votes/delete/{idPost}/", produces = "application/json")
+    public ResponseEntity<?> addVote(@PathVariable("idPost") String idPost) {
+        Post post = postRepository.findOne(idPost);
+
+        if (post == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        post.setVotes(post.getVotes() - 1);
+        postRepository.save(post);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
 
