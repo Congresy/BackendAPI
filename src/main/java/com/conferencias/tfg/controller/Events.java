@@ -140,6 +140,7 @@ public class Events {
             event.setSpeakers(aux);
         }
 
+
         eventRepository.save(event);
 
         try {
@@ -248,6 +249,24 @@ public class Events {
 
 
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Get all speakers of some event", response = Iterable.class)
+    @GetMapping("/speakers/{idEvent}")
+    public ResponseEntity<?> getSpeakersOfEvent(@PathVariable("idEvent") String idEvent) {
+        Event event = eventRepository.findOne(idEvent);
+        List<Actor> actors = new ArrayList<>();
+        List<String> eventsString = new ArrayList<>();
+
+        if (event.getSpeakers() != null){
+            for (Actor sp : actorRepository.findAll()){
+                if(sp.getRole().equals("Speaker") && event.getSpeakers().contains(sp.getId())){
+                        actors.add(sp);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
     @ApiOperation(value = "List all events", response = Iterable.class)
