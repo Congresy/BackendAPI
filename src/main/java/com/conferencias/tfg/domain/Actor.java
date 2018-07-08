@@ -217,6 +217,16 @@ public class Actor {
 
     private List<String> socialNetworks;
 
+    private List<String> posts;
+
+    public List<String> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<String> posts) {
+        this.posts = posts;
+    }
+
     public List<String> getSocialNetworks() {
         return socialNetworks;
     }
