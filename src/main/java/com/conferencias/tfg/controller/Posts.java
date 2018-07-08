@@ -56,6 +56,17 @@ public class Posts {
 
         postRepository.save(post);
 
+        if (actor.getPosts() != null){
+            List<String> add = new ArrayList<>();
+            add.add(post.getId());
+            actor.setPosts(add);
+            actorRepository.save(actor);
+        } else {
+            List<String> add = actor.getPosts();
+            add.add(post.getId());
+            actor.setPosts(add);
+            actorRepository.save(actor);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
