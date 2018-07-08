@@ -46,6 +46,25 @@ public class Posts {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List own posts", response = Iterable.class)
+    @GetMapping("/own/{idActor}")
+    public ResponseEntity<?> showOwn(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+
+        List<Post> res = new ArrayList<>();
+
+        try{
+            for(String s : actor.getPosts()){
+                res.add(postRepository.findOne(s));
+            }
+            res.sort(Comparator.comparingInt((Post c) -> parseDate(c.getPosted()).getNano()));
+        } catch (Exception e){
+            res = new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Create a post")
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
