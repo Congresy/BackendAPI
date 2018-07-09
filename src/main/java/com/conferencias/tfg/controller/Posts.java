@@ -214,8 +214,8 @@ public class Posts {
     }
 
     @ApiOperation(value = "Vote a post")
-    @PutMapping(value = "/votes/{action}/{idPost}/", produces = "application/json")
-    public ResponseEntity<?> vote(@PathVariable("idPost") String idPost, @PathVariable("action") String action) {
+    @PutMapping(value = "/votes/{idPost}", produces = "application/json", params = "action")
+    public ResponseEntity<?> vote(@PathVariable("idPost") String idPost, @RequestParam("action") String action) {
         Post post = postRepository.findOne(idPost);
 
         if (post == null) {
