@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,33 +32,45 @@ public class Post {
     @NotNull
     @Min(0)
     private Integer views;
+    @NotNull
+    private Boolean draft;
 
     public Post(){
 
     }
 
-    public Post(String id, String author, String title, String body, String category, String posted, List<String> comments) {
+    public Post(String id, String author, String title, String body, String category, String posted) {
         this.id = id;
         this.author = author;
         this.body = body;
         this.category = category;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.title = title;
         this.posted = posted;
         this.votes = 0;
         this.views = 0;
+        this.draft = true;
     }
 
 
-    public Post(String author, String title, String body, String category, String posted, List<String> comments) {
+    public Post(String author, String title, String body, String category, String posted) {
         this.author = author;
         this.body = body;
         this.category = category;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.title = title;
         this.posted = posted;
         this.votes = 0;
         this.views = 0;
+        this.draft = true;
+    }
+
+    public Boolean getDraft() {
+        return draft;
+    }
+
+    public void setDraft(Boolean draft) {
+        this.draft = draft;
     }
 
     public Integer getViews() {

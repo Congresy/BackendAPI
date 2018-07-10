@@ -1,9 +1,10 @@
 package com.conferencias.tfg.controller;
 
+import com.conferencias.tfg.domain.Actor;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Post;
+import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.PostRepository;
-import com.conferencias.tfg.service.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,33 +26,83 @@ import java.util.List;
 @Api(value = "Posts", description = "Operations related with posts")
 public class Posts {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+
+    private final ActorRepository actorRepository;
 
     @Autowired
-    private PostService postService;
+    public Posts(PostRepository postRepository, ActorRepository actorRepository) {
+        this.postRepository = postRepository;
+        this.actorRepository = actorRepository;
+    }
 
     @ApiOperation(value = "List all system's posts", response = Iterable.class)
     @GetMapping()
-    public List<Post> showAll() {
+    public ResponseEntity<?> showAll() {
+        List<Post> res = new ArrayList<>(postRepository.findAll());
 
-        return postRepository.findAll();
+        res.sort(Comparator.comparingInt((Post c) -> parseDate(c.getPosted()).getNano()));
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "List own posts", response = Iterable.class)
+    @GetMapping("/own/{idActor}")
+    public ResponseEntity<?> showOwn(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+
+        List<Post> res = new ArrayList<>();
+
+        try{
+            for(String s : actor.getPosts()){
+                res.add(postRepository.findOne(s));
+            }
+            res.sort(Comparator.comparingInt((Post c) -> parseDate(c.getPosted()).getNano()));
+        } catch (Exception e){
+            res = new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Create a post")
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
 
-        if (this.postExist(post)) {
-            return new ResponseEntity<Error>(HttpStatus.CONFLICT);
-        }
-        Post aux = new Post();
-        post.setId(aux.getId());
+        Actor actor = actorRepository.findOne(post.getAuthor());
+
         postRepository.save(post);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/post/{id}").buildAndExpand(post.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        try {
+            List<String> add = actor.getPosts();
+            add.add(post.getId());
+            actor.setPosts(add);
+            actorRepository.save(actor);
+        } catch (Exception e) {
+            List<String> add = new ArrayList<>();
+            add.add(post.getId());
+            actor.setPosts(add);
+            actorRepository.save(actor);
+        }
+
+        return new ResponseEntity<>(post, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "Make a post public")
+    @PutMapping("/public/{idPost}")
+    public ResponseEntity<?> makePublic(@PathVariable("idPost") String idPost, UriComponentsBuilder ucBuilder) {
+
+        Post post = postRepository.findOne(idPost);
+
+        Actor actor = actorRepository.findOne(post.getAuthor());
+
+        post.setAuthor(actor.getName() + " " + actor.getSurname());
+
+        post.setDraft(false);
+
+        postRepository.save(post);
+
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get a post by ID", response = Post.class)
@@ -74,7 +127,13 @@ public class Posts {
         if (currentpost == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
-        postService.edit(currentpost, post);
+
+        currentpost.setTitle(post.getTitle());
+        currentpost.setBody(post.getBody());
+        currentpost.setCategory(post.getCategory());
+
+        postRepository.save(currentpost);
+
         return new ResponseEntity<>(currentpost, HttpStatus.OK);
     }
 
@@ -85,6 +144,23 @@ public class Posts {
         if (post == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
+
+        Actor actor = null;
+
+        for (Actor a : actorRepository.findAll()){
+            if(a.getPosts() != null){
+                if(a.getPosts().contains(id)){
+                    actor = a;
+                    break;
+                }
+            }
+        }
+
+        List<String> add = actor.getPosts();
+        add.remove(id);
+        actor.setPosts(add);
+        actorRepository.save(actor);
+
         postRepository.delete(id);
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
     }
@@ -138,8 +214,8 @@ public class Posts {
     }
 
     @ApiOperation(value = "Vote a post")
-    @PutMapping(value = "/votes/{action}/{idPost}/", produces = "application/json")
-    public ResponseEntity<?> vote(@PathVariable("idPost") String idPost, @PathVariable("action") String action) {
+    @PutMapping(value = "/votes/{idPost}", produces = "application/json", params = "action")
+    public ResponseEntity<?> vote(@PathVariable("idPost") String idPost, @RequestParam("action") String action) {
         Post post = postRepository.findOne(idPost);
 
         if (post == null) {
@@ -157,21 +233,6 @@ public class Posts {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Delete vote from post ")
-    @PutMapping(value = "/votes/delete/{idPost}/", produces = "application/json")
-    public ResponseEntity<?> addVote(@PathVariable("idPost") String idPost) {
-        Post post = postRepository.findOne(idPost);
-
-        if (post == null) {
-            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-        }
-
-        post.setVotes(post.getVotes() - 1);
-        postRepository.save(post);
-
-        return new ResponseEntity<>(post, HttpStatus.OK);
-    }
-
 
     private Boolean postExist(Post post) {
         Boolean res = false;
@@ -183,5 +244,11 @@ public class Posts {
             }
         }
         return res;
+    }
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
     }
 }
