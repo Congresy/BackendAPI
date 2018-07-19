@@ -15,6 +15,7 @@ import java.util.Objects;
 @Document
 public class Comment {
 
+    @JsonView(Views.Default.class)
     @Id
     private String id;
     @NotBlank
@@ -104,6 +105,17 @@ public class Comment {
 
     @JsonView(Views.Default.class)
     private List<String> responses;
+
+    @JsonView(Views.Default.class)
+    private String commentable;
+
+    public String getCommentable() {
+        return commentable;
+    }
+
+    public void setCommentable(String commentable) {
+        this.commentable = commentable;
+    }
 
     public List<String> getResponses() {
         return responses;

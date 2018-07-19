@@ -47,7 +47,7 @@ public class Comments {
     }
 
     @ApiOperation(value = "List all of system's comments", response = Iterable.class)
-	@GetMapping("/all")
+	@GetMapping()
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAll() {
 		List<Comment> comments = commentRepository.findAll();
@@ -179,7 +179,7 @@ public class Comments {
         List<String> commentsAux;
         Object commentable;
         Actor actor = actorRepository.findOne(idAuthor);
-        List<String> commentsActor = new ArrayList<>();
+        List<String> commentsActor;
 
         commentRepository.save(comment);
 
@@ -191,6 +191,9 @@ public class Comments {
                 commentsAux.add(comment.getId());
                 ((Post) commentable).setComments(commentsAux);
                 postRepository.save((Post)commentable);
+
+                comment.setCommentable(((Post) commentable).getId());
+                commentRepository.save(comment);
 
                 try {
                     commentsActor = actor.getComments();
@@ -209,6 +212,9 @@ public class Comments {
                 commentsAux.add(comment.getId());
                 ((Post) commentable).setComments(commentsAux);
                 postRepository.save((Post)commentable);
+
+                comment.setCommentable(((Post) commentable).getId());
+                commentRepository.save(comment);
 
                 try {
                     commentsActor = actor.getComments();
@@ -233,6 +239,9 @@ public class Comments {
                 ((Conference) commentable).setComments(commentsAux);
                 conferenceRepository.save((Conference)commentable);
 
+                comment.setCommentable(((Conference) commentable).getId());
+                commentRepository.save(comment);
+
                 try {
                     commentsActor = actor.getComments();
                     commentsActor.add(comment.getId());
@@ -250,6 +259,9 @@ public class Comments {
                 commentsAux.add(comment.getId());
                 ((Conference) commentable).setComments(commentsAux);
                 conferenceRepository.save((Conference)commentable);
+
+                comment.setCommentable(((Conference) commentable).getId());
+                commentRepository.save(comment);
 
                 try {
                     commentsActor = actor.getComments();
@@ -270,16 +282,83 @@ public class Comments {
     }
 
     @ApiOperation(value = "Create a response to a certain comment")
-    @PostMapping(value = "/{idCommentToRespond}/response", produces = "application/json")
-    public ResponseEntity<?> createResponse(@PathVariable("idCommentToRespond") String id, @RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
+    @PostMapping(value = "/{idCommentToRespond}/response/{idAuthor}", produces = "application/json")
+    public ResponseEntity<?> createResponse(@PathVariable("idAuthor") String idAuthor, @PathVariable("idCommentToRespond") String id, @RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
         Comment commentToResponse = commentRepository.findOne(id);
-        List<String> responses = commentToResponse.getResponses();
+        Actor actor = actorRepository.findOne(idAuthor);
+        List<String> responses;
+        List<String> commentsActor;
+
+        comment.setCommentable(commentToResponse.getCommentable());
 
         commentRepository.save(comment);
 
-        responses.add(comment.getId());
-        commentToResponse.setResponses(responses);
-        commentRepository.save(commentToResponse);
+        if (postRepository.findOne(comment.getCommentable()) != null){
+            Post post = postRepository.findOne(comment.getCommentable());
+            try {
+                List<String> newComments = post.getComments();
+                newComments.add(comment.getId());
+                post.setComments(newComments);
+                postRepository.save(post);
+            } catch (NullPointerException e){
+                List<String> newComments = new ArrayList<>();
+                newComments.add(comment.getId());
+                post.setComments(newComments);
+                postRepository.save(post);
+            }
+        } else {
+            Conference conference = conferenceRepository.findOne(comment.getCommentable());
+            try {
+                List<String> newComments = conference.getComments();
+                newComments.add(comment.getId());
+                conference.setComments(newComments);
+                conferenceRepository.save(conference);
+            } catch (NullPointerException e){
+                List<String> newComments = new ArrayList<>();
+                newComments.add(comment.getId());
+                conference.setComments(newComments);
+                conferenceRepository.save(conference);
+            }
+        }
+
+        try {
+            responses = commentToResponse.getResponses();
+            responses.add(comment.getId());
+            commentToResponse.setResponses(responses);
+            commentRepository.save(commentToResponse);
+
+            try {
+                commentsActor = actor.getComments();
+                commentsActor.add(comment.getId());
+                actor.setComments(commentsActor);
+                actorRepository.save(actor);
+            } catch (NullPointerException e1){
+                commentsActor = new ArrayList<>();
+                commentsActor.add(comment.getId());
+                actor.setComments(commentsActor);
+                actorRepository.save(actor);
+            }
+
+        } catch (NullPointerException e){
+            responses = new ArrayList<>();
+            responses.add(comment.getId());
+            commentToResponse.setResponses(responses);
+            commentRepository.save(commentToResponse);
+
+            try {
+                commentsActor = actor.getComments();
+                commentsActor.add(comment.getId());
+                actor.setComments(commentsActor);
+                actorRepository.save(actor);
+            } catch (NullPointerException e1){
+                commentsActor = new ArrayList<>();
+                commentsActor.add(comment.getId());
+                actor.setComments(commentsActor);
+                actorRepository.save(actor);
+            }
+        }
+
+        commentRepository.save(comment);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/comment/{idComment}").buildAndExpand(comment.getId()).toUri());
@@ -296,49 +375,67 @@ public class Comments {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		currentComment.setSentMoment(comment.getSentMoment());
 		currentComment.setText(comment.getText());
-		currentComment.setThumbsDown(comment.getThumbsDown());
-		currentComment.setThumbsUp(comment.getThumbsUp());
 		currentComment.setTitle(comment.getTitle());
 
-		commentRepository.save(comment);
-		return new ResponseEntity<>(comment, HttpStatus.OK);
+		commentRepository.save(currentComment);
+		return new ResponseEntity<>(currentComment, HttpStatus.OK);
 	}
 
-    @ApiOperation(value = "Delete a certain comment of a certan commentable element")
-	@DeleteMapping(value = "/{idCommentable}/{idComment}", produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable("idCommentable") String idCommentable, @PathVariable("idComment") String idComment) {
+    @ApiOperation(value = "Delete a certain comment")
+	@DeleteMapping(value = "/{idComment}", produces = "application/json")
+	public ResponseEntity<?> delete(@PathVariable("idComment") String idComment, @PathVariable("commentableRol") String commentableRol) {
         Comment comment = commentRepository.findOne(idComment);
-        Object commentable = null;
+        List<Comment> responses = new ArrayList<>();
+        List<Comment> comments = new ArrayList<>();
+        Actor actor = null;
 
-        if(postRepository.findOne(idCommentable) != null){
-            commentable = postRepository.findOne(idCommentable);
-            List<String> comments = ((Post) commentable).getComments();
-            comments.remove(idComment);
-            ((Post) commentable).setComments(comments);
-            postRepository.save((Post) commentable);
-        } else if (actorRepository.findOne(idCommentable) != null){
-            commentable = actorRepository.findOne(idCommentable);
-            List<String> comments = ((Actor) commentable).getComments();
-            comments.remove(idComment);
-            ((Actor) commentable).setComments(comments);
-            actorRepository.save((Actor) commentable);
-        } else if (conferenceRepository.findOne(idCommentable) != null){
-            commentable = conferenceRepository.findOne(idCommentable);
-            List<String> comments = ((Conference) commentable).getComments();
-            comments.remove(idComment);
-            ((Conference) commentable).setComments(comments);
-            conferenceRepository.save((Conference) commentable);
-        }
-
-        if (commentable == null) {
+        if (comment == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
-		if (comment == null) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-		}
+        // Get actor
+        for (Actor a: actorRepository.findAll()){
+            if(a.getComments().contains(comment.getId())){
+                actor = a;
+                break;
+            }
+        }
+
+        // Delete the comment in the commentable element
+        if (postRepository.findOne(idComment) != null){
+
+            for (Post p : postRepository.findAll()){
+                for (String p1 : p.getComments()){
+                    if (p1.equals(idComment)){
+                        List<String> commentsActor = p.getComments();
+                        commentsActor.remove(p1);
+                        postRepository.save(p);
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (Conference c : conferenceRepository.findAll()){
+                for (String c1 : c.getComments()){
+                    if (c1.equals(idComment)){
+                        List<String> commentsActor = c.getComments();
+                        commentsActor.remove(c1);
+                        conferenceRepository.save(c);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Delete comment in actor
+        if (actor.getComments().contains(idComment)){
+            List<String> commentsActor = actor.getComments();
+            commentsActor.remove(idComment);
+            actor.setComments(commentsActor);
+            actorRepository.save(actor);
+        }
+
 
 		commentRepository.delete(idComment);
 
