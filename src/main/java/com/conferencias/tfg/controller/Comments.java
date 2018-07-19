@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -172,19 +173,100 @@ public class Comments {
 	}
 
     @ApiOperation(value = "Create a new comment")
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody Comment comment, UriComponentsBuilder ucBuilder) {
+    @PostMapping(value="/{idCommentable}/{idAuthor}", produces = "application/json")
+    public ResponseEntity<?> create(@RequestBody Comment comment, @PathVariable("idAuthor") String idAuthor, @PathVariable("idCommentable") String idCommentable) {
 
-		if (this.commentExist(comment)) {
-			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
-		}
+        List<String> commentsAux;
+        Object commentable;
+        Actor actor = actorRepository.findOne(idAuthor);
+        List<String> commentsActor = new ArrayList<>();
 
         commentRepository.save(comment);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/comment/{idComment}").buildAndExpand(comment.getId()).toUri());
+        try {
+            commentable = postRepository.findOne(idCommentable);
 
-        return new ResponseEntity<>(comment, headers, HttpStatus.CREATED);
+            try {
+                commentsAux = ((Post) commentable).getComments();
+                commentsAux.add(comment.getId());
+                ((Post) commentable).setComments(commentsAux);
+                postRepository.save((Post)commentable);
+
+                try {
+                    commentsActor = actor.getComments();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                } catch (NullPointerException e1){
+                    commentsActor = new ArrayList<>();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                }
+
+            } catch (NullPointerException e){
+                commentsAux = new ArrayList<>();
+                commentsAux.add(comment.getId());
+                ((Post) commentable).setComments(commentsAux);
+                postRepository.save((Post)commentable);
+
+                try {
+                    commentsActor = actor.getComments();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                } catch (NullPointerException e1){
+                    commentsActor = new ArrayList<>();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                }
+
+            }
+
+        } catch(NullPointerException e){
+            commentable = conferenceRepository.findOne(idCommentable);
+
+            try {
+                commentsAux = ((Conference) commentable).getComments();
+                commentsAux.add(comment.getId());
+                ((Conference) commentable).setComments(commentsAux);
+                conferenceRepository.save((Conference)commentable);
+
+                try {
+                    commentsActor = actor.getComments();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                } catch (NullPointerException e1){
+                    commentsActor = new ArrayList<>();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                }
+
+            } catch (NullPointerException n){
+                commentsAux = new ArrayList<>();
+                commentsAux.add(comment.getId());
+                ((Conference) commentable).setComments(commentsAux);
+                conferenceRepository.save((Conference)commentable);
+
+                try {
+                    commentsActor = actor.getComments();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                } catch (NullPointerException e1){
+                    commentsActor = new ArrayList<>();
+                    commentsActor.add(comment.getId());
+                    actor.setComments(commentsActor);
+                    actorRepository.save(actor);
+                }
+
+            }
+        }
+
+        return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Create a response to a certain comment")
