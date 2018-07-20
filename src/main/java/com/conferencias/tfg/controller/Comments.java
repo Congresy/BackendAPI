@@ -389,8 +389,8 @@ public class Comments {
 	}
 
     @ApiOperation(value = "Vote positive or negative a certain comment")
-    @PutMapping(value = "/vote/{idComment}/{type}", produces = "application/json")
-    public ResponseEntity<?> vote(@PathVariable("type") String type, @PathVariable("idComment") String idComment) {
+    @PutMapping(value = "/vote/{idComment}", produces = "application/json")
+    public ResponseEntity<?> vote(@RequestParam("action") String type, @PathVariable("idComment") String idComment) {
         Comment comment = commentRepository.findOne(idComment);
 
         if (comment == null) {
