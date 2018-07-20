@@ -471,7 +471,18 @@ public class Comments {
             actorRepository.save(actor);
         }
 
-		commentRepository.delete(idComment);
+        if (comment.getResponses() != null){
+            if (comment.getResponses().isEmpty()){
+                commentRepository.delete(idComment);
+            } else {
+                for (String s : comment.getResponses()){
+                    if (s != null)
+                        commentRepository.delete(commentRepository.findOne(s));
+                }
+            }
+        } else {
+            commentRepository.delete(idComment);
+        }
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
