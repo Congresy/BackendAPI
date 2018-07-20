@@ -327,34 +327,6 @@ public class Comments {
 
         commentRepository.save(comment);
 
-        if (postRepository.findOne(comment.getCommentable()) != null){
-            Post post = postRepository.findOne(comment.getCommentable());
-            try {
-                List<String> newComments = post.getComments();
-                newComments.add(comment.getId());
-                post.setComments(newComments);
-                postRepository.save(post);
-            } catch (NullPointerException e){
-                List<String> newComments = new ArrayList<>();
-                newComments.add(comment.getId());
-                post.setComments(newComments);
-                postRepository.save(post);
-            }
-        } else {
-            Conference conference = conferenceRepository.findOne(comment.getCommentable());
-            try {
-                List<String> newComments = conference.getComments();
-                newComments.add(comment.getId());
-                conference.setComments(newComments);
-                conferenceRepository.save(conference);
-            } catch (NullPointerException e){
-                List<String> newComments = new ArrayList<>();
-                newComments.add(comment.getId());
-                conference.setComments(newComments);
-                conferenceRepository.save(conference);
-            }
-        }
-
         try {
             responses = commentToResponse.getResponses();
             responses.add(comment.getId());
@@ -438,10 +410,8 @@ public class Comments {
 
     @ApiOperation(value = "Delete a certain comment")
 	@DeleteMapping(value = "/{idComment}", produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable("idComment") String idComment, @PathVariable("commentableRol") String commentableRol) {
+	public ResponseEntity<?> delete(@PathVariable("idComment") String idComment) {
         Comment comment = commentRepository.findOne(idComment);
-        List<Comment> responses = new ArrayList<>();
-        List<Comment> comments = new ArrayList<>();
         Actor actor = null;
 
         if (comment == null) {
@@ -466,6 +436,11 @@ public class Comments {
                         commentsActor.remove(p1);
                         postRepository.save(p);
                         break;
+                    } else if (commentRepository.findOne(p1).getResponses().contains(idComment)){
+                        Comment aux = commentRepository.findOne(p1);
+                        List<String> responses = aux.getResponses();
+                        responses.remove(p1);
+                        commentRepository.save(aux);
                     }
                 }
             }
@@ -477,6 +452,11 @@ public class Comments {
                         commentsActor.remove(c1);
                         conferenceRepository.save(c);
                         break;
+                    } else if (commentRepository.findOne(c1).getResponses().contains(idComment)){
+                        Comment aux = commentRepository.findOne(c1);
+                        List<String> responses = aux.getResponses();
+                        responses.remove(c1);
+                        commentRepository.save(aux);
                     }
                 }
             }
@@ -489,7 +469,6 @@ public class Comments {
             actor.setComments(commentsActor);
             actorRepository.save(actor);
         }
-
 
 		commentRepository.delete(idComment);
 
