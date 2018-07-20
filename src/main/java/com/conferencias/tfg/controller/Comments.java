@@ -66,7 +66,8 @@ public class Comments {
             aux = actor.getComments();
 
             for (String s : aux){
-                comments.add(commentRepository.findOne(s));
+                if(s != null)
+                    comments.add(commentRepository.findOne(s));
             }
         } catch (NullPointerException e){
             comments = new ArrayList<>();
