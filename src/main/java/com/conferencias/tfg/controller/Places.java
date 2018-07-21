@@ -1,6 +1,12 @@
 package com.conferencias.tfg.controller;
 
+import com.conferencias.tfg.domain.Actor;
+import com.conferencias.tfg.domain.Conference;
+import com.conferencias.tfg.domain.Event;
 import com.conferencias.tfg.domain.Place;
+import com.conferencias.tfg.repository.ActorRepository;
+import com.conferencias.tfg.repository.ConferenceRepository;
+import com.conferencias.tfg.repository.EventRepository;
 import com.conferencias.tfg.repository.PlaceRepository;
 import com.conferencias.tfg.utilities.Views;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -23,20 +29,17 @@ import java.util.List;
 public class Places {
 
     private PlaceRepository placeRepository;
+    private ActorRepository actorRepository;
+    private ConferenceRepository conferenceRepository;
+    private EventRepository eventRepository;
 
 	@Autowired
-    public Places(PlaceRepository placeRepository) {
+    public Places(PlaceRepository placeRepository, ActorRepository actorRepository, ConferenceRepository conferenceRepository, EventRepository eventRepository) {
         this.placeRepository = placeRepository;
+        this.actorRepository = actorRepository;
+        this.conferenceRepository = conferenceRepository;
+        this.eventRepository = eventRepository;
     }
-
-	/** Recibe todas los lugares */
-    @ApiOperation(value = "List all system's places", response = Iterable.class)
-	@GetMapping("/all")
-	@JsonView(Views.Default.class)
-	public ResponseEntity<?> getAllShort() {
-		List<Place> places = placeRepository.findAll();
-		return new ResponseEntity<Object>(places, HttpStatus.OK);
-	}
 
 	/** Recibe un lugar */
     @ApiOperation(value = "Get a certain place", response = Place.class)
@@ -53,19 +56,32 @@ public class Places {
 	}
 
 	/** Crea un lugar según los valores que se envien en el método POST */
-    @ApiOperation(value = "Create a new place")
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody Place place, UriComponentsBuilder ucBuilder) {
+    @ApiOperation(value = "Create a new place depending of the id object")
+    @PostMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<?> create(@PathVariable("id") String id, @RequestBody Place place) {
 
 		if (this.placeExist(place)) {
 			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
 		}
 
-        placeRepository.save(place);
+		placeRepository.save(place);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/place/{id}").buildAndExpand(place.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+		if (actorRepository.findOne(id) != null){
+			Actor actor = actorRepository.findOne(id);
+			actor.setPlace(place.getId());
+			actorRepository.save(actor);
+		} else if (conferenceRepository.findOne(id) != null){
+			Conference conference = conferenceRepository.findOne(id);
+			conference.setPlace(place.getId());
+			conferenceRepository.save(conference);
+		} else if (eventRepository.findOne(id) != null){
+			Event event = eventRepository.findOne(id);
+			event.setPlace(place.getId());{
+				eventRepository.save(event);
+			}
+		}
+
+        return new ResponseEntity<>(place, HttpStatus.CREATED);
     }
 
     /** Modifica un lugar con los campos que se indiquen */
@@ -74,7 +90,7 @@ public class Places {
 	public ResponseEntity<?> edit(@PathVariable("idPlace") String id, @RequestBody Place place) {
 		Place currentPlace = placeRepository.findOne(id);
 
-		if (currentPlace == null) { //TODO Check si existe uno igual
+		if (currentPlace == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
@@ -82,46 +98,12 @@ public class Places {
 		currentPlace.setCountry(place.getId());
 		currentPlace.setPostalCode(place.getId());
 		currentPlace.setTown(place.getTown());
+		currentPlace.setDetails(place.getDetails());
 
 		placeRepository.save(place);
-		return new ResponseEntity<>(place, HttpStatus.OK);
+
+		return new ResponseEntity<>(currentPlace, HttpStatus.OK);
 	}
-
-	/** Borra todos los lugares*/
-    @ApiOperation(value = "Delete all places")
-	@DeleteMapping(produces = "application/json")
-	public ResponseEntity<Place> deleteAll() {
-		placeRepository.deleteAll();
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
-	/** Borra un lugar */
-    @ApiOperation(value = "Delete a certain place")
-	@DeleteMapping(value = "/{idPlace}", produces = "application/json")
-	public ResponseEntity<?> delete(@PathVariable("idPlace") String id) {
-		Place place = placeRepository.findOne(id);
-		if (place == null) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-		}
-		placeRepository.delete(id);
-		return new ResponseEntity<Place>(HttpStatus.NO_CONTENT);
-	}
-
-    @ApiOperation(value = "Search a place by keyword")
-    @GetMapping(value = "/search/{keyword}", produces = "application/json")
-    public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
-        List<Place> places = new ArrayList<>();
-
-        for(Place c : placeRepository.findAll())
-            if((c.getAddress() + c.getCountry() + c.getPostalCode() + c.getTown()).toLowerCase().contains(keyword.toLowerCase()))
-                places.add(c);
-
-        if (places.isEmpty()) {
-            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(places, HttpStatus.OK);
-    }
 	
 	// ---------------------------------------------------------------------------------------------------------------//
 	// ----------------------------------------------- Métodos auxiliares --------------------------------------------//

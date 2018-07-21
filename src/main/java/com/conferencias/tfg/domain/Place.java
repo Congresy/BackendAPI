@@ -25,6 +25,8 @@ public class Place {
     @NotBlank
     @JsonView(Views.Default.class)
     private String address;
+    @JsonView(Views.Default.class)
+    private String details;
     @NotBlank
     @Pattern(regexp = "((0[1-9]|5[0-2])|[1-4][0-9])[0-9]{3}")
     @JsonView(Views.Default.class)
@@ -35,19 +37,29 @@ public class Place {
 
     }
 
-    public Place(String id, String town, String country, String address, String postalCode) {
+    public Place(String id, String town, String country, String address, String postalCode, String details) {
         this.id = id;
         this.town = town;
         this.country = country;
         this.address = address;
         this.postalCode = postalCode;
+        this.details = details;
     }
 
-    public Place(String town, String country, String address, String postalCode) {
+    public Place(String town, String country, String address, String postalCode, String details) {
         this.town = town;
         this.country = country;
         this.address = address;
         this.postalCode = postalCode;
+        this.details = details;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public String getTown() {

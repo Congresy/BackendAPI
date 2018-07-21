@@ -178,6 +178,17 @@ public class Conference {
     @JsonView(Detailed.class)
     private List<String> comments;
 
+    @JsonView(Detailed.class)
+    private String place;
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
     public List<String> getParticipants() {
         return participants;
     }
