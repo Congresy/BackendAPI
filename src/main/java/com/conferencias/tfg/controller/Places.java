@@ -100,7 +100,7 @@ public class Places {
 		currentPlace.setTown(place.getTown());
 		currentPlace.setDetails(place.getDetails());
 
-		placeRepository.save(place);
+		placeRepository.save(currentPlace);
 
 		return new ResponseEntity<>(currentPlace, HttpStatus.OK);
 	}
