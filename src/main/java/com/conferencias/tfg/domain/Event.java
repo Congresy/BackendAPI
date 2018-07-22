@@ -154,7 +154,6 @@ public class Event {
 
     @JsonView(Default.class)
     private List<String> speakers;
-    @NotNull
     @JsonView(Default.class)
     private String place;
     @JsonView(Default.class)
