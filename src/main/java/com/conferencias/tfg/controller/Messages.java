@@ -248,7 +248,7 @@ public class Messages {
     }
 
     @ApiOperation(value = "Send message to bin folder of a certain actor")
-    @DeleteMapping(value = "/bin/{idActor}/{idMessage}", produces = "application/json")
+    @DeleteMapping(value = "/trash/{idActor}/{idMessage}", produces = "application/json")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> toTrash(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
