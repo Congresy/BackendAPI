@@ -94,9 +94,9 @@ public class Places {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		currentPlace.setAddress(place.getId());
-		currentPlace.setCountry(place.getId());
-		currentPlace.setPostalCode(place.getId());
+		currentPlace.setAddress(place.getAddress());
+		currentPlace.setCountry(place.getCountry());
+		currentPlace.setPostalCode(place.getPostalCode());
 		currentPlace.setTown(place.getTown());
 		currentPlace.setDetails(place.getDetails());
 
