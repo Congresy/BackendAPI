@@ -1,12 +1,10 @@
 package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.configuration.CustomPasswordEncoder;
-import com.conferencias.tfg.domain.Actor;
-import com.conferencias.tfg.domain.Conference;
-import com.conferencias.tfg.domain.Event;
-import com.conferencias.tfg.domain.UserAccount;
+import com.conferencias.tfg.domain.*;
 import com.conferencias.tfg.repository.ActorRepository;
 import com.conferencias.tfg.repository.EventRepository;
+import com.conferencias.tfg.repository.FolderRepository;
 import com.conferencias.tfg.repository.UserAccountRepository;
 import com.conferencias.tfg.service.ActorService;
 import io.swagger.annotations.Api;
@@ -35,14 +33,17 @@ public class Actors {
 
     private final EventRepository eventRepository;
 
+    private final FolderRepository folderRepository;
+
     CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
 
     @Autowired
-    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository, EventRepository eventRepository) {
+    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository, EventRepository eventRepository, FolderRepository folderRepository) {
         this.actorRepository = actorRepository;
         this.actorService = actorService;
         this.userAccountRepository = userAccountRepository;
         this.eventRepository = eventRepository;
+        this.folderRepository = folderRepository;
     }
 
     @GetMapping()
@@ -68,6 +69,29 @@ public class Actors {
         actorWrapper.getActor().setPrivate_(false);
         actorWrapper.getActor().setUserAccount_(userAccountAux.getId());
         actorRepository.save(actorWrapper.getActor());
+
+        Actor actor = actorRepository.findOne(actorWrapper.getActor().getId());
+
+        Folder folder1 = new Folder("Inbox");
+        Folder folder2 = new Folder("Outbox");
+        Folder folder3 = new Folder("Trash");
+
+        folderRepository.save(folder1);
+        folderRepository.save(folder2);
+        folderRepository.save(folder3);
+
+        List<Folder> folders = new ArrayList<>();
+        folders.add(folder1);
+        folders.add(folder2);
+        folders.add(folder3);
+
+        List<String> foldersString = new ArrayList<>();
+        foldersString.add(folder1.getId());
+        foldersString.add(folder2.getId());
+        foldersString.add(folder3.getId());
+
+        actor.setFolders(foldersString);
+        actorRepository.save(actor);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/actors/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());

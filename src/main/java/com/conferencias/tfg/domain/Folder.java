@@ -16,10 +16,11 @@ import java.util.Objects;
 public class Folder {
 
     @Id
+    @JsonView(Views.Default.class)
     private String id;
     @NotBlank
     @JsonView(Views.Default.class)
-    @Pattern(regexp = "^(Inbox|Outbox|Bin)$")
+    @Pattern(regexp = "^(Inbox|Outbox|Trash)$")
     private String name;
 
     public Folder(){}

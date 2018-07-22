@@ -35,48 +35,26 @@ public class Folders {
     }
 
     @ApiOperation(value = "List all folders of an certain actor", response = Iterable.class)
-    @GetMapping("/actors/{idActor}")
+    @GetMapping("/{idActor}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfActor(@PathVariable("idActor") String id) {
         Actor actor = actorRepository.findOne(id);
-        List<String> foldersAux = actor.getFolders();
+        List<String> foldersAux;
         List<Folder> folders = new ArrayList<>();
 
-        for(String s : foldersAux){
+        try {
+            foldersAux = actor.getFolders();
+
+            for(String s : foldersAux){
                 folders.add(folderRepository.findOne(s));
+            }
+
+        } catch (NullPointerException e){
+            folders = new ArrayList<>();
         }
 
         return new ResponseEntity<>(folders, HttpStatus.OK);
     }
-
-    @ApiOperation(value = "Get certain folder of an actor", response = Folder.class)
-    @GetMapping("/actors/{idActor}/{folderName}/")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getSpecificOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
-        Actor actor = actorRepository.findOne(idActor);
-        List<String> foldersAux = actor.getFolders();
-        List<Folder> folders = new ArrayList<>();
-
-        for(String s : foldersAux){
-            if(folderRepository.findOne(s).getName().equals(folder))
-            folders.add(folderRepository.findOne(s));
-        }
-
-        return new ResponseEntity<>(folders, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "Get a certain folder", response = Folder.class)
-	@GetMapping(value = "/{idFolder}")
-	@JsonView(Views.Default.class)
-	public ResponseEntity<?> get(@PathVariable("idFolder") String id) {
-		Folder folder = folderRepository.findOne(id);
-
-		if (folder == null) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(folder, HttpStatus.OK);
-	}
 
     @ApiOperation(value = "Create all default folders for an actor")
     @PostMapping(value = "/{idActor}", produces = "application/json")
@@ -85,7 +63,7 @@ public class Folders {
 
         Folder folder1 = new Folder("Inbox");
         Folder folder2 = new Folder("Outbox");
-        Folder folder3 = new Folder("Bin");
+        Folder folder3 = new Folder("Trash");
 
         folderRepository.save(folder1);
         folderRepository.save(folder2);

@@ -14,6 +14,7 @@ import java.util.Objects;
 public class Message {
 
     @Id
+    @JsonView(Views.Default.class)
     private String id;
     @NotBlank
     @JsonView(Views.Default.class)

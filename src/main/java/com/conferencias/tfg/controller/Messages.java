@@ -75,28 +75,25 @@ public class Messages {
     }
 
     @ApiOperation(value = "List all messages of a certain folder of an actor", response = Iterable.class)
-    @GetMapping("/all/{idActor}/{folderName}/")
+    @GetMapping("/{idFolder}")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> getAllOfFolderOfActor(@PathVariable("folderName") String folder, @PathVariable("idActor") String idActor) {
-        Actor actor = actorRepository.findOne(idActor);
-        Folder folderToShow = null;
+    public ResponseEntity<?> getAllOfFolder(@PathVariable("idFolder") String idFolder) {
+        Folder folder = folderRepository.findOne(idFolder);
+        List<String> aux;
         List<Message> messages = new ArrayList<>();
 
-        for(String s : actor.getFolders()) {
-            if(folderRepository.findOne(s).getName().equals(folder))
-                folderToShow = folderRepository.findOne(s);
-        }
+        try {
+            aux = folder.getMessages();
 
-        for(String s : folderToShow.getMessages()){
-            messages.add(messageRepository.findOne(s));
-        }
-
-        Comparator<Message> comparator = new Comparator<Message>() {
-            @Override
-            public int compare(Message t1, Message t2) {
-                return parseDate(t1.getSentMoment()).compareTo(parseDate(t2.getSentMoment()));
+            for (String s : aux){
+                messages.add(messageRepository.findOne(s));
             }
-        };
+
+        } catch (NullPointerException e){
+            messages = new ArrayList<>();
+        }
+
+        Comparator<Message> comparator = Comparator.comparing(t -> parseDate(t.getSentMoment()));
 
         messages.sort(comparator);
 
@@ -123,6 +120,10 @@ public class Messages {
         Actor sender = actorRepository.findOne(idSender);
         Actor receiver = actorRepository.findOne(idReceiver);
 
+        message.setSenderId(idSender);
+        message.setReceiverId(idReceiver);
+        messageRepository.save(message);
+
         List<String> senderFolders = sender.getFolders();
         List<String> receiverFolders = receiver.getFolders();
 
@@ -131,25 +132,39 @@ public class Messages {
 
         for(String s : senderFolders)
             if(folderRepository.findOne(s).getName().equals("Outbox"))
-                inbox = folderRepository.findOne(s);
+                outbox = folderRepository.findOne(s);
 
         for(String s : receiverFolders)
             if(folderRepository.findOne(s).getName().equals("Inbox"))
                 inbox = folderRepository.findOne(s);
 
-        List<String> inboxMessages = inbox.getMessages();
-        List<String> outboxMessages = outbox.getMessages();
+        List<String> inboxMessages;
+        List<String> outboxMessages;
 
-        inboxMessages.add(message.getId());
-        outboxMessages.add(message.getId());
+        try {
+            inboxMessages = inbox.getMessages();
+            inboxMessages.add(message.getId());
+            inbox.setMessages(inboxMessages);
+            folderRepository.save(inbox);
+        } catch (NullPointerException e){
+            inboxMessages = new ArrayList<>();
+            inboxMessages.add(message.getId());
+            inbox.setMessages(inboxMessages);
+            folderRepository.save(inbox);
+        }
 
-        inbox.setMessages(inboxMessages);
-        outbox.setMessages(outboxMessages);
+        try {
+            outboxMessages = outbox.getMessages();
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
 
-        folderRepository.save(inbox);
-        folderRepository.save(outbox);
-
-        messageRepository.save(message);
+        } catch (NullPointerException e){
+            outboxMessages = new ArrayList<>();
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/message/{id}").buildAndExpand(message.getId()).toUri());
@@ -157,10 +172,85 @@ public class Messages {
         return new ResponseEntity<>(message, headers, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Create a new message")
+    @PostMapping(value = "/reply/{idMessage}/{idActor}", produces = "application/json")
+    public ResponseEntity<?> reply(@RequestBody Message message, @PathVariable("idMessage") String idMessage, @PathVariable("idActor") String idActor) {
+
+        Message message1 = messageRepository.findOne(idMessage);
+        Actor receiver = actorRepository.findOne(message1.getReceiverId());
+        Actor sender = actorRepository.findOne(message1.getSenderId());
+        Actor actor = actorRepository.findOne(idActor);
+
+        Actor fSender = null;
+        Actor fReceiver = null;
+
+        if (actor.equals(sender)){
+            fSender = sender;
+            fReceiver = receiver;
+        } else if (actor.equals(receiver)){
+            fSender = receiver;
+            fReceiver = sender;
+        }
+
+        message.setSenderId(fSender.getId());
+        message.setReceiverId(fReceiver.getId());
+        messageRepository.save(message);
+
+        // Set new body (reply)
+        String body = message.getBody();
+        body = body + "\n\n" + "--------- Original message ---------" + "\n\n" + message1.getBody();
+        message.setBody(body);
+        messageRepository.save(message);
+
+        List<String> senderFolders = fSender.getFolders();
+        List<String> receiverFolders = fReceiver.getFolders();
+
+        Folder inbox = null;
+        Folder outbox = null;
+
+        for(String s : senderFolders)
+            if(folderRepository.findOne(s).getName().equals("Outbox"))
+                outbox = folderRepository.findOne(s);
+
+        for(String s : receiverFolders)
+            if(folderRepository.findOne(s).getName().equals("Inbox"))
+                inbox = folderRepository.findOne(s);
+
+        List<String> inboxMessages;
+        List<String> outboxMessages;
+
+        try {
+            inboxMessages = inbox.getMessages();
+            inboxMessages.add(message.getId());
+            inbox.setMessages(inboxMessages);
+            folderRepository.save(inbox);
+        } catch (NullPointerException e){
+            inboxMessages = new ArrayList<>();
+            inboxMessages.add(message.getId());
+            inbox.setMessages(inboxMessages);
+            folderRepository.save(inbox);
+        }
+
+        try {
+            outboxMessages = outbox.getMessages();
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
+
+        } catch (NullPointerException e){
+            outboxMessages = new ArrayList<>();
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
+        }
+
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
+    }
+
     @ApiOperation(value = "Send message to bin folder of a certain actor")
-    @DeleteMapping(value = "/bin/{idActor}/idMessage", produces = "application/json")
+    @DeleteMapping(value = "/bin/{idActor}/{idMessage}", produces = "application/json")
     @JsonView(Views.Default.class)
-    public ResponseEntity<?> toBin(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
+    public ResponseEntity<?> toTrash(@PathVariable("idActor") String idActor, @PathVariable("idMessage") String id) {
         Message message = messageRepository.findOne(id);
         Actor actor = actorRepository.findOne(idActor);
 
@@ -175,7 +265,7 @@ public class Messages {
         Folder outbox = null;
 
         for(String s : folders){
-            if(folderRepository.findOne(s).getName().equals("Bin"))
+            if(folderRepository.findOne(s).getName().equals("Trash"))
                 bin = folderRepository.findOne(s);
             if(folderRepository.findOne(s).getName().equals("Inbox"))
                 inbox = folderRepository.findOne(s);
@@ -183,24 +273,35 @@ public class Messages {
                 outbox = folderRepository.findOne(s);
         }
 
-        if(inbox.getMessages().contains(message.getId())){
-            List<String> inboxMessages = inbox.getMessages();
-            inboxMessages.remove(message.getId());
-            inbox.setMessages(inboxMessages);
-            folderRepository.save(inbox);
-        } else if(outbox.getMessages().contains(message.getId())){
-            List<String> outboxMessages = outbox.getMessages();
-            outboxMessages.remove(message.getId());
-            inbox.setMessages(outboxMessages);
-            folderRepository.save(outbox);
+        if (inbox.getMessages() != null) {
+            if (inbox.getMessages().contains(message.getId())) {
+                List<String> inboxMessages = inbox.getMessages();
+                inboxMessages.remove(message.getId());
+                inbox.setMessages(inboxMessages);
+                folderRepository.save(inbox);
+            }
         }
 
-        List<String> binMessages = bin.getMessages();
-        binMessages.add(message.getId());
+        if (outbox.getMessages() != null) {
+            if(outbox.getMessages().contains(message.getId())){
+                List<String> outboxMessages = outbox.getMessages();
+                outboxMessages.remove(message.getId());
+                inbox.setMessages(outboxMessages);
+                folderRepository.save(outbox);
+            }
+        }
 
-        bin.setMessages(binMessages);
-
-        folderRepository.save(bin);
+        try {
+            List<String> binMessages = bin.getMessages();
+            binMessages.add(message.getId());
+            bin.setMessages(binMessages);
+            folderRepository.save(bin);
+        } catch (NullPointerException e){
+            List<String> binMessages = new ArrayList<>();
+            binMessages.add(message.getId());
+            bin.setMessages(binMessages);
+            folderRepository.save(bin);
+        }
 
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
@@ -221,15 +322,14 @@ public class Messages {
         Folder bin = null;
 
         for(String s : folders)
-            if(folderRepository.findOne(s).getName().equals("Bin"))
+            if(folderRepository.findOne(s).getName().equals("Trash"))
                 bin = folderRepository.findOne(s);
 
         List<String> binMessages = bin.getMessages();
         binMessages.remove(message.getId());
-
         bin.setMessages(binMessages);
-
         folderRepository.save(bin);
+
         messageRepository.delete(message);
 
         return new ResponseEntity<>(message, HttpStatus.OK);
