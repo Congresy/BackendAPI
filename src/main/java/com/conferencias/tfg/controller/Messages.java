@@ -75,7 +75,7 @@ public class Messages {
     }
 
     @ApiOperation(value = "List all messages of a certain folder of an actor", response = Iterable.class)
-    @GetMapping("/{idFolder}")
+    @GetMapping("/folder/{idFolder}")
     @JsonView(Views.Default.class)
     public ResponseEntity<?> getAllOfFolder(@PathVariable("idFolder") String idFolder) {
         Folder folder = folderRepository.findOne(idFolder);
