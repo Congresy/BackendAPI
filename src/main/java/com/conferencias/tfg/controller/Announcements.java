@@ -3,15 +3,12 @@ package com.conferencias.tfg.controller;
 import com.conferencias.tfg.domain.Announcement;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.repository.AnnouncementRepository;
-import com.conferencias.tfg.service.AnnouncementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -21,11 +18,12 @@ import java.util.List;
 @Api(value = "Announcements", description = "Operations related with announcements")
 public class Announcements {
 
-    @Autowired
-    private AnnouncementService announcementService;
+    private final AnnouncementRepository announcementRepository;
 
     @Autowired
-    private AnnouncementRepository announcementRepository;
+    public Announcements(AnnouncementRepository announcementRepository) {
+        this.announcementRepository = announcementRepository;
+    }
 
     @ApiOperation(value = "List all system's announcements", response = Iterable.class)
     @GetMapping()

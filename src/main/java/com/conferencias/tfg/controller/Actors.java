@@ -258,21 +258,25 @@ public class Actors {
 
     @ApiOperation(value = "Update an actor by ID")
     @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Actor actor) {
+    public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody ActorWrapper actorWrapper) {
         Actor currentActor = actorRepository.findOne(id);
 
         if (currentActor == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
-        currentActor.setName(actor.getName());
-        currentActor.setSurname(actor.getSurname());
-        currentActor.setNick(actor.getNick());
-        currentActor.setEmail(actor.getEmail());
-        currentActor.setPhone(actor.getPhone());
-        currentActor.setInterests(actor.getInterests());
-        currentActor.setPrivate_(actor.isPrivate_());
-        currentActor.setPhoto(actor.getPhoto());
+        currentActor.setName(actorWrapper.getActor().getName());
+        currentActor.setSurname(actorWrapper.getActor().getSurname());
+        currentActor.setNick(actorWrapper.getActor().getNick());
+        currentActor.setEmail(actorWrapper.getActor().getEmail());
+        currentActor.setPhone(actorWrapper.getActor().getPhone());
+        currentActor.setInterests(actorWrapper.getActor().getInterests());
+        currentActor.setPrivate_(actorWrapper.getActor().isPrivate_());
+        currentActor.setPhoto(actorWrapper.getActor().getPhoto());
+
+        userAccountRepository.findOne(currentActor.getUserAccount_()).setUsername(actorWrapper.getUserAccount().getUsername());
+
+        userAccountRepository.save(userAccountRepository.findOne(currentActor.getUserAccount_()));
 
         actorRepository.save(currentActor);
 
