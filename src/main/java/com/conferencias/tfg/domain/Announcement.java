@@ -13,7 +13,7 @@ public class Announcement {
     private String id;
     @URL
     private String picture;
-    @URL
+
     private String url;
 
     public Announcement() {
