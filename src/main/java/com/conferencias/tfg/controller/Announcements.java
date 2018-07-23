@@ -31,6 +31,13 @@ public class Announcements {
         return announcementRepository.findAll();
     }
 
+    @ApiOperation(value = "Get an anonuncement", response = Announcement.class)
+    @GetMapping("/{idAnnouncement}")
+    public ResponseEntity<?> showAll(@PathVariable("idAnnouncement") String idAnnouncement) {
+
+        return new ResponseEntity<>(announcementRepository.findOne(idAnnouncement), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Create an announcement")
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Announcement announcement) {
