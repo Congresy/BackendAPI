@@ -31,9 +31,9 @@ public class Announcements {
         return announcementRepository.findAll();
     }
 
-    @ApiOperation(value = "Get an anonuncement", response = Announcement.class)
+    @ApiOperation(value = "Get an annonuncement", response = Announcement.class)
     @GetMapping("/{idAnnouncement}")
-    public ResponseEntity<?> showAll(@PathVariable("idAnnouncement") String idAnnouncement) {
+    public ResponseEntity<?> get(@PathVariable("idAnnouncement") String idAnnouncement) {
 
         return new ResponseEntity<>(announcementRepository.findOne(idAnnouncement), HttpStatus.OK);
     }
