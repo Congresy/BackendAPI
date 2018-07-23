@@ -181,6 +181,20 @@ public class Events {
 
         eventRepository.save(event);
 
+        Conference conference = conferenceRepository.findOne(event.getConference());
+
+        try {
+            List<String> speakers = conference.getParticipants();
+            speakers.add(actor.getId());
+            conference.setParticipants(speakers);
+        } catch (Exception e){
+            List<String> speakers = new ArrayList<>();
+            speakers.add(actor.getId());
+            conference.setParticipants(speakers);
+        }
+
+        conferenceRepository.save(conference);
+
         try {
             List<String> aux = actor.getEvents();
             aux.add(event.getId());
