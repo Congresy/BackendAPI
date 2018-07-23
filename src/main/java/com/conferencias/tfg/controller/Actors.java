@@ -2,11 +2,7 @@ package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.configuration.CustomPasswordEncoder;
 import com.conferencias.tfg.domain.*;
-import com.conferencias.tfg.repository.ActorRepository;
-import com.conferencias.tfg.repository.EventRepository;
-import com.conferencias.tfg.repository.FolderRepository;
-import com.conferencias.tfg.repository.UserAccountRepository;
-import com.conferencias.tfg.service.ActorService;
+import com.conferencias.tfg.repository.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -27,23 +28,23 @@ public class Actors {
 
     private final ActorRepository actorRepository;
 
-    private final ActorService actorService;
-
     private final UserAccountRepository userAccountRepository;
 
     private final EventRepository eventRepository;
 
     private final FolderRepository folderRepository;
 
+    private final ConferenceRepository conferenceRepository;
+
     CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
 
     @Autowired
-    public Actors(ActorRepository actorRepository, ActorService actorService, UserAccountRepository userAccountRepository, EventRepository eventRepository, FolderRepository folderRepository) {
+    public Actors(ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository, FolderRepository folderRepository, ConferenceRepository conferenceRepository) {
         this.actorRepository = actorRepository;
-        this.actorService = actorService;
         this.userAccountRepository = userAccountRepository;
         this.eventRepository = eventRepository;
         this.folderRepository = folderRepository;
+        this.conferenceRepository = conferenceRepository;
     }
 
     @GetMapping()
@@ -96,6 +97,112 @@ public class Actors {
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/actors/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
         return new ResponseEntity<>(actorWrapper.getActor(), HttpStatus.CREATED);
+    }
+
+    @ApiOperation("View a list of followers actors")
+    @GetMapping("{idActor}/followers")
+    public ResponseEntity<?> getFollowers(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Actor> followers = new ArrayList<>();
+
+        try {
+            for (String s : actor.getFollowers()){
+                followers.add(actorRepository.findOne(s));
+            }
+        } catch (NullPointerException e){
+            followers =  new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(followers, HttpStatus.OK);
+    }
+
+    @ApiOperation("View a list of following actors")
+    @GetMapping("{idActor}/following")
+    public ResponseEntity<?> getFollowing(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Actor> following = new ArrayList<>();
+
+        try {
+            for (String s : actor.getFollowing()){
+                following.add(actorRepository.findOne(s));
+            }
+        } catch (NullPointerException e){
+            following =  new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(following, HttpStatus.OK);
+    }
+
+    @ApiOperation("View list of upcoming conferences of following actors")
+    @GetMapping("{idActor}/upComing")
+    public ResponseEntity<?> getUpcomingConferences(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Conference> conferences = new ArrayList<>();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -1);
+        Date result = cal.getTime();
+
+        try {
+            for (String s : actor.getConferences()){
+                Conference c = conferenceRepository.findOne(s);
+                if (parseDate(c.getStart()).isAfter(LocalDateTime.now().minusMonths(1))){
+                    conferences.add(c);
+                }
+            }
+        } catch (NullPointerException e){
+            conferences =  new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(conferences, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Follow/unfollow an actor",  response = Actor.class)
+    @PutMapping(value = "/follow/{idActor}/{idActorToFollow}")
+    public ResponseEntity<?> follow(@RequestParam("action") String action, @PathVariable("idActor") String idActor, @PathVariable("idActorToFollow") String idActorToFollow) {
+        Actor res = actorRepository.findOne(idActor);
+        Actor actor = actorRepository.findOne(idActorToFollow);
+        List<String> followers;
+        List<String> following;
+
+        if (action.equals("unfollow")) {
+           following = res.getFollowing();
+           following.remove(actor.getId());
+           res.setFollowing(following);
+           actorRepository.save(res);
+
+           followers = actor.getFollowers();
+           followers.remove(res.getId());
+           actor.setFollowing(followers);
+           actorRepository.save(actor);
+
+        } else if (action.equals("follow")){
+            try {
+                following = res.getFollowing();
+                following.add(actor.getId());
+                res.setFollowing(following);
+                actorRepository.save(res);
+            } catch (NullPointerException e){
+                following = new ArrayList<>();
+                following.add(actor.getId());
+                res.setFollowing(following);
+                actorRepository.save(res);
+            }
+
+            try {
+                followers = actor.getFollowers();
+                followers.add(res.getId());
+                actor.setFollowing(followers);
+                actorRepository.save(actor);
+            } catch (NullPointerException e){
+                followers = new ArrayList<>();
+                followers.add(res.getId());
+                actor.setFollowing(followers);
+                actorRepository.save(actor);
+            }
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get an actor by ID", response = Actor.class)
@@ -157,7 +264,18 @@ public class Actors {
         if (currentActor == null) {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
-        actorService.edit(currentActor,actor);
+
+        currentActor.setName(actor.getName());
+        currentActor.setSurname(actor.getSurname());
+        currentActor.setNick(actor.getNick());
+        currentActor.setEmail(actor.getEmail());
+        currentActor.setPhone(actor.getPhone());
+        currentActor.setInterests(actor.getInterests());
+        currentActor.setPrivate_(actor.isPrivate_());
+        currentActor.setPhoto(actor.getPhoto());
+
+        actorRepository.save(currentActor);
+
         return new ResponseEntity<>(currentActor, HttpStatus.OK);
     }
 
@@ -265,5 +383,11 @@ public class Actors {
             }
         }
         return res;
+    }
+
+    private LocalDateTime parseDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+        return dateTime;
     }
 }

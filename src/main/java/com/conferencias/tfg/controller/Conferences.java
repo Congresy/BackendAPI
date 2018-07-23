@@ -1,14 +1,8 @@
 package com.conferencias.tfg.controller;
 
 
-import com.conferencias.tfg.domain.Actor;
-import com.conferencias.tfg.domain.Conference;
-import com.conferencias.tfg.domain.Event;
-import com.conferencias.tfg.domain.UserAccount;
-import com.conferencias.tfg.repository.ActorRepository;
-import com.conferencias.tfg.repository.ConferenceRepository;
-import com.conferencias.tfg.repository.EventRepository;
-import com.conferencias.tfg.repository.UserAccountRepository;
+import com.conferencias.tfg.domain.*;
+import com.conferencias.tfg.repository.*;
 import com.conferencias.tfg.utilities.Views.Detailed;
 import com.conferencias.tfg.utilities.Views.Shorted;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -35,13 +29,15 @@ public class Conferences {
     private ActorRepository actorRepository;
     private UserAccountRepository userAccountRepository;
     private EventRepository eventRepository;
+    private PlaceRepository placeRepository;
 
 	@Autowired
-    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository) {
+    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository, PlaceRepository placeRepository) {
         this.conferenceRepository = conferenceRepository;
         this.actorRepository = actorRepository;
         this.userAccountRepository = userAccountRepository;
         this.eventRepository = eventRepository;
+        this.placeRepository = placeRepository;
     }
 
     @ApiOperation(value = "List all system's conferences in detailed view", response = Conference.class)
@@ -86,9 +82,13 @@ public class Conferences {
     public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
         List<Conference> conferences = new ArrayList<>();
 
-        for(Conference c : conferenceRepository.findAll())
-            if((c.getName() + c.getDescription() + c.getPrice().toString() + c.getSpeakersNames() + c.getTheme()).toLowerCase().contains(keyword.toLowerCase())){
+        for(Conference c : conferenceRepository.findAll()){
+			Place p = placeRepository.findOne(c.getPlace());
+            if((c.getName() + c.getDescription() + c.getPrice().toString() + c.getSpeakersNames() + c.getTheme()).toLowerCase().contains(keyword.toLowerCase())
+					|| (p.getTown() + p.getAddress() + p.getCountry() + p.getDetails() + p.getPostalCode()).toLowerCase().contains(keyword.toLowerCase())){
                 conferences.add(c);
+			}
+
         }
 
         return new ResponseEntity<Object>(conferences, HttpStatus.OK);

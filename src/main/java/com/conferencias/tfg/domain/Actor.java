@@ -70,7 +70,6 @@ public class Actor {
         this.comments = new ArrayList<>();
         this.conferences = new ArrayList<>();
         this.comments = new ArrayList<>();
-        this.friends = new ArrayList<>();
         this.following = new ArrayList<>();
         this.folders = new ArrayList<>();
         this.role = role;
@@ -90,7 +89,6 @@ public class Actor {
         this.comments = new ArrayList<>();
         this.conferences = new ArrayList<>();
         this.comments = new ArrayList<>();
-        this.friends = new ArrayList<>();
         this.following = new ArrayList<>();
         this.folders = new ArrayList<>();
         this.role = role;
@@ -109,7 +107,6 @@ public class Actor {
         this.comments = new ArrayList<>();
         this.conferences = new ArrayList<>();
         this.comments = new ArrayList<>();
-        this.friends = new ArrayList<>();
         this.following = new ArrayList<>();
         this.folders = new ArrayList<>();
         this.role = role;
@@ -207,7 +204,7 @@ public class Actor {
 
     private List<String> interests;
 
-    private List<String> friends;
+    private List<String> followers;
 
     private List<String> following;
 
@@ -283,12 +280,12 @@ public class Actor {
         this.interests = interests;
     }
 
-    public List<String> getFriends() {
-        return friends;
+    public List<String> getFollowers() {
+        return followers;
     }
 
-    public void setFriends(List<String> friends) {
-        this.friends = friends;
+    public void setFollowers(List<String> friends) {
+        this.followers= friends;
     }
 
     public List<String> getFollowing() {

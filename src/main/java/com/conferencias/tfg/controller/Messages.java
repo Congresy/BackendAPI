@@ -1,9 +1,11 @@
 package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
+import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Folder;
 import com.conferencias.tfg.domain.Message;
 import com.conferencias.tfg.repository.ActorRepository;
+import com.conferencias.tfg.repository.ConferenceRepository;
 import com.conferencias.tfg.repository.FolderRepository;
 import com.conferencias.tfg.repository.MessageRepository;
 import com.conferencias.tfg.utilities.Views;
@@ -32,12 +34,14 @@ public class Messages {
     private MessageRepository messageRepository;
     private FolderRepository folderRepository;
     private ActorRepository actorRepository;
+    private ConferenceRepository conferenceRepository;
 
     @Autowired
-    public Messages(MessageRepository messageRepository, FolderRepository folderRepository, ActorRepository actorRepository) {
+    public Messages(MessageRepository messageRepository, FolderRepository folderRepository, ActorRepository actorRepository, ConferenceRepository conferenceRepository) {
         this.messageRepository = messageRepository;
         this.folderRepository = folderRepository;
         this.actorRepository = actorRepository;
+        this.conferenceRepository = conferenceRepository;
     }
 
     @ApiOperation(value = "Search a message in a certain folder by keyword", response = Iterable.class)
@@ -111,6 +115,69 @@ public class Messages {
         }
 
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Create a new message for all participants in a conference")
+    @PostMapping(value = "/conference/{idConference}", produces = "application/json")
+    public ResponseEntity<?> toAllParticipants(@RequestBody Message message, @PathVariable("idConference") String idConference) {
+        List<Message> res = new ArrayList<>();
+        Conference conference = conferenceRepository.findOne(idConference);
+        Actor sender = actorRepository.findOne(conference.getOrganizator());
+
+        messageRepository.save(message);
+
+        for (String s1 : conference.getParticipants()){
+                Actor receiver = actorRepository.findOne(s1);
+
+                List<String> senderFolders = sender.getFolders();
+                List<String> receiverFolders = receiver.getFolders();
+
+                message.setReceiverId(receiver.getId());
+                message.setSenderId(sender.getId());
+
+                res.add(message);
+
+                Folder inbox = null;
+                Folder outbox = null;
+
+                for(String s : senderFolders)
+                    if(folderRepository.findOne(s).getName().equals("Outbox"))
+                        outbox = folderRepository.findOne(s);
+
+                for(String s : receiverFolders)
+                    if(folderRepository.findOne(s).getName().equals("Inbox"))
+                        inbox = folderRepository.findOne(s);
+
+                List<String> inboxMessages;
+                List<String> outboxMessages;
+
+                try {
+                    inboxMessages = inbox.getMessages();
+                    inboxMessages.add(message.getId());
+                    inbox.setMessages(inboxMessages);
+                    folderRepository.save(inbox);
+                } catch (NullPointerException e){
+                    inboxMessages = new ArrayList<>();
+                    inboxMessages.add(message.getId());
+                    inbox.setMessages(inboxMessages);
+                    folderRepository.save(inbox);
+                }
+
+                try {
+                    outboxMessages = outbox.getMessages();
+                    outboxMessages.add(message.getId());
+                    outbox.setMessages(outboxMessages);
+                    folderRepository.save(outbox);
+
+                } catch (NullPointerException e){
+                    outboxMessages = new ArrayList<>();
+                    outboxMessages.add(message.getId());
+                    outbox.setMessages(outboxMessages);
+                    folderRepository.save(outbox);
+                }
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Create a new message")

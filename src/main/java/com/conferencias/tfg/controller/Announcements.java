@@ -35,30 +35,15 @@ public class Announcements {
 
     @ApiOperation(value = "Create an announcement")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody Announcement announcement, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<?> create(@RequestBody Announcement announcement) {
 
         if (this.actorExist(announcement)) {
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
-        Announcement aux = new Announcement();
-        announcement.setId(aux.getId());
+
         announcementRepository.save(announcement);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/announcement/{id}").buildAndExpand(announcement.getId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-
-    @ApiOperation(value = "Update an announcement by ID")
-    @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> edit(@PathVariable("id") String id, @RequestBody Announcement announcement) {
-        Announcement currentAnnouncement = announcementRepository.findOne(id);
-
-        if (currentAnnouncement == null) {
-            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-        }
-        announcementService.edit(currentAnnouncement, announcement);
-        return new ResponseEntity<>(currentAnnouncement, HttpStatus.OK);
+        return new ResponseEntity<>(announcement, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Delete an announcement by ID")
