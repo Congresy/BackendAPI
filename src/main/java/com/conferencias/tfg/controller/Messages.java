@@ -135,6 +135,8 @@ public class Messages {
                 message.setReceiverId(receiver.getId());
                 message.setSenderId(sender.getId());
 
+                messageRepository.save(message);
+
                 res.add(message);
 
                 Folder inbox = null;
@@ -165,12 +167,16 @@ public class Messages {
 
                 try {
                     outboxMessages = outbox.getMessages();
+                    message.setSenderId("broadcast");
+                    messageRepository.save(message);
                     outboxMessages.add(message.getId());
                     outbox.setMessages(outboxMessages);
                     folderRepository.save(outbox);
 
                 } catch (NullPointerException e){
                     outboxMessages = new ArrayList<>();
+                    message.setSenderId("broadcast");
+                    messageRepository.save(message);
                     outboxMessages.add(message.getId());
                     outbox.setMessages(outboxMessages);
                     folderRepository.save(outbox);
