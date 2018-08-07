@@ -20,21 +20,33 @@ public class Announcement {
     @NotBlank
     private String description;
 
+    private String idConference;
+
     public Announcement() {
 
     }
 
-    public Announcement(String id, String picture, String url, String description) {
+    public Announcement(String id, String picture, String url, String description, String idConference) {
         this.id = id;
         this.picture = picture;
         this.url = url;
         this.description = description;
+        this.idConference = idConference;
     }
 
-    public Announcement(String picture, String url, String description) {
+    public Announcement(String picture, String url, String description, String idConference) {
         this.picture = picture;
         this.url = url;
         this.description = description;
+        this.idConference = idConference;
+    }
+
+    public String getIdConference() {
+        return idConference;
+    }
+
+    public void setIdConference(String idConference) {
+        this.idConference = idConference;
     }
 
     public String getDescription() {
