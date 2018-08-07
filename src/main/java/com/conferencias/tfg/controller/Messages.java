@@ -129,7 +129,6 @@ public class Messages {
         for (String s1 : conference.getParticipants()){
                 Actor receiver = actorRepository.findOne(s1);
 
-                List<String> senderFolders = sender.getFolders();
                 List<String> receiverFolders = receiver.getFolders();
 
                 message.setReceiverId(receiver.getId());
@@ -140,18 +139,12 @@ public class Messages {
                 res.add(message);
 
                 Folder inbox = null;
-                Folder outbox = null;
-
-                for(String s : senderFolders)
-                    if(folderRepository.findOne(s).getName().equals("Outbox"))
-                        outbox = folderRepository.findOne(s);
 
                 for(String s : receiverFolders)
                     if(folderRepository.findOne(s).getName().equals("Inbox"))
                         inbox = folderRepository.findOne(s);
 
                 List<String> inboxMessages;
-                List<String> outboxMessages;
 
                 try {
                     inboxMessages = inbox.getMessages();
@@ -164,23 +157,31 @@ public class Messages {
                     inbox.setMessages(inboxMessages);
                     folderRepository.save(inbox);
                 }
+        }
 
-                try {
-                    outboxMessages = outbox.getMessages();
-                    message.setSenderId("broadcast");
-                    messageRepository.save(message);
-                    outboxMessages.add(message.getId());
-                    outbox.setMessages(outboxMessages);
-                    folderRepository.save(outbox);
+        List<String> senderFolders = sender.getFolders();
+        List<String> outboxMessages;
+        Folder outbox = null;
 
-                } catch (NullPointerException e){
-                    outboxMessages = new ArrayList<>();
-                    message.setSenderId("broadcast");
-                    messageRepository.save(message);
-                    outboxMessages.add(message.getId());
-                    outbox.setMessages(outboxMessages);
-                    folderRepository.save(outbox);
-                }
+        for(String s : senderFolders)
+            if(folderRepository.findOne(s).getName().equals("Outbox"))
+                outbox = folderRepository.findOne(s);
+
+        try {
+            outboxMessages = outbox.getMessages();
+            message.setSenderId("broadcast");
+            messageRepository.save(message);
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
+
+        } catch (NullPointerException e){
+            outboxMessages = new ArrayList<>();
+            message.setSenderId("broadcast");
+            messageRepository.save(message);
+            outboxMessages.add(message.getId());
+            outbox.setMessages(outboxMessages);
+            folderRepository.save(outbox);
         }
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
