@@ -1,5 +1,6 @@
 package com.conferencias.tfg.domain;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,19 +17,32 @@ public class Announcement {
 
     private String url;
 
+    @NotBlank
+    private String description;
+
     public Announcement() {
 
     }
 
-    public Announcement(String id, String picture, String url) {
+    public Announcement(String id, String picture, String url, String description) {
         this.id = id;
         this.picture = picture;
         this.url = url;
+        this.description = description;
     }
 
-    public Announcement(String picture, String url) {
+    public Announcement(String picture, String url, String description) {
         this.picture = picture;
         this.url = url;
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getId() {
