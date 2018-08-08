@@ -190,7 +190,7 @@ public class Actors {
 
            followers = actor.getFollowers();
            followers.remove(res.getId());
-           actor.setFollowing(followers);
+           actor.setFollowers(followers);
            actorRepository.save(actor);
 
         } else if (action.equals("follow")){
@@ -209,12 +209,12 @@ public class Actors {
             try {
                 followers = actor.getFollowers();
                 followers.add(res.getId());
-                actor.setFollowing(followers);
+                actor.setFollowers(followers);
                 actorRepository.save(actor);
             } catch (NullPointerException e){
                 followers = new ArrayList<>();
                 followers.add(res.getId());
-                actor.setFollowing(followers);
+                actor.setFollowers(followers);
                 actorRepository.save(actor);
             }
         }
