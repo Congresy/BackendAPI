@@ -30,9 +30,11 @@ public class Comment {
     @NotNull
     @JsonView(Views.Default.class)
     private Integer thumbsDown;
+    @JsonView(Views.Default.class)
     @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
     @NotBlank
     private String sentMoment;
+    @JsonView(Views.Default.class)
     private String author;
 
     public Comment(){}
