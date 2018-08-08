@@ -33,24 +33,35 @@ public class Comment {
     @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
     @NotBlank
     private String sentMoment;
+    private String author;
 
     public Comment(){}
 
-    public Comment(String id, String title, String text, String sentMoment) {
+    public Comment(String id, String title, String text, String sentMoment, String author) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.thumbsUp = 0;
         this.thumbsDown = 0;
         this.sentMoment = sentMoment;
+        this.author = author;
     }
 
-    public Comment(String title, String text, String sentMoment) {
+    public Comment(String title, String text, String sentMoment, String author) {
         this.title = title;
         this.text = text;
         this.thumbsUp = 0;
         this.thumbsDown = 0;
         this.sentMoment = sentMoment;
+        this.author = author;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getId() {

@@ -216,6 +216,7 @@ public class Comments {
         Actor actor = actorRepository.findOne(idAuthor);
         List<String> commentsActor;
 
+        comment.setAuthor(idAuthor);
         commentRepository.save(comment);
 
         try {
