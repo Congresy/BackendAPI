@@ -255,13 +255,13 @@ public class Actors {
             }
 
             try {
-                friendsOfActor1 = actor1.getFriends();
-                friendsOfActor1.add(actor2.getId());
-                actor1.setFriends(friendsOfActor1);
-                actorRepository.save(actor1);
+                friendsOfActor2 = actor2.getFriends();
+                friendsOfActor1.add(actor1.getId());
+                actor2.setFriends(friendsOfActor2);
+                actorRepository.save(actor2);
             } catch (NullPointerException e){
                 friendsOfActor2 = new ArrayList<>();
-                friendsOfActor2.add(actor1.getId());
+                friendsOfActor1.add(actor1.getId());
                 actor2.setFriends(friendsOfActor2);
                 actorRepository.save(actor2);
             }
