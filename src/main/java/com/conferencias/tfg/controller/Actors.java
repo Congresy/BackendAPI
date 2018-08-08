@@ -116,6 +116,23 @@ public class Actors {
         return new ResponseEntity<>(followers, HttpStatus.OK);
     }
 
+    @ApiOperation("View a list of friends of an actor")
+    @GetMapping("{idActor}/friends")
+    public ResponseEntity<?> getFriends(@PathVariable("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Actor> friends = new ArrayList<>();
+
+        try {
+            for (String s : actor.getFriends()){
+                friends.add(actorRepository.findOne(s));
+            }
+        } catch (NullPointerException e){
+            friends =  new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(friends, HttpStatus.OK);
+    }
+
     @ApiOperation("View a list of following actors")
     @GetMapping("{idActor}/following")
     public ResponseEntity<?> getFollowing(@PathVariable("idActor") String idActor) {
@@ -203,6 +220,54 @@ public class Actors {
         }
 
         return new ResponseEntity<>(res, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(value = "Friend/unfriend an actor",  response = Actor.class)
+    @PutMapping(value = "/friend/{idActor}/{idActorToFriend}")
+    public ResponseEntity<?> friend(@RequestParam("action") String action, @PathVariable("idActor") String idActor, @PathVariable("idActorToFriend") String idActorToFriend) {
+        Actor actor1 = actorRepository.findOne(idActor);
+        Actor actor2 = actorRepository.findOne(idActorToFriend);
+        List<String> friendsOfActor1;
+        List<String> friendsOfActor2;
+
+        if (action.equals("unfriend")) {
+            friendsOfActor1 = actor1.getFriends();
+            friendsOfActor1.remove(actor2.getId());
+            actor1.setFriends(friendsOfActor1);
+            actorRepository.save(actor1);
+
+            friendsOfActor2 = actor2.getFriends();
+            friendsOfActor2.remove(actor1.getId());
+            actor2.setFriends(friendsOfActor2);
+            actorRepository.save(actor2);
+
+        } else if (action.equals("friend")){
+            try {
+                friendsOfActor1 = actor1.getFriends();
+                friendsOfActor1.add(actor2.getId());
+                actor1.setFriends(friendsOfActor1);
+                actorRepository.save(actor1);
+            } catch (NullPointerException e){
+                friendsOfActor1 = new ArrayList<>();
+                friendsOfActor1.add(actor2.getId());
+                actor1.setFriends(friendsOfActor1);
+                actorRepository.save(actor1);
+            }
+
+            try {
+                friendsOfActor1 = actor1.getFriends();
+                friendsOfActor1.add(actor2.getId());
+                actor1.setFriends(friendsOfActor1);
+                actorRepository.save(actor1);
+            } catch (NullPointerException e){
+                friendsOfActor2 = new ArrayList<>();
+                friendsOfActor2.add(actor1.getId());
+                actor2.setFriends(friendsOfActor2);
+                actorRepository.save(actor2);
+            }
+        }
+
+        return new ResponseEntity<>(actor1, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get an actor by ID", response = Actor.class)

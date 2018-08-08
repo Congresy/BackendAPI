@@ -216,6 +216,16 @@ public class Actor {
 
     private List<String> posts;
 
+    private List<String> friends;
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
     public List<String> getPosts() {
         return posts;
     }
