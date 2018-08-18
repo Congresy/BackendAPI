@@ -172,8 +172,10 @@ public class Conferences {
 			event.setParticipants(aux);
 		}
 
-		if(event.getAllowedParticipants() != 0)
-			event.setAllowedParticipants(event.getAllowedParticipants()-1);
+		if(event.getAllowedParticipants() != 0){
+			event.setSeatsLeft(event.getSeatsLeft() - 1);
+		}
+
 		conferenceRepository.save(event);
 
 		try {

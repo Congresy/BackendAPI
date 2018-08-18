@@ -53,11 +53,14 @@ public class Conference {
     @Min(1)
     @JsonView(Detailed.class)
     private Integer allowedParticipants;
+    @Min(0)
+    @JsonView(Detailed.class)
+    private Integer seatsLeft;
 
 	public Conference() {
 	}
 
-    public Conference(String id, String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator) {
+    public Conference(String id, String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator, Integer seatsLeft) {
         this.id = id;
 	    this.name = name;
         this.theme = theme;
@@ -70,9 +73,10 @@ public class Conference {
         this.description = description;
         this.comments = new ArrayList<>();
         this.organizator = organizator;
+        this.seatsLeft = seatsLeft;
     }
 
-    public Conference(String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator) {
+    public Conference(String name, String theme, Double price, Integer allowedParticipants, String start, String end, String speakersNames, String description, String organizator, Integer seatsLeft) {
         this.name = name;
         this.theme = theme;
         this.price = price;
@@ -84,6 +88,15 @@ public class Conference {
         this.description = description;
         this.comments = new ArrayList<>();
         this.organizator = organizator;
+        this.seatsLeft = seatsLeft;
+    }
+
+    public Integer getSeatsLeft() {
+        return seatsLeft;
+    }
+
+    public void setSeatsLeft(Integer seatsLeft) {
+        this.seatsLeft = seatsLeft;
     }
 
     public Integer getAllowedParticipants() {

@@ -60,10 +60,11 @@ public class Events {
             event.setParticipants(aux);
         }
 
-        if(event.getAllowedParticipants() != 0) {
-            event.setAllowedParticipants(event.getAllowedParticipants()-1);
-            eventRepository.save(event);
+        if(event.getAllowedParticipants() != 0){
+            event.setSeatsLeft(event.getSeatsLeft() - 1);
         }
+
+        eventRepository.save(event);
 
         try {
             List<String> aux = actor.getEvents();
@@ -101,7 +102,7 @@ public class Events {
             event.setParticipants(aux);
         }
 
-        event.setAllowedParticipants(event.getAllowedParticipants() + 1);
+        event.setSeatsLeft(event.getSeatsLeft() + 1);
         eventRepository.save(event);
 
         try {

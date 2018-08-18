@@ -44,13 +44,16 @@ public class Event {
     @Min(1)
     @JsonView(Default.class)
     private Integer allowedParticipants;
+    @Min(0)
+    @JsonView(Default.class)
+    private Integer seatsLeft;
 
 
     public Event(){
 
     }
 
-    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants) {
+    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
         this.id = id;
         this.start = start;
         this.end = end;
@@ -61,9 +64,10 @@ public class Event {
         this.speakers = new ArrayList<>();
         this.place = place;
         this.allowedParticipants = allowedParticipants;
+        this.seatsLeft = seatsLeft;
     }
 
-    public Event(String start, String end, String name, String type, String requeriments, String role, String plac, Integer allowedParticipants) {
+    public Event(String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
         this.start = start;
         this.end = end;
         this.name = name;
@@ -71,11 +75,11 @@ public class Event {
         this.requirements = requeriments;
         this.role = role;
         this.speakers = new ArrayList<>();
-        this.place = place;
         this.allowedParticipants = allowedParticipants;
+        this.seatsLeft = seatsLeft;
     }
 
-    public Event(String start, String end, String name, String requeriments, String role, String place, Integer allowedParticipants) {
+    public Event(String start, String end, String name, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
         this.start = start;
         this.end = end;
         this.name = name;
@@ -84,6 +88,15 @@ public class Event {
         this.speakers = new ArrayList<>();
         this.place = place;
         this.allowedParticipants = allowedParticipants;
+        this.seatsLeft = seatsLeft;
+    }
+
+    public Integer getSeatsLeft() {
+        return seatsLeft;
+    }
+
+    public void setSeatsLeft(Integer seatsLeft) {
+        this.seatsLeft = seatsLeft;
     }
 
     public Integer getAllowedParticipants() {
