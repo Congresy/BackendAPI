@@ -116,6 +116,8 @@ public class Posts {
 
         post.setViews(post.getViews() + 1);
 
+        postRepository.save(post);
+
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
