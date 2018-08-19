@@ -110,23 +110,15 @@ public class Conferences {
 	}
 
 	@ApiOperation(value = "Get conferences of an organizator by username", response = Iterable.class)
-	@GetMapping(value = "/organizator/{username}")
+	@GetMapping(value = "/own/{idActor}")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getOwnConferences(@PathVariable("username") String username) {
-		List<Actor> actors = actorRepository.findAll();
-		UserAccount userAccount;
-		Actor actor = null;
+	public ResponseEntity<?> getOwnConferences(@PathVariable("idActor") String idActor) {
+		Actor actor = actorRepository.findOne(idActor);
 
-		for(Actor a : actors){
-			userAccount = userAccountRepository.findOne(a.getUserAccount_());
-			if(userAccount.getUsername().equals(username)){
-				actor = a;
-			}
-		}
 
 		List<Conference> res = new ArrayList<>();
 
-		List<String> conferences = new ArrayList<>();
+		List<String> conferences;
 		try {
 			conferences = actor.getConferences();
 			for(String s : conferences){
