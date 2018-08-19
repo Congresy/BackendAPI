@@ -126,35 +126,26 @@ public class Events {
 
         Actor actor = actorRepository.findOne(idActor);
         Event event = eventRepository.findOne(idEvent);
+        Conference conference = conferenceRepository.findOne(event.getConference());
 
-        if(actor.getRole().equals("Organizator") || actor.getRole().equals("Administrator")){
-            new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        try {
-            List<String> speakers = event.getSpeakers();
-            speakers.remove(actor.getId());
-            event.setSpeakers(speakers);
-        } catch (Exception e){
-            List<String> aux = new ArrayList<>();
-            aux.remove(actor.getId());
-            event.setSpeakers(aux);
-        }
-
+        List<String> speakers = event.getSpeakers();
+        speakers.remove(actor.getId());
+        event.setSpeakers(speakers);
 
         eventRepository.save(event);
 
-        try {
-            List<String> aux = actor.getEvents();
-            aux.remove(event.getId());
-            actor.setEvents(aux);
-            actorRepository.save(actor);
-        } catch (Exception e){
-            List<String> aux = new ArrayList<>();
-            aux.remove(event.getId());
-            actor.setEvents(aux);
-            actorRepository.save(actor);
-        }
+        List<String> participants = conference.getParticipants();
+        participants.remove(actor.getId());
+        conference.setParticipants(participants);
+
+        conferenceRepository.save(conference);
+
+        List<String> aux = actor.getEvents();
+        aux.remove(event.getId());
+        actor.setEvents(aux);
+
+        actorRepository.save(actor);
+
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
@@ -200,13 +191,13 @@ public class Events {
             List<String> aux = actor.getEvents();
             aux.add(event.getId());
             actor.setEvents(aux);
-            actorRepository.save(actor);
         } catch (Exception e){
             List<String> aux = new ArrayList<>();
             aux.add(event.getId());
             actor.setEvents(aux);
-            actorRepository.save(actor);
         }
+
+        actorRepository.save(actor);
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
