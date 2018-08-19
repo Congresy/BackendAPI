@@ -227,7 +227,9 @@ public class Events {
                 for(String s: actor.getConferences()){
                     for(Conference c : conferenceRepository.findAll()){
                         if (s.equals(c.getId())){
-                            conferences.add(c);
+                            if (parseDate(c.getStart()).isAfter(LocalDateTime.now())){
+                                conferences.add(c);
+                            }
                         }
                     }
                 }
