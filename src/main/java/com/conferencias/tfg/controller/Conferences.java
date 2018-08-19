@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -140,7 +141,7 @@ public class Conferences {
 	@ApiOperation(value = "Get conferences of an organizator by username", response = Iterable.class)
 	@GetMapping(value = "/own/{idActor}")
 	@JsonView(Detailed.class)
-	public ResponseEntity<?> getOwnConferences(@PathVariable("idActor") String idActor) {
+	public ResponseEntity<?> getOwnConferences(@PathVariable("idActor") String idActor, @RequestParam("value") String value) {
 		Actor actor = actorRepository.findOne(idActor);
 
 		List<Conference> res = new ArrayList<>();
@@ -149,7 +150,17 @@ public class Conferences {
 		try {
 			conferences = actor.getConferences();
 			for(String s : conferences){
-				res.add(conferenceRepository.findOne(s));
+				if (value.equals("upcoming")) {
+					if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDateTime.now())){
+						res.add(conferenceRepository.findOne(s));
+					}
+				} else if (value.equals("past")){
+					if (parseDate(conferenceRepository.findOne(s).getStart()).isBefore(LocalDateTime.now())){
+						res.add(conferenceRepository.findOne(s));
+					}
+				}
+
+
 			}
 		} catch (Exception e){
 			res = new ArrayList<>();
