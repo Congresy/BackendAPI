@@ -47,6 +47,15 @@ public class Conferences {
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getAllDetailed(@RequestParam("order") String order) {
 		List<Conference> conferences = conferenceRepository.findAll();
+		List<Conference> toRemove = new ArrayList<>();
+
+		for (Conference c : conferenceRepository.findAll()){
+			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+				toRemove.add(c);
+			}
+		}
+
+		conferences.removeAll(toRemove);
 
 		if (order.equals("date"))
             conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
@@ -57,6 +66,7 @@ public class Conferences {
         else
             conferences.sort((Conference c1, Conference c2)->c2.getName().compareTo(c1.getName()));
 
+
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
@@ -65,6 +75,15 @@ public class Conferences {
     @JsonView(Short.class)
     public ResponseEntity<?> getAllShort(@RequestParam("order") String order) {
         List<Conference> conferences = conferenceRepository.findAll();
+		List<Conference> toRemove = new ArrayList<>();
+
+		for (Conference c : conferenceRepository.findAll()){
+			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+				toRemove.add(c);
+			}
+		}
+
+		conferences.removeAll(toRemove);
 
         if (order.equals("date"))
             conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
@@ -83,6 +102,13 @@ public class Conferences {
     @JsonView(Detailed.class)
     public ResponseEntity<?> search(@PathVariable("keyword") String keyword) {
         List<Conference> conferences = new ArrayList<>();
+		List<Conference> toRemove = new ArrayList<>();
+
+		for (Conference c : conferenceRepository.findAll()){
+			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+				toRemove.add(c);
+			}
+		}
 
         for(Conference c : conferenceRepository.findAll()){
 			Place p = placeRepository.findOne(c.getPlace());
@@ -92,6 +118,8 @@ public class Conferences {
 			}
 
         }
+
+		conferences.removeAll(toRemove);
 
         return new ResponseEntity<Object>(conferences, HttpStatus.OK);
     }
@@ -114,7 +142,6 @@ public class Conferences {
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getOwnConferences(@PathVariable("idActor") String idActor) {
 		Actor actor = actorRepository.findOne(idActor);
-
 
 		List<Conference> res = new ArrayList<>();
 

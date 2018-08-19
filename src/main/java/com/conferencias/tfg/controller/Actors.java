@@ -156,14 +156,10 @@ public class Actors {
         Actor actor = actorRepository.findOne(idActor);
         List<Conference> conferences = new ArrayList<>();
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1);
-        Date result = cal.getTime();
-
         try {
             for (String s : actor.getConferences()){
                 Conference c = conferenceRepository.findOne(s);
-                if (parseDate(c.getStart()).isAfter(LocalDateTime.now().minusMonths(1))){
+                if (parseDate(c.getStart()).isAfter(LocalDateTime.now())){
                     conferences.add(c);
                 }
             }
