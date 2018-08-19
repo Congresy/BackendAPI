@@ -60,13 +60,6 @@ public class Conferences {
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
-	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<?> getAll(Pageable pageable){
-		Page<Conference> conferences = conferenceRepository.findAll(pageable);
-
-		return new ResponseEntity<>(conferences.getContent(), HttpStatus.OK);
-	}
-
 	@ApiOperation(value = "List all system's conferences in short view", response = Conference.class)
     @GetMapping(value = "/short", params = "order")
     @JsonView(Short.class)
