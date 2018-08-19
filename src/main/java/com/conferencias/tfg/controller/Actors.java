@@ -368,6 +368,30 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Get all actors by role", response = Iterable.class)
+    @GetMapping("/speakers/notIn/{idEvent}")
+    public ResponseEntity<?> getAllSpeakersNotInEvent(@PathVariable("idEvent") String idEvent) {
+        List<Actor> actorsAux = actorRepository.findAll();
+        Event event = eventRepository.findOne(idEvent);
+        List<Actor> actors = new ArrayList<>();
+
+        try {
+            for (Actor a : actorsAux) {
+                if (a.getRole().equals("Speaker"))
+                    if (!event.getSpeakers().contains(a.getId())){
+                        actors.add(a);
+                    }
+            }
+        } catch (Exception e){
+            for (Actor a : actorsAux) {
+                if (a.getRole().equals("Speaker"))
+                    actors.add(a);
+            }
+        }
+
+        return new ResponseEntity<>(actors, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get all speakers so they can be added to an event", response = Iterable.class)
     @GetMapping("/speakers/event/{idEvent}")
     public ResponseEntity<?> getAllSpeakers(@PathVariable("idEvent") String idEvent) {
