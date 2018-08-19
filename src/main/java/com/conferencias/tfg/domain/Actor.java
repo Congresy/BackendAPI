@@ -26,7 +26,8 @@ public class Actor {
     @NotBlank
     private String email;
     @NotBlank
-    @Pattern(regexp = "^(([+][(]?[0-9]{1,3}[)]?)|([(]?[0-9]{4}[)]?))\\s*[)]?[-\\s\\.]?[(]?[0-9]{1,3}[)]?([-\\s\\.]?[0-9]{3})([-\\s\\.]?[0-9]{3,4})$")
+    //@Pattern(regexp = "^(([+][(]?[0-9]{1,3}[)]?)|([(]?[0-9]{4}[)]?))\\s*[)]?[-\\s\\.]?[(]?[0-9]{1,3}[)]?([-\\s\\.]?[0-9]{3})([-\\s\\.]?[0-9]{3,4})$")
+    @Pattern(regexp = "^(\\d{9}|\\d{14})$")
     private String phone;
     @URL
     private String photo;
