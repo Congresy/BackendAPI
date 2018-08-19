@@ -210,7 +210,7 @@ public class Posts {
     public ResponseEntity<?> getMostVoted() {
         List<Post> posts = postRepository.findAll();
 
-        posts.sort(Comparator.comparing(Post::getVotes));
+        posts.sort(Comparator.comparing(Post::getVotes).reversed());
 
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
