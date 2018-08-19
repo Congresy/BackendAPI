@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +60,14 @@ public class Conferences {
 		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
 	}
 
-    @ApiOperation(value = "List all system's conferences in short view", response = Conference.class)
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<?> getAll(Pageable pageable){
+		Page<Conference> conferences = conferenceRepository.findAll(pageable);
+
+		return new ResponseEntity<>(conferences.getContent(), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "List all system's conferences in short view", response = Conference.class)
     @GetMapping(value = "/short", params = "order")
     @JsonView(Short.class)
     public ResponseEntity<?> getAllShort(@RequestParam("order") String order) {
