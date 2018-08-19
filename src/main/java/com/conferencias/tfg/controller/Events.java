@@ -60,9 +60,14 @@ public class Events {
             event.setParticipants(aux);
         }
 
-        if(event.getAllowedParticipants() != 0){
-            event.setSeatsLeft(event.getSeatsLeft() - 1);
+        try {
+            if(event.getSeatsLeft() != 0){
+                event.setSeatsLeft(event.getSeatsLeft() - 1);
+            }
+        } catch (Exception e){
+            event.setSeatsLeft(event.getAllowedParticipants() - 1);
         }
+
 
         eventRepository.save(event);
 
