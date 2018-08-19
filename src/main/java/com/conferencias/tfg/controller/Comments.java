@@ -402,7 +402,7 @@ public class Comments {
         if (type.equals("Up")) {
             comment.setThumbsUp(comment.getThumbsUp() + 1);
         } else {
-            comment.setThumbsUp(comment.getThumbsDown() - 1);
+            comment.setThumbsDown(comment.getThumbsDown() + 1);
         }
 
         commentRepository.save(comment);
