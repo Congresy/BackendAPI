@@ -6,7 +6,6 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.jdo.annotations.Unique;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -25,15 +24,12 @@ public class Actor {
     @Email
     @NotBlank
     private String email;
-    @NotBlank
+    @NotBlank()
     //@Pattern(regexp = "^(([+][(]?[0-9]{1,3}[)]?)|([(]?[0-9]{4}[)]?))\\s*[)]?[-\\s\\.]?[(]?[0-9]{1,3}[)]?([-\\s\\.]?[0-9]{3})([-\\s\\.]?[0-9]{3,4})$")
     @Pattern(regexp = "^(\\d{9}|\\d{14})$")
     private String phone;
     @URL
     private String photo;
-    @Unique
-    @NotBlank
-    private String nick;
     @NotNull
     private boolean banned;
     @NotNull
@@ -57,14 +53,13 @@ public class Actor {
 
     }
 
-    public Actor(String id, String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount_) {
+    public Actor(String id, String name, String surname, String email, String phone, String photo, String place, String role, String userAccount_) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
         this.photo = photo;
-        this.nick = nick;
         this.banned = false;
         this.private_ = false;
         this.place = place;
@@ -77,13 +72,12 @@ public class Actor {
         this.userAccount_ = userAccount_;
     }
 
-    public Actor(String name, String surname, String email, String phone, String photo, String nick, String place, String role, String userAccount_) {
+    public Actor(String name, String surname, String email, String phone, String photo, String place, String role, String userAccount_) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
         this.photo = photo;
-        this.nick = nick;
         this.banned = false;
         this.private_ = false;
         this.place = place;
@@ -96,12 +90,11 @@ public class Actor {
         this.userAccount_ = userAccount_;
     }
 
-    public Actor(String name, String surname, String email, String phone, String nick, String place, String role, String userAccount_) {
+    public Actor(String name, String surname, String email, String phone, String place, String role, String userAccount_) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
-        this.nick = nick;
         this.banned = false;
         this.private_ = false;
         this.place = place;
@@ -162,14 +155,6 @@ public class Actor {
         this.photo = photo;
     }
 
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
-
     public boolean isBanned() {
         return banned;
     }
@@ -202,8 +187,6 @@ public class Actor {
     private String place;
 
     private List<String> comments;
-
-    private List<String> interests;
 
     private List<String> followers;
 
@@ -283,14 +266,6 @@ public class Actor {
         this.comments = comments;
     }
 
-    public List<String> getInterests() {
-        return interests;
-    }
-
-    public void setInterests(List<String> interests) {
-        this.interests = interests;
-    }
-
     public List<String> getFollowers() {
         return followers;
     }
@@ -312,22 +287,13 @@ public class Actor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Actor actor = (Actor) o;
-        return Objects.equals(id, actor.id) &&
-                Objects.equals(name, actor.name) &&
-                Objects.equals(surname, actor.surname) &&
-                Objects.equals(email, actor.email) &&
-                Objects.equals(phone, actor.phone) &&
-                Objects.equals(photo, actor.photo) &&
-                Objects.equals(nick, actor.nick) &&
-                Objects.equals(role, actor.role) &&
-                Objects.equals(userAccount_, actor.userAccount_) &&
-                Objects.equals(place, actor.place);
+        return Objects.equals(id, actor.id);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, surname, email, phone, photo, nick, role, userAccount_, place);
+        return Objects.hash(id);
     }
 }
 

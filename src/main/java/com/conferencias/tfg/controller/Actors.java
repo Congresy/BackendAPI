@@ -6,18 +6,14 @@ import com.conferencias.tfg.repository.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -81,11 +77,6 @@ public class Actors {
         folderRepository.save(folder2);
         folderRepository.save(folder3);
 
-        List<Folder> folders = new ArrayList<>();
-        folders.add(folder1);
-        folders.add(folder2);
-        folders.add(folder3);
-
         List<String> foldersString = new ArrayList<>();
         foldersString.add(folder1.getId());
         foldersString.add(folder2.getId());
@@ -94,8 +85,6 @@ public class Actors {
         actor.setFolders(foldersString);
         actorRepository.save(actor);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/actors/{id}").buildAndExpand(actorWrapper.getActor().getId()).toUri());
         return new ResponseEntity<>(actorWrapper.getActor(), HttpStatus.CREATED);
     }
 
@@ -328,10 +317,8 @@ public class Actors {
 
         currentActor.setName(actorWrapper.getActor().getName());
         currentActor.setSurname(actorWrapper.getActor().getSurname());
-        currentActor.setNick(actorWrapper.getActor().getNick());
         currentActor.setEmail(actorWrapper.getActor().getEmail());
         currentActor.setPhone(actorWrapper.getActor().getPhone());
-        currentActor.setInterests(actorWrapper.getActor().getInterests());
         currentActor.setPrivate_(actorWrapper.getActor().isPrivate_());
         currentActor.setPhoto(actorWrapper.getActor().getPhoto());
 
@@ -454,7 +441,7 @@ public class Actors {
         List<Actor> actorsAux = actorRepository.findAll();
         List<Actor> actors = new ArrayList<>();
         for (Actor a : actorsAux) {
-            if ((a.getName() + a.getSurname() + a.getNick()).toLowerCase().contains(keyword.toLowerCase())) {
+            if ((a.getName() + a.getSurname()).toLowerCase().contains(keyword.toLowerCase())) {
                 actors.add(a);
             }
         }
