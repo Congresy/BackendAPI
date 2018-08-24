@@ -399,10 +399,14 @@ public class Actors {
 
     @ApiOperation(value = "Ban an actor", response = Actor.class)
     @PutMapping("/ban/{idActor}")
-    public ResponseEntity<?> ban(@PathVariable("idActor") String idActor) {
+    public ResponseEntity<?> ban(@PathVariable("idActor") String idActor, @RequestParam("action") String action) {
         Actor actor = actorRepository.findOne(idActor);
 
-        actor.setBanned(true);
+        if (action.equals("ban")){
+            actor.setBanned(true);
+        } else if (action.equals("unban")) {
+            actor.setBanned(false);
+        }
 
         actorRepository.save(actor);
 
