@@ -158,10 +158,15 @@ public class Posts {
             }
         }
 
-        List<String> add = actor.getPosts();
-        add.remove(id);
-        actor.setPosts(add);
-        actorRepository.save(actor);
+        try {
+            List<String> add = actor.getPosts();
+            add.remove(id);
+            actor.setPosts(add);
+            actorRepository.save(actor);
+        } catch (NullPointerException e){
+
+        }
+
 
         postRepository.delete(id);
         return new ResponseEntity<Conference>(HttpStatus.NO_CONTENT);
