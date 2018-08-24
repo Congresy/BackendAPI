@@ -16,8 +16,10 @@ public class Post {
 
     @Id
     private String id;
+
+    private String authorName;
     @NotBlank
-    private String author;
+    private String authorId;
     @NotBlank
     private String title;
     @NotBlank
@@ -41,7 +43,7 @@ public class Post {
 
     public Post(String id, String author, String title, String body, String category, String posted) {
         this.id = id;
-        this.author = author;
+        this.authorName = author;
         this.body = body;
         this.category = category;
         this.comments = new ArrayList<>();
@@ -54,7 +56,7 @@ public class Post {
 
 
     public Post(String author, String title, String body, String category, String posted) {
-        this.author = author;
+        this.authorName = author;
         this.body = body;
         this.category = category;
         this.comments = new ArrayList<>();
@@ -63,6 +65,22 @@ public class Post {
         this.votes = 0;
         this.views = 0;
         this.draft = true;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public Boolean getDraft() {
@@ -95,14 +113,6 @@ public class Post {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getBody() {

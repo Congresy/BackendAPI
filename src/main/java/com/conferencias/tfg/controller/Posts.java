@@ -69,7 +69,7 @@ public class Posts {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Post post, UriComponentsBuilder ucBuilder) {
 
-        Actor actor = actorRepository.findOne(post.getAuthor());
+        Actor actor = actorRepository.findOne(post.getAuthorId());
 
         postRepository.save(post);
 
@@ -94,9 +94,9 @@ public class Posts {
 
         Post post = postRepository.findOne(idPost);
 
-        Actor actor = actorRepository.findOne(post.getAuthor());
+        Actor actor = actorRepository.findOne(post.getAuthorId());
 
-        post.setAuthor(actor.getName() + " " + actor.getSurname());
+        post.setAuthorName(actor.getName() + " " + actor.getSurname());
 
         post.setDraft(false);
 
