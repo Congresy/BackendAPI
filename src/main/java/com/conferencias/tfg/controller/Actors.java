@@ -348,7 +348,7 @@ public class Actors {
         List<Actor> actorsAux = actorRepository.findAll();
         List<Actor> actors = new ArrayList<>();
         for (Actor a : actorsAux) {
-            if (a.getRole().equals(role))
+            if (a.getRole().equals(role) && !a.isBanned())
                 actors.add(a);
         }
 
@@ -364,14 +364,14 @@ public class Actors {
 
         try {
             for (Actor a : actorsAux) {
-                if (a.getRole().equals("Speaker"))
+                if (a.getRole().equals("Speaker") && !a.isBanned())
                     if (!event.getSpeakers().contains(a.getId())){
                         actors.add(a);
                     }
             }
         } catch (Exception e){
             for (Actor a : actorsAux) {
-                if (a.getRole().equals("Speaker"))
+                if (a.getRole().equals("Speaker") && !a.isBanned())
                     actors.add(a);
             }
         }
@@ -387,7 +387,7 @@ public class Actors {
         List<Actor> actorsAux = actorRepository.findAll();
         List<Actor> actors = new ArrayList<>();
         for (Actor a : actorsAux) {
-            if (a.getRole().equals("Speaker")){
+            if (a.getRole().equals("Speaker") && !a.isBanned()){
                 if(!event.getSpeakers().contains(a.getId())){
                     actors.add(a);
                 }
@@ -397,16 +397,16 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get all actors by place", response = Iterable.class)
-    @GetMapping("/place/{place}")
-    public ResponseEntity<?> getAllByPlace(@PathVariable("place") String place) {
-        List<Actor> actorsAux = actorRepository.findAll();
-        List<Actor> actors = new ArrayList<>();
-        for (Actor a : actorsAux) {
-            if (a.getPlace().toLowerCase().contains(place.toLowerCase()))
-                actors.add(a);
-        }
-        return new ResponseEntity<>(actors, HttpStatus.OK);
+    @ApiOperation(value = "Ban an actor", response = Actor.class)
+    @PutMapping("/banned")
+    public ResponseEntity<?> ban(@RequestParam("idActor") String idActor) {
+        Actor actor = actorRepository.findOne(idActor);
+
+        actor.setBanned(true);
+
+        actorRepository.save(actor);
+
+        return new ResponseEntity<>(actor, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get all actors with banned status", response = Iterable.class)
@@ -422,27 +422,16 @@ public class Actors {
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Get all actors with private status", response = Iterable.class)
-    @GetMapping("/private")
-    public ResponseEntity<?> getPrivate() {
-        List<Actor> actorsAux = actorRepository.findAll();
-        List<Actor> actors = new ArrayList<>();
-        for (Actor a : actorsAux) {
-            if (a.isPrivate_()) {
-                actors.add(a);
-            }
-        }
-        return new ResponseEntity<>(actors, HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Get all actors by keyword", response = Iterable.class)
     @GetMapping("/search/{keyword}")
     public ResponseEntity<?> getAllByKeyword(@PathVariable("keyword") String keyword) {
         List<Actor> actorsAux = actorRepository.findAll();
         List<Actor> actors = new ArrayList<>();
         for (Actor a : actorsAux) {
-            if ((a.getName() + a.getSurname()).toLowerCase().contains(keyword.toLowerCase())) {
-                actors.add(a);
+            if (!a.isBanned()){
+                if ((a.getName() + a.getSurname()).toLowerCase().contains(keyword.toLowerCase())) {
+                    actors.add(a);
+                }
             }
         }
         return new ResponseEntity<>(actors, HttpStatus.OK);
