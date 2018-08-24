@@ -32,7 +32,7 @@ public class Actors {
 
     private final ConferenceRepository conferenceRepository;
 
-    CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
+    private CustomPasswordEncoder customPasswordEncoder = new CustomPasswordEncoder();
 
     @Autowired
     public Actors(ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository, FolderRepository folderRepository, ConferenceRepository conferenceRepository) {
@@ -45,8 +45,15 @@ public class Actors {
 
     @GetMapping()
     @ApiOperation("View a list of all available actors")
-    public List<Actor> showAll() {
-        return actorRepository.findAll();
+    public ResponseEntity<?> showAll() {
+        List<Actor> actorsAux = actorRepository.findAll();
+        List<Actor> actors = new ArrayList<>();
+        for (Actor a : actorsAux) {
+            if (!a.isBanned())
+                actors.add(a);
+        }
+
+        return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Create an actor")
