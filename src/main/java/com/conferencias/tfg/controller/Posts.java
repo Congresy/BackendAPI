@@ -71,6 +71,8 @@ public class Posts {
 
         Actor actor = actorRepository.findOne(post.getAuthorId());
 
+        post.setAuthorName("** Not published yet **");
+
         postRepository.save(post);
 
         try {
