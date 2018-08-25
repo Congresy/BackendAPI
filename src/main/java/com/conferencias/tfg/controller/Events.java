@@ -427,9 +427,6 @@ public class Events {
             event.setStart(end);
         }
 
-        if(!event.getRole().equals("socialEvent"))
-            event.setType(null);
-
         eventRepository.save(event);
 
         String conference = event.getConference();
@@ -476,8 +473,6 @@ public class Events {
 		currentEvent.setEnd(event.getEnd());
 		currentEvent.setRequirements(event.getRequirements());
         currentEvent.setAllowedParticipants(event.getAllowedParticipants());
-		if(currentEvent.getRole().equals("socialEvent"))
-		    currentEvent.setType(event.getType());
 
 		eventRepository.save(currentEvent);
 		return new ResponseEntity<>(currentEvent, HttpStatus.OK);

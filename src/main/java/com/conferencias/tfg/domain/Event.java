@@ -33,8 +33,6 @@ public class Event {
     @JsonView(Default.class)
     private String name;
     @JsonView(Default.class)
-    private String type; // Para social events
-    @JsonView(Default.class)
     @NotBlank
     private String requirements;
     @JsonView(Default.class)
@@ -53,25 +51,11 @@ public class Event {
 
     }
 
-    public Event(String id, String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
+    public Event(String id, String start, String end, String name, String requeriments, String role, Integer allowedParticipants, Integer seatsLeft) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.name = name;
-        this.type = type;
-        this.requirements = requeriments;
-        this.role = role;
-        this.speakers = new ArrayList<>();
-        this.place = place;
-        this.allowedParticipants = allowedParticipants;
-        this.seatsLeft = seatsLeft;
-    }
-
-    public Event(String start, String end, String name, String type, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
-        this.start = start;
-        this.end = end;
-        this.name = name;
-        this.type = type;
         this.requirements = requeriments;
         this.role = role;
         this.speakers = new ArrayList<>();
@@ -79,14 +63,13 @@ public class Event {
         this.seatsLeft = seatsLeft;
     }
 
-    public Event(String start, String end, String name, String requeriments, String role, String place, Integer allowedParticipants, Integer seatsLeft) {
+    public Event(String start, String end, String name, String requeriments, String role, Integer allowedParticipants, Integer seatsLeft) {
         this.start = start;
         this.end = end;
         this.name = name;
         this.requirements = requeriments;
         this.role = role;
         this.speakers = new ArrayList<>();
-        this.place = place;
         this.allowedParticipants = allowedParticipants;
         this.seatsLeft = seatsLeft;
     }
@@ -137,14 +120,6 @@ public class Event {
 
     public void setEnd(String end) {
         this.end = end;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getRequirements() {
