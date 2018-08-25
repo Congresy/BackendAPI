@@ -28,7 +28,6 @@ public class Place {
     @JsonView(Views.Default.class)
     private String details;
     @NotBlank
-    @Pattern(regexp = "((0[1-9]|5[0-2])|[1-4][0-9])[0-9]{3}")
     @JsonView(Views.Default.class)
     private String postalCode;
 
