@@ -39,7 +39,7 @@ public class CheckoutController {
         String clientToken = gateway.clientToken().generate();
         model.addAttribute("clientToken", clientToken);
 
-        return "checkouts/new";
+        return clientToken;
     }
 
     @RequestMapping(value = "/checkouts", method = RequestMethod.POST)
