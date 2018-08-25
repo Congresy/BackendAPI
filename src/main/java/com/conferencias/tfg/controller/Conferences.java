@@ -17,10 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 @CrossOrigin
 @RestController
@@ -30,15 +32,13 @@ public class Conferences {
 
     private ConferenceRepository conferenceRepository;
     private ActorRepository actorRepository;
-    private UserAccountRepository userAccountRepository;
     private EventRepository eventRepository;
     private PlaceRepository placeRepository;
 
 	@Autowired
-    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, UserAccountRepository userAccountRepository, EventRepository eventRepository, PlaceRepository placeRepository) {
+    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, EventRepository eventRepository, PlaceRepository placeRepository) {
         this.conferenceRepository = conferenceRepository;
         this.actorRepository = actorRepository;
-        this.userAccountRepository = userAccountRepository;
         this.eventRepository = eventRepository;
         this.placeRepository = placeRepository;
     }
@@ -51,7 +51,7 @@ public class Conferences {
 		List<Conference> toRemove = new ArrayList<>();
 
 		for (Conference c : conferenceRepository.findAll()){
-			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+			if (parseDate(c.getStart()).isBefore(LocalDate.now())){
 				toRemove.add(c);
 			}
 		}
@@ -59,7 +59,7 @@ public class Conferences {
 		conferences.removeAll(toRemove);
 
 		if (order.equals("date"))
-            conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
+			conferences.sort(Comparator.comparing((Conference c) -> parseDate(c.getStart())));
         else if (order.equals("popularity"))
             conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
         else if (order.equals("price"))
@@ -79,7 +79,7 @@ public class Conferences {
 		List<Conference> toRemove = new ArrayList<>();
 
 		for (Conference c : conferenceRepository.findAll()){
-			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+			if (parseDate(c.getStart()).isBefore(LocalDate.now())){
 				toRemove.add(c);
 			}
 		}
@@ -87,7 +87,7 @@ public class Conferences {
 		conferences.removeAll(toRemove);
 
         if (order.equals("date"))
-            conferences.sort((Conference c1, Conference c2)->parseDate(c1.getStart()).getNano()-parseDate(c2.getStart()).getNano());
+            conferences.sort(Comparator.comparing((Conference c) -> parseDate(c.getStart())));
         else if (order.equals("popularity"))
             conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
         else if (order.equals("price"))
@@ -106,7 +106,7 @@ public class Conferences {
 		List<Conference> toRemove = new ArrayList<>();
 
 		for (Conference c : conferenceRepository.findAll()){
-			if (parseDate(c.getStart()).isBefore(LocalDateTime.now())){
+			if (parseDate(c.getStart()).isBefore(LocalDate.now())){
 				toRemove.add(c);
 			}
 		}
@@ -147,15 +147,16 @@ public class Conferences {
 		List<Conference> res = new ArrayList<>();
 
 		List<String> conferences;
+
 		try {
 			conferences = actor.getConferences();
 			for(String s : conferences){
 				if (value.equals("upcoming")) {
-					if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDateTime.now())){
+					if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDate.now())){
 						res.add(conferenceRepository.findOne(s));
 					}
 				} else if (value.equals("past")){
-					if (parseDate(conferenceRepository.findOne(s).getStart()).isBefore(LocalDateTime.now())){
+					if (parseDate(conferenceRepository.findOne(s).getStart()).isBefore(LocalDate.now())){
 						res.add(conferenceRepository.findOne(s));
 					}
 				}
@@ -163,7 +164,7 @@ public class Conferences {
 
 			}
 		} catch (Exception e){
-			res = new ArrayList<>();
+			conferences = new ArrayList<>();
 		}
 
 		return new ResponseEntity<>(res, HttpStatus.OK);
@@ -352,9 +353,10 @@ public class Conferences {
 		return res;
 	}
 
-    private LocalDateTime parseDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-        return dateTime;
+    private LocalDate parseDate(String date){
+		String output = date.substring(0, 10);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate dt = LocalDate.parse(output, formatter);
+        return dt;
     }
 }
