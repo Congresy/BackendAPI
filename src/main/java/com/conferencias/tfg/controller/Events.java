@@ -471,6 +471,8 @@ public class Events {
             event.setStart(end);
         }
 
+        event.setSeatsLeft(event.getAllowedParticipants());
+
         eventRepository.save(event);
 
         String conference = event.getConference();
