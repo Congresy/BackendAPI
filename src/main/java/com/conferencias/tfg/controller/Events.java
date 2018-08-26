@@ -69,8 +69,19 @@ public class Events {
             event.setSeatsLeft(event.getAllowedParticipants() - 1);
         }
 
-
         eventRepository.save(event);
+
+        Conference conference = conferenceRepository.findOne(event.getConference());
+
+        try {
+            if(conference.getSeatsLeft() != 0){
+                event.setSeatsLeft(conference.getSeatsLeft() - 1);
+            }
+        } catch (Exception e){
+            event.setSeatsLeft(conference.getAllowedParticipants() - 1);
+        }
+
+        conferenceRepository.save(conference);
 
         try {
             List<String> aux = actor.getEvents();
@@ -110,6 +121,10 @@ public class Events {
 
         event.setSeatsLeft(event.getSeatsLeft() + 1);
         eventRepository.save(event);
+
+        Conference conference = conferenceRepository.findOne(event.getConference());
+        conference.setSeatsLeft(conference.getSeatsLeft() + 1);
+        conferenceRepository.save(conference);
 
         try {
             List<String> aux = actor.getEvents();
