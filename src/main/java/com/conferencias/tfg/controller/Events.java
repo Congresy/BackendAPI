@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -215,13 +216,11 @@ public class Events {
         List<Event> events = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
 
-        try {
-
-            if (actor.getRole().equals("Organizator")){
+          if (actor.getRole().equals("Organizator")){
 
                 for(String s: actor.getConferences()){
-                    if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDateTime.now()))
-                    conferences.add(conferenceRepository.findOne(s));
+                    if (parseDateC(conferenceRepository.findOne(s).getStart()).isAfter(LocalDate.now()))
+                        conferences.add(conferenceRepository.findOne(s));
                 }
 
                 for (Conference c : conferences){
@@ -240,11 +239,7 @@ public class Events {
 
             }
 
-        } catch (Exception e){
 
-            events = new ArrayList<>();
-
-        }
 
 
         return new ResponseEntity<>(events, HttpStatus.OK);
@@ -258,7 +253,7 @@ public class Events {
         List<Event> events = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
 
-
+        if (!date.equals("all")) {
             if (actor.getRole().equals("Organizator")){
 
                 for(String s: actor.getConferences()){
@@ -284,8 +279,30 @@ public class Events {
                     }
                 }
             }
+        } else {
+
+            if (actor.getRole().equals("Organizator")){
+
+                for(String s: actor.getConferences()){
+                    conferences.add(conferenceRepository.findOne(s));
+                }
 
 
+                for (Conference c : conferences){
+                    if (c.getEvents() != null){
+                        for (String e : c.getEvents()){
+                                events.add(eventRepository.findOne(e));
+                        }
+                    }
+                }
+
+            } else {
+
+                for (String s : actor.getEvents()) {
+                    events.add(eventRepository.findOne(s));
+                }
+            }
+        }
 
 
         return new ResponseEntity<>(events, HttpStatus.OK);
@@ -546,7 +563,11 @@ public class Events {
 
     private LocalDateTime parseDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-        return dateTime;
+        return LocalDateTime.parse(date, formatter);
+    }
+
+    private LocalDate parseDateC(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return LocalDate.parse(date.substring(0,10), formatter);
     }
 }
