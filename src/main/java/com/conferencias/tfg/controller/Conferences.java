@@ -44,7 +44,7 @@ public class Conferences {
     }
 
 	@ApiOperation(value = "List all system's conferences", response = Conference.class)
-	@GetMapping(params = "order")
+	@GetMapping()
 	@JsonView(Detailed.class)
 	public ResponseEntity<?> getAll() {
 		List<Conference> conferences = conferenceRepository.findAll();
