@@ -43,6 +43,15 @@ public class Conferences {
         this.placeRepository = placeRepository;
     }
 
+	@ApiOperation(value = "List all system's conferences", response = Conference.class)
+	@GetMapping(params = "order")
+	@JsonView(Detailed.class)
+	public ResponseEntity<?> getAll() {
+		List<Conference> conferences = conferenceRepository.findAll();
+
+		return new ResponseEntity<Object>(conferences, HttpStatus.OK);
+	}
+
     @ApiOperation(value = "List all system's conferences in detailed view", response = Conference.class)
 	@GetMapping(value = "/detailed", params = "order")
 	@JsonView(Detailed.class)
