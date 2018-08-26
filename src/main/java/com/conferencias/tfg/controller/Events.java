@@ -213,7 +213,6 @@ public class Events {
     public ResponseEntity<?> getEventsOfActor(@PathVariable("idActor") String idActor) {
         Actor actor = actorRepository.findOne(idActor);
         List<Event> events = new ArrayList<>();
-        List<String> eventsString = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
 
         try {
@@ -221,35 +220,22 @@ public class Events {
             if (actor.getRole().equals("Organizator")){
 
                 for(String s: actor.getConferences()){
-                    for(Conference c : conferenceRepository.findAll()){
-                        if (s.equals(c.getId())){
-                            if (parseDate(c.getStart()).isAfter(LocalDateTime.now())){
-                                conferences.add(c);
-                            }
-                        }
-                    }
+                    if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDateTime.now()))
+                    conferences.add(conferenceRepository.findOne(s));
                 }
 
                 for (Conference c : conferences){
-                    eventsString.addAll(c.getEvents());
-                }
-
-                for (String s : eventsString){
-                    for (Event e : eventRepository.findAll()){
-                        if(s.equals(e.getId())){
-                            events.add(e);
+                    if (c.getEvents() != null){
+                        for (String e : c.getEvents()){
+                            events.add(eventRepository.findOne(e));
                         }
                     }
                 }
 
             } else {
 
-                for (String s : actor.getEvents()){
-                    for (Event e : eventRepository.findAll()){
-                        if(s.equals(e.getId())){
-                            events.add(e);
-                        }
-                    }
+                for (String s : actor.getEvents()) {
+                    events.add(eventRepository.findOne(s));
                 }
 
             }
@@ -270,35 +256,24 @@ public class Events {
     public ResponseEntity<?> getEventsOfActorByDate(@PathVariable("idActor") String idActor, @RequestParam("date") String date) {
         Actor actor = actorRepository.findOne(idActor);
         List<Event> events = new ArrayList<>();
-        List<String> eventsString = new ArrayList<>();
         List<Conference> conferences = new ArrayList<>();
-
 
 
             if (actor.getRole().equals("Organizator")){
 
                 for(String s: actor.getConferences()){
-                    for(Conference c : conferenceRepository.findAll()){
-                        if (s.equals(c.getId())){
-                            conferences.add(c);
-                        }
-                    }
+                    conferences.add(conferenceRepository.findOne(s));
                 }
 
 
                 for (Conference c : conferences){
                     if (c.getEvents() != null){
                         for (String e : c.getEvents()){
-                            String aux = eventRepository.findOne(e).getStart().substring(0,10);
                             if (eventRepository.findOne(e).getStart().substring(0,10).equals(date) || eventRepository.findOne(e).getEnd().substring(0,10).equals(date)) {
-                                eventsString.add(e);
+                                events.add(eventRepository.findOne(e));
                             }
                         }
                     }
-                }
-
-                for (String s : eventsString){
-                    events.add(eventRepository.findOne(s));
                 }
 
             } else {
