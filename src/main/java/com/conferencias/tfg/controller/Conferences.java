@@ -51,7 +51,7 @@ public class Conferences {
 		List<Conference> toRemove = new ArrayList<>();
 
 		for (Conference c : conferenceRepository.findAll()){
-			if (parseDate(c.getStart()).isBefore(LocalDate.now())){
+			if (parseDate(c.getStart()).isBefore(LocalDate.now()) || c.getEvents() == null || c.getEvents().isEmpty()){
 				toRemove.add(c);
 			}
 		}
@@ -60,10 +60,8 @@ public class Conferences {
 
 		if (order.equals("date"))
 			conferences.sort(Comparator.comparing((Conference c) -> parseDate(c.getStart())));
-        else if (order.equals("popularity"))
-            conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
         else if (order.equals("price"))
-            conferences.sort((Conference c1, Conference c2)->c1.getPrice().compareTo(c2.getPrice()));
+            conferences.sort(Comparator.comparing(Conference::getPrice));
         else
             conferences.sort((Conference c1, Conference c2)->c2.getName().compareTo(c1.getName()));
 
@@ -88,10 +86,8 @@ public class Conferences {
 
         if (order.equals("date"))
             conferences.sort(Comparator.comparing((Conference c) -> parseDate(c.getStart())));
-        else if (order.equals("popularity"))
-            conferences.sort((Conference c1, Conference c2)->c2.getPopularity().compareTo(c1.getPopularity()));
         else if (order.equals("price"))
-            conferences.sort((Conference c1, Conference c2)->c1.getPrice().compareTo(c2.getPrice()));
+            conferences.sort(Comparator.comparing(Conference::getPrice));
         else
             conferences.sort((Conference c1, Conference c2)->c2.getName().compareTo(c1.getName()));
 

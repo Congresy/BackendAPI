@@ -33,8 +33,6 @@ public class Conference {
 	@DecimalMin("0.0")
 	@JsonView(Detailed.class)
 	private Double price;
-	@JsonView(Shorted.class)
-	private Double popularity;
     @NotBlank
     @Pattern(regexp = "^\\d{2}\\/\\d{2}\\/\\d{4}\\s*(?:\\d{2}:\\d{2}(?::\\d{2})?)?$")
     @JsonView(Shorted.class)
@@ -65,7 +63,6 @@ public class Conference {
 	    this.name = name;
         this.theme = theme;
         this.price = price;
-        this.popularity = 0.0;
         this.start = start;
         this.end = end;
         this.allowedParticipants = allowedParticipants;
@@ -80,7 +77,6 @@ public class Conference {
         this.name = name;
         this.theme = theme;
         this.price = price;
-        this.popularity = 0.0;
         this.start = start;
         this.end = end;
         this.allowedParticipants = allowedParticipants;
@@ -137,14 +133,6 @@ public class Conference {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Double getPopularity() {
-        return popularity;
-    }
-
-    public void setPopularity(Double popularity) {
-        this.popularity = popularity;
     }
 
     public String getStart() {
