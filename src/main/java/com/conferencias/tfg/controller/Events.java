@@ -264,6 +264,58 @@ public class Events {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "List all events", response = Iterable.class)
+    @GetMapping("/own/date/{idActor}")
+    @JsonView(Views.Default.class)
+    public ResponseEntity<?> getEventsOfActorByDate(@PathVariable("idActor") String idActor, @RequestParam("date") String date) {
+        Actor actor = actorRepository.findOne(idActor);
+        List<Event> events = new ArrayList<>();
+        List<String> eventsString = new ArrayList<>();
+        List<Conference> conferences = new ArrayList<>();
+
+
+
+            if (actor.getRole().equals("Organizator")){
+
+                for(String s: actor.getConferences()){
+                    for(Conference c : conferenceRepository.findAll()){
+                        if (s.equals(c.getId())){
+                            conferences.add(c);
+                        }
+                    }
+                }
+
+
+                for (Conference c : conferences){
+                    if (c.getEvents() != null){
+                        for (String e : c.getEvents()){
+                            String aux = eventRepository.findOne(e).getStart().substring(0,10);
+                            if (eventRepository.findOne(e).getStart().substring(0,10).equals(date) || eventRepository.findOne(e).getEnd().substring(0,10).equals(date)) {
+                                eventsString.add(e);
+                            }
+                        }
+                    }
+                }
+
+                for (String s : eventsString){
+                    events.add(eventRepository.findOne(s));
+                }
+
+            } else {
+
+                for (String s : actor.getEvents()) {
+                    if (eventRepository.findOne(s).getStart().substring(0, 10).equals(date) || eventRepository.findOne(s).getEnd().substring(0, 10).equals(date)) {
+                        events.add(eventRepository.findOne(s));
+                    }
+                }
+            }
+
+
+
+
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Get all speakers of some event", response = Iterable.class)
     @GetMapping("/speakers/{idEvent}")
     public ResponseEntity<?> getSpeakersOfEvent(@PathVariable("idEvent") String idEvent) {
