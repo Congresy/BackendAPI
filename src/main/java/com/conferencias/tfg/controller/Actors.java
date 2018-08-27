@@ -58,11 +58,13 @@ public class Actors {
 
     @ApiOperation(value = "Create an actor")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> create(@RequestBody ActorWrapper actorWrapper, UriComponentsBuilder ucBuilder) {
+    public ResponseEntity<?> create(@RequestBody ActorWrapper actorWrapper) {
 
         for (Actor a : actorRepository.findAll()){
             if (userAccountRepository.findOne(a.getUserAccount_()).getUsername().equals(actorWrapper.getUserAccount().getUsername())){
                 return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+            } else if (a.getEmail().equals(actorWrapper.getActor().getEmail())){
+                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
             }
         }
 
