@@ -321,8 +321,7 @@ public class Conferences {
 			events = conference.getEvents();
 
 			for (String s : events){
-				Event e = eventRepository.findOne(s);
-				eventRepository.delete(e);
+				eventRepository.delete(eventRepository.findOne(s));
 			}
 		}
 

@@ -60,12 +60,21 @@ public class Actors {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody ActorWrapper actorWrapper) {
 
+        int i1 = 0;
+        int i2 = 0;
+
         for (Actor a : actorRepository.findAll()){
             if (userAccountRepository.findOne(a.getUserAccount_()).getUsername().equals(actorWrapper.getUserAccount().getUsername())){
-                return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+                i1++;
             } else if (a.getEmail().equals(actorWrapper.getActor().getEmail())){
-                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
+                i2++;
             }
+        }
+
+        if (i1 > 1){
+            return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+        } else if (i2 > 1){
+            return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
         }
 
         UserAccount userAccountAux = new UserAccount();
@@ -327,10 +336,18 @@ public class Actors {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
+
+        int i1 = 0;
+
+
         for (Actor a : actorRepository.findAll()){
             if (a.getEmail().equals(actorWrapper.getActor().getEmail())){
-                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
+                i1++;
             }
+        }
+
+        if (i1 > 1){
+            return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
         }
 
         currentActor.setName(actorWrapper.getActor().getName());
