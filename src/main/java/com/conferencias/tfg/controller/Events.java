@@ -469,9 +469,33 @@ public class Events {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> create(@RequestBody Event event, UriComponentsBuilder ucBuilder) {
 
-		if (this.eventExist(event)) {
-			return new ResponseEntity<Error>(HttpStatus.CONFLICT);
-		}
+        Conference conferenceAux = conferenceRepository.findOne(event.getConference());
+
+        if (parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) > 0 || parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) < 0){
+            return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+        }
+
+        int aux = 0;
+
+        if (conferenceAux.getEvents() != null){
+            List<String> events = conferenceAux.getEvents();
+
+            for (String s : events){
+                aux = aux + eventRepository.findOne(s).getAllowedParticipants();
+            }
+
+            aux = aux + event.getAllowedParticipants();
+
+            if (aux > conferenceAux.getAllowedParticipants()){
+                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
+            }
+        } else {
+            aux = aux + event.getAllowedParticipants();
+
+            if (aux > conferenceAux.getAllowedParticipants()){
+                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
 
         String end;
         String start;
@@ -522,10 +546,6 @@ public class Events {
 	@PutMapping(value = "/{idEvent}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idEvent") String id, @RequestBody Event event) {
 		Event currentEvent = eventRepository.findOne(id);
-
-		if (currentEvent == null) {
-			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
-		}
 
 		currentEvent.setName(event.getName());
 		currentEvent.setPlace(event.getPlace());
