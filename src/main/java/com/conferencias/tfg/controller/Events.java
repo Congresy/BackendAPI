@@ -546,6 +546,11 @@ public class Events {
 	@PutMapping(value = "/{idEvent}", produces = "application/json")
 	public ResponseEntity<?> edit(@PathVariable("idEvent") String id, @RequestBody Event event) {
 		Event currentEvent = eventRepository.findOne(id);
+        Conference conferenceAux = conferenceRepository.findOne(event.getConference());
+
+        if (parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) > 0 || parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) < 0){
+            return new ResponseEntity<Error>(HttpStatus.CONFLICT);
+        }
 
 		currentEvent.setName(event.getName());
 		currentEvent.setPlace(event.getPlace());
