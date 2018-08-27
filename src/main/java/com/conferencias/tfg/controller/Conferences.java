@@ -321,7 +321,12 @@ public class Conferences {
 			events = conference.getEvents();
 
 			for (String s : events){
-				eventRepository.delete(eventRepository.findOne(s));
+				try {
+					eventRepository.delete(eventRepository.findOne(s));
+				} catch (IllegalArgumentException e){
+
+				}
+
 			}
 		}
 
