@@ -327,6 +327,12 @@ public class Actors {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
+        for (Actor a : actorRepository.findAll()){
+            if (a.getEmail().equals(actorWrapper.getActor().getEmail())){
+                return new ResponseEntity<Error>(HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
+
         currentActor.setName(actorWrapper.getActor().getName());
         currentActor.setSurname(actorWrapper.getActor().getSurname());
         currentActor.setEmail(actorWrapper.getActor().getEmail());
