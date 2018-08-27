@@ -16,7 +16,17 @@ public class Populate {
 		MongoURI uri = new MongoURI(
 				"mongodb://tfgconferenciasus:OAwlar8I9wkSvQFH@clusterconferencias-shard-00-00-gkx6b.mongodb.net:27017,clusterconferencias-shard-00-01-gkx6b.mongodb.net:27017,clusterconferencias-shard-00-02-gkx6b.mongodb.net:27017/conferencias?ssl=true&replicaSet=ClusterConferencias-shard-0&authSource=admin");
 		MongoTemplate mongo = new MongoTemplate(new Mongo(uri), "conferencias");
-        mongo.dropCollection("post");
+        mongo.dropCollection("actors");
+		mongo.dropCollection("announcements");
+		mongo.dropCollection("comments");
+		mongo.dropCollection("conferences");
+		mongo.dropCollection("events");
+		mongo.dropCollection("folders");
+		mongo.dropCollection("messages");
+		mongo.dropCollection("places");
+		mongo.dropCollection("posts");
+		mongo.dropCollection("socialNetworks");
+
 
         /*
         // ----------------------------------------------------------------------------------------------

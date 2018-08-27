@@ -218,6 +218,16 @@ public class Events {
             actor.setEvents(aux);
         }
 
+        try {
+            List<String> aux = actor.getConferences();
+            aux.add(event.getConference());
+            actor.setConferences(aux);
+        } catch (Exception e){
+            List<String> aux = new ArrayList<>();
+            aux.add(event.getConference());
+            actor.setConferences(aux);
+        }
+
         actorRepository.save(actor);
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
