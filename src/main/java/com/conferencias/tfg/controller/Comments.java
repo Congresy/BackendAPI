@@ -479,7 +479,6 @@ public class Comments {
                 for (String s : comment.getResponses()){
                     if (s != null)
                         commentRepository.delete(commentRepository.findOne(s));
-                        commentRepository.delete(commentRepository.findOne(s));
                 }
             }
         } else {

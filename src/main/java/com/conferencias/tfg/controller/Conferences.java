@@ -34,14 +34,18 @@ public class Conferences {
     private ActorRepository actorRepository;
     private EventRepository eventRepository;
     private PlaceRepository placeRepository;
+	private PostRepository postRepository;
+	private CommentRepository commentRepository;
 
 	@Autowired
-    public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, EventRepository eventRepository, PlaceRepository placeRepository) {
-        this.conferenceRepository = conferenceRepository;
-        this.actorRepository = actorRepository;
-        this.eventRepository = eventRepository;
-        this.placeRepository = placeRepository;
-    }
+	public Conferences(ConferenceRepository conferenceRepository, ActorRepository actorRepository, EventRepository eventRepository, PlaceRepository placeRepository, PostRepository postRepository, CommentRepository commentRepository) {
+		this.conferenceRepository = conferenceRepository;
+		this.actorRepository = actorRepository;
+		this.eventRepository = eventRepository;
+		this.placeRepository = placeRepository;
+		this.postRepository = postRepository;
+		this.commentRepository = commentRepository;
+	}
 
 	@ApiOperation(value = "List all system's conferences", response = Conference.class)
 	@GetMapping()
@@ -314,8 +318,6 @@ public class Conferences {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		//TODO Delete events of speakers
-
 		// Delete events related to conference
 		if (conference.getEvents() != null){
 			events = conference.getEvents();
@@ -330,17 +332,52 @@ public class Conferences {
 			}
 		}
 
-		// Delete form actors
-		for (Actor a : actorRepository.findAll()){
-			if (a.getConferences() != null){
-				if (a.getConferences().contains(conference.getId())){
-					List<String> conferences = a.getConferences();
-					conferences.remove(conference.getId());
-					a.setConferences(conferences);
-					actorRepository.save(a);
+		// Delete comments related to conference
+
+		// Delete the comment in the commentable element
+		if (conference.getComments() != null){
+			for (String idComment : conference.getComments()){
+				Comment comment = commentRepository.findOne(idComment);
+
+				// Delete form actors
+				for (Actor a : actorRepository.findAll()){
+					if (a.getConferences() != null){
+						if (a.getConferences().contains(conference.getId())){
+							List<String> conferences = a.getConferences();
+							conferences.remove(conference.getId());
+							a.setConferences(conferences);
+							actorRepository.save(a);
+						}
+					}
+
+					if (a.getComments() != null){
+						// Delete comment in actor
+						if (a.getComments().contains(idComment)){
+							List<String> commentsActor = a.getComments();
+							commentsActor.remove(idComment);
+							a.setComments(commentsActor);
+							actorRepository.save(a);
+						}
+					}
+				}
+
+				// Delete responses of comment
+				if (comment.getResponses() != null){
+					if (comment.getResponses().isEmpty()){
+						commentRepository.delete(idComment);
+					} else {
+						for (String s : comment.getResponses()) {
+							if (s != null) {
+								commentRepository.delete(commentRepository.findOne(s));
+							}
+						}
+					}
+				} else {
+					commentRepository.delete(idComment);
 				}
 			}
 		}
+
 
 		conferenceRepository.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

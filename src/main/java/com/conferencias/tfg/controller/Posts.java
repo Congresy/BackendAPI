@@ -1,9 +1,11 @@
 package com.conferencias.tfg.controller;
 
 import com.conferencias.tfg.domain.Actor;
+import com.conferencias.tfg.domain.Comment;
 import com.conferencias.tfg.domain.Conference;
 import com.conferencias.tfg.domain.Post;
 import com.conferencias.tfg.repository.ActorRepository;
+import com.conferencias.tfg.repository.CommentRepository;
 import com.conferencias.tfg.repository.PostRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,10 +32,13 @@ public class Posts {
 
     private final ActorRepository actorRepository;
 
+    private final CommentRepository commentRepository;
+
     @Autowired
-    public Posts(PostRepository postRepository, ActorRepository actorRepository) {
+    public Posts(PostRepository postRepository, ActorRepository actorRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.actorRepository = actorRepository;
+        this.commentRepository = commentRepository;
     }
 
     @ApiOperation(value = "List all system's posts", response = Iterable.class)
@@ -160,13 +165,52 @@ public class Posts {
             }
         }
 
-        try {
-            List<String> add = actor.getPosts();
-            add.remove(id);
-            actor.setPosts(add);
-            actorRepository.save(actor);
-        } catch (NullPointerException e){
+        if (post.getComments() != null) {
+            // Delete comments related to conference
 
+            // Delete the comment in the commentable element
+            if (post.getComments() != null){
+                for (String idComment : post.getComments()){
+                    Comment comment = commentRepository.findOne(idComment);
+
+                    // Delete form actors
+                    for (Actor a : actorRepository.findAll()){
+                        if (a.getPosts() != null){
+                            if (a.getConferences().contains(post.getId())){
+                                List<String> add = actor.getPosts();
+                                add.remove(id);
+                                actor.setPosts(add);
+                                actorRepository.save(actor);
+                            }
+                        }
+
+                        if (a.getComments() != null){
+                            // Delete comment in actor
+                            if (a.getComments().contains(idComment)){
+                                List<String> commentsActor = a.getComments();
+                                commentsActor.remove(idComment);
+                                a.setComments(commentsActor);
+                                actorRepository.save(a);
+                            }
+                        }
+                    }
+
+                    // Delete responses of comment
+                    if (comment.getResponses() != null){
+                        if (comment.getResponses().isEmpty()){
+                            commentRepository.delete(idComment);
+                        } else {
+                            for (String s : comment.getResponses()) {
+                                if (s != null) {
+                                    commentRepository.delete(commentRepository.findOne(s));
+                                }
+                            }
+                        }
+                    } else {
+                        commentRepository.delete(idComment);
+                    }
+                }
+            }
         }
 
 
