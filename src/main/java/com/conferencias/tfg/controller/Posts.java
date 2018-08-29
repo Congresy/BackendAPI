@@ -60,9 +60,10 @@ public class Posts {
 
         try{
             for(String s : actor.getPosts()){
-                res.add(postRepository.findOne(s));
+                if (postRepository.findOne(s) != null)
+                    res.add(postRepository.findOne(s));
             }
-            res.sort(Comparator.comparingInt((Post c) -> parseDate(c.getPosted()).getNano()));
+            res.sort(Comparator.comparing((Post c) -> parseDate(c.getPosted())));
         } catch (Exception e){
             res = new ArrayList<>();
         }
@@ -104,6 +105,8 @@ public class Posts {
         Actor actor = actorRepository.findOne(post.getAuthorId());
 
         post.setAuthorName(actor.getName() + " " + actor.getSurname());
+        post.setViews(0);
+        post.setVotes(0);
 
         post.setDraft(false);
 
@@ -301,7 +304,6 @@ public class Posts {
 
     private LocalDateTime parseDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-        return dateTime;
+        return LocalDateTime.parse(date, formatter);
     }
 }
