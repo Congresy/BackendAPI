@@ -98,6 +98,30 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "Get participants of a event", response = Conference.class)
+    @GetMapping(value = "/participants/{idConference}")
+    @JsonView(Views.Detailed.class)
+    public ResponseEntity<?> getParticipants(@PathVariable("idConference") String id) {
+        Event conference = eventRepository.findOne(id);
+        List<Actor> res = new ArrayList<>();
+
+        if (conference == null) {
+            return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            for (Actor a : actorRepository.findAll()){
+                if (a.getEvents().contains(id)){
+                    res.add(a);
+                }
+            }
+        } catch (NullPointerException e){
+            res = new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "Delete an attendee of a certain conference")
     @PutMapping(value = "/delete/{idEvent}/participants/{idActor}", produces = "application/json")
     public ResponseEntity<?> deleteParticipant(@PathVariable("idEvent") String idEvent, @PathVariable("idActor") String idActor) {

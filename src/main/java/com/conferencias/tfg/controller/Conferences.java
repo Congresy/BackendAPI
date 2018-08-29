@@ -147,6 +147,30 @@ public class Conferences {
 		return new ResponseEntity<>(conference, HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "Get participants of a conference", response = Conference.class)
+	@GetMapping(value = "/participants/{idConference}")
+	@JsonView(Detailed.class)
+	public ResponseEntity<?> getParticipants(@PathVariable("idConference") String id) {
+		Conference conference = conferenceRepository.findOne(id);
+		List<Actor> res = new ArrayList<>();
+
+		if (conference == null) {
+			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
+		}
+
+		try {
+			for (Actor a : actorRepository.findAll()){
+				if (a.getConferences().contains(id)){
+					res.add(a);
+				}
+			}
+		} catch (NullPointerException e){
+			res = new ArrayList<>();
+		}
+
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+
 	@ApiOperation(value = "Get conferences of an organizator by username", response = Iterable.class)
 	@GetMapping(value = "/own/{idActor}")
 	@JsonView(Detailed.class)
