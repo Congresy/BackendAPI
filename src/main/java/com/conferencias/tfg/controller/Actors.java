@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -169,7 +170,7 @@ public class Actors {
         try {
             for (String s : actor.getConferences()){
                 Conference c = conferenceRepository.findOne(s);
-                if (parseDate(c.getStart()).isAfter(LocalDateTime.now())){
+                if (parseDate(c.getStart()).isAfter(LocalDate.now())){
                     conferences.add(c);
                 }
             }
@@ -489,9 +490,10 @@ public class Actors {
         return res;
     }
 
-    private LocalDateTime parseDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+    private LocalDate parseDate(String date){
+        String date1 = date.substring(0, 10);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateTime = LocalDate.parse(date1, formatter);
         return dateTime;
     }
 }
