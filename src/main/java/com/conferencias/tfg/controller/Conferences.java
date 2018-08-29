@@ -295,7 +295,12 @@ public class Conferences {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
 		}
 
-		currentConference.setAllowedParticipants(conference.getAllowedParticipants());
+		currentConference.setAllowedParticipants(currentConference.getAllowedParticipants());
+		currentConference.setSeatsLeft(currentConference.getSeatsLeft());
+		currentConference.setParticipants(currentConference.getParticipants());
+		currentConference.setEvents(currentConference.getEvents());
+		currentConference.setComments(currentConference.getComments());
+		currentConference.setOrganizator(currentConference.getOrganizator());
 		currentConference.setEnd(conference.getEnd());
 		currentConference.setName(conference.getName());
 		currentConference.setStart(conference.getStart());

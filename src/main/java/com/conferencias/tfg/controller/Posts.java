@@ -143,6 +143,13 @@ public class Posts {
         currentpost.setTitle(post.getTitle());
         currentpost.setBody(post.getBody());
         currentpost.setCategory(post.getCategory());
+        currentpost.setVotes(currentpost.getVotes());
+        currentpost.setViews(currentpost.getViews());
+        currentpost.setAuthorName(currentpost.getAuthorName());
+        currentpost.setComments(currentpost.getComments());
+        currentpost.setDraft(currentpost.getDraft());
+        currentpost.setAuthorId(currentpost.getAuthorId());
+        currentpost.setPosted(currentpost.getPosted());
 
         postRepository.save(currentpost);
 

@@ -530,21 +530,21 @@ public class Events {
         for(Conference c : conferenceRepository.findAll()){
             if(c.getId().equals(conference)){
                 conferenceUsed = c;
-                try {
-                    List<String> events = c.getEvents();
-                    events.add(event.getId());
-                    c.setEvents(events);
-                } catch (Exception e){
-                    List<String> events = new ArrayList<>();
-                    events.add(event.getId());
-                    c.setEvents(events);
-                }
-                conferenceRepository.save(conferenceUsed);
                 break;
             }
         }
 
+        try {
+            List<String> events = conferenceUsed.getEvents();
+            events.add(event.getId());
+            conferenceUsed.setEvents(events);
+        } catch (Exception e){
+            List<String> events = new ArrayList<>();
+            events.add(event.getId());
+            conferenceUsed.setEvents(events);
+        }
 
+        conferenceRepository.save(conferenceUsed);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(ucBuilder.path("/events/{idEvent}").buildAndExpand(event.getId()).toUri());
@@ -558,17 +558,20 @@ public class Events {
 		Event currentEvent = eventRepository.findOne(id);
         Conference conferenceAux = conferenceRepository.findOne(event.getConference());
 
-        if (parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) > 0 || parseDate(conferenceAux.getStart().substring(0,10)).compareTo(parseDate(event.getStart().substring(0,10))) < 0){
+        if (parseDateC(conferenceAux.getStart().substring(0,10)).compareTo(parseDateC(event.getStart().substring(0,10))) > 0 || parseDateC(conferenceAux.getStart().substring(0,10)).compareTo(parseDateC(event.getStart().substring(0,10))) < 0){
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
 
 		currentEvent.setName(event.getName());
-		currentEvent.setPlace(event.getPlace());
+		currentEvent.setPlace(currentEvent.getPlace());
+		currentEvent.setSpeakers(currentEvent.getSpeakers());
+		currentEvent.setParticipants(currentEvent.getParticipants());
+		currentEvent.setConference(currentEvent.getConference());
 		currentEvent.setStart(event.getStart());
 		currentEvent.setSpeakers(event.getSpeakers());
 		currentEvent.setEnd(event.getEnd());
 		currentEvent.setDescription(event.getDescription());
-        currentEvent.setAllowedParticipants(event.getAllowedParticipants());
+        currentEvent.setAllowedParticipants(currentEvent.getAllowedParticipants());
 
 		eventRepository.save(currentEvent);
 		return new ResponseEntity<>(currentEvent, HttpStatus.OK);

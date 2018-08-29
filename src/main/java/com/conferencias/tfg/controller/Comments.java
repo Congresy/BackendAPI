@@ -384,6 +384,12 @@ public class Comments {
 		}
 
 		currentComment.setText(comment.getText());
+		currentComment.setAuthor(currentComment.getAuthor());
+		currentComment.setCommentable(currentComment.getCommentable());
+		currentComment.setResponses(currentComment.getResponses());
+		currentComment.setThumbsDown(currentComment.getThumbsDown());
+		currentComment.setThumbsUp(currentComment.getThumbsUp());
+		currentComment.setSentMoment(currentComment.getSentMoment());
 		currentComment.setTitle(comment.getTitle());
 
 		commentRepository.save(currentComment);

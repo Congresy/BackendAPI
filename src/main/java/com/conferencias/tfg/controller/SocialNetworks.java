@@ -91,6 +91,7 @@ public class SocialNetworks {
 
         oldSocialNetwork.setName(newSocialNetwork.getName());
         oldSocialNetwork.setUrl(newSocialNetwork.getUrl());
+        oldSocialNetwork.setActor(oldSocialNetwork.getActor());
 
         socialNetworkRepository.save(oldSocialNetwork);
 

@@ -352,6 +352,21 @@ public class Actors {
         }
 
         currentActor.setName(actorWrapper.getActor().getName());
+        currentActor.setConferences(currentActor.getConferences());
+        currentActor.setUserAccount_(currentActor.getUserAccount_());
+        currentActor.setBanned(currentActor.isBanned());
+        currentActor.setFollowers(currentActor.getFollowers());
+        currentActor.setFriends(currentActor.getFriends());
+        currentActor.setFollowing(currentActor.getFollowing());
+        currentActor.setConferences(currentActor.getConferences());
+        currentActor.setComments(currentActor.getComments());
+        currentActor.setRole(currentActor.getRole());
+        currentActor.setPlace(currentActor.getPlace());
+        currentActor.setFolders(currentActor.getFolders());
+        currentActor.setSocialNetworks(currentActor.getSocialNetworks());
+        currentActor.setEvents(currentActor.getEvents());
+        currentActor.setPosts(currentActor.getPosts());
+
         currentActor.setSurname(actorWrapper.getActor().getSurname());
         currentActor.setEmail(actorWrapper.getActor().getEmail());
         currentActor.setPhone(actorWrapper.getActor().getPhone());
