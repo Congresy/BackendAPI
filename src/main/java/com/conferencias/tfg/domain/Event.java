@@ -34,7 +34,7 @@ public class Event {
     private String name;
     @JsonView(Default.class)
     @NotBlank
-    private String requirements;
+    private String description;
     @JsonView(Default.class)
     @NotBlank
     @Pattern(regexp = "^(Social Event|Ordinary|Invitation|Workshop)$")
@@ -51,23 +51,23 @@ public class Event {
 
     }
 
-    public Event(String id, String start, String end, String name, String requeriments, String role, Integer allowedParticipants, Integer seatsLeft) {
+    public Event(String id, String start, String end, String name, String description, String role, Integer allowedParticipants, Integer seatsLeft) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.name = name;
-        this.requirements = requeriments;
+        this.description = description;
         this.role = role;
         this.speakers = new ArrayList<>();
         this.allowedParticipants = allowedParticipants;
         this.seatsLeft = seatsLeft;
     }
 
-    public Event(String start, String end, String name, String requeriments, String role, Integer allowedParticipants, Integer seatsLeft) {
+    public Event(String start, String end, String name, String description, String role, Integer allowedParticipants, Integer seatsLeft) {
         this.start = start;
         this.end = end;
         this.name = name;
-        this.requirements = requeriments;
+        this.description = description;
         this.role = role;
         this.speakers = new ArrayList<>();
         this.allowedParticipants = allowedParticipants;
@@ -122,12 +122,12 @@ public class Event {
         this.end = end;
     }
 
-    public String getRequirements() {
-        return requirements;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRequirements(String requirements) {
-        this.requirements = requirements;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getRole() {
