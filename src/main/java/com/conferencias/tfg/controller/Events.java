@@ -567,7 +567,7 @@ public class Events {
 		currentEvent.setStart(event.getStart());
 		currentEvent.setSpeakers(event.getSpeakers());
 		currentEvent.setEnd(event.getEnd());
-		currentEvent.setRequirements(event.getRequirements());
+		currentEvent.setDescription(event.getDescription());
         currentEvent.setAllowedParticipants(event.getAllowedParticipants());
 
 		eventRepository.save(currentEvent);
