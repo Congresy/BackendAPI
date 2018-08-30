@@ -185,14 +185,6 @@ public class Posts {
 
                     // Delete form actors
                     for (Actor a : actorRepository.findAll()){
-                        if (a.getPosts() != null){
-                            if (a.getConferences().contains(post.getId())){
-                                List<String> add = actor.getPosts();
-                                add.remove(id);
-                                actor.setPosts(add);
-                                actorRepository.save(actor);
-                            }
-                        }
 
                         if (a.getComments() != null){
                             // Delete comment in actor
@@ -219,6 +211,17 @@ public class Posts {
                     } else {
                         commentRepository.delete(idComment);
                     }
+                }
+            }
+        }
+
+        for (Actor a : actorRepository.findAll()){
+            if (a.getPosts() != null){
+                if (a.getConferences().contains(post.getId())){
+                    List<String> add = actor.getPosts();
+                    add.remove(id);
+                    actor.setPosts(add);
+                    actorRepository.save(actor);
                 }
             }
         }

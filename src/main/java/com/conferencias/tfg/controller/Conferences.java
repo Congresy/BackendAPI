@@ -182,21 +182,23 @@ public class Conferences {
 		try {
 			conferences = actor.getConferences();
 			for(String s : conferences){
-				if (value.equals("upcoming")) {
-					if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDate.now())){
-						res.add(conferenceRepository.findOne(s));
-					}
-				} else if (value.equals("past")){
-					if (parseDate(conferenceRepository.findOne(s).getStart()).isBefore(LocalDate.now())){
-						res.add(conferenceRepository.findOne(s));
+				Conference c = conferenceRepository.findOne(s);
+				if (c != null){
+					if (value.equals("upcoming")) {
+						if (parseDate(conferenceRepository.findOne(s).getStart()).isAfter(LocalDate.now())){
+							res.add(conferenceRepository.findOne(s));
+						}
+					} else if (value.equals("past")){
+						if (parseDate(conferenceRepository.findOne(s).getStart()).isBefore(LocalDate.now())){
+							res.add(conferenceRepository.findOne(s));
+						}
 					}
 				}
-
-
 			}
 		} catch (Exception e){
-			conferences = new ArrayList<>();
+			res = new ArrayList<>();
 		}
+
 
 		return new ResponseEntity<>(res, HttpStatus.OK);
 	}
@@ -368,14 +370,6 @@ public class Conferences {
 
 				// Delete form actors
 				for (Actor a : actorRepository.findAll()){
-					if (a.getConferences() != null){
-						if (a.getConferences().contains(conference.getId())){
-							List<String> conferences = a.getConferences();
-							conferences.remove(conference.getId());
-							a.setConferences(conferences);
-							actorRepository.save(a);
-						}
-					}
 
 					if (a.getComments() != null){
 						// Delete comment in actor
@@ -401,6 +395,17 @@ public class Conferences {
 					}
 				} else {
 					commentRepository.delete(idComment);
+				}
+			}
+		}
+
+		for (Actor a : actorRepository.findAll()){
+			if (a.getConferences() != null){
+				if (a.getConferences().contains(conference.getId())){
+					List<String> conferences = a.getConferences();
+					conferences.remove(conference.getId());
+					a.setConferences(conferences);
+					actorRepository.save(a);
 				}
 			}
 		}
