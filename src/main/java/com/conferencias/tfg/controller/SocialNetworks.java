@@ -29,21 +29,10 @@ public class SocialNetworks {
         this.socialNetworkRepository = socialNetworkRepository;
     }
 
-    @ApiOperation(value = "Get all social networks for an actor", response = Iterable.class)
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") String id) {
-        SocialNetwork aux = socialNetworkRepository.findOne(id);
-
-        if (aux == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(aux, HttpStatus.OK);
-    }
 
     @ApiOperation(value = "Get all social networks for an actor", response = Iterable.class)
-    @GetMapping("/actor/{id}")
-    public ResponseEntity<?> getSocialNetworksByActor(@PathVariable("id") String id) {
+    @GetMapping("/actor/{idActor}")
+    public ResponseEntity<?> getSocialNetworksByActor(@PathVariable("idActor") String id) {
         Actor aux = actorRepository.findOne(id);
         List<SocialNetwork> socialNetworks = new ArrayList<>();
 

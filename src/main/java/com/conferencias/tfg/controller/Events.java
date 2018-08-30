@@ -374,7 +374,7 @@ public class Events {
     }
 
     @ApiOperation(value = "List all events", response = Iterable.class)
-	@GetMapping("/all")
+	@GetMapping()
 	@JsonView(Views.Default.class)
 	public ResponseEntity<?> getAll() {
 		List<Event> events = eventRepository.findAll();
@@ -439,63 +439,6 @@ public class Events {
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
-    @ApiOperation(value = "List all events of a specific role", response = Iterable.class)
-    @GetMapping("/all/{role}")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getSpecificEvents(@PathVariable("role") String role) {
-        List<Event> eventsAux = eventRepository.findAll();
-        List<Event> events = new ArrayList<>();
-        for(Event e : eventsAux)
-            if(e.getRole().equals(role))
-                events.add(e);
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "List all events of certain role of certain event", response = Iterable.class)
-    @GetMapping("/all/conferences/{idConference}/{role}/")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getSpecificTypeOfEventsOfConference(@PathVariable("idConference") String id, @PathVariable("role") String role) {
-        Conference conference = conferenceRepository.findOne(id);
-        List<String> eventsAux = conference.getEvents();
-        List<Event> events = new ArrayList<>();
-
-        for(String s : eventsAux){
-            if(eventRepository.findOne(s).getRole().equals(role))
-                events.add(eventRepository.findOne(s));
-        }
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "List all events that are talks", response = Iterable.class)
-    @GetMapping("/talks/all")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getTalks() {
-        List<Event> eventsAux = eventRepository.findAll();
-        List<Event> events = new ArrayList<>();
-        for(Event e : eventsAux)
-            if(!e.getRole().equals("socialEvent"))
-                events.add(e);
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "List all events that are talks of a certain conference", response = Iterable.class)
-    @GetMapping("/talks/all/conferences/{idConference}")
-    @JsonView(Views.Default.class)
-    public ResponseEntity<?> getTalksOfConference(@PathVariable("idConference") String id) {
-        Conference conference = conferenceRepository.findOne(id);
-        List<String> eventsAux = conference.getEvents();
-        List<Event> events = new ArrayList<>();
-
-        for(String s : eventsAux){
-            if(!eventRepository.findOne(s).getRole().equals("socialEvent"))
-                events.add(eventRepository.findOne(s));
-        }
-
-        return new ResponseEntity<>(events, HttpStatus.OK);
-    }
 
     @ApiOperation(value = "Create a new event")
     @PostMapping(produces = "application/json")

@@ -454,17 +454,19 @@ public class Comments {
             }
         } else {
             for (Conference c : conferenceRepository.findAll()){
-                for (String c1 : c.getComments()){
-                    if (c1.equals(idComment)){
-                        List<String> commentsActor = c.getComments();
-                        commentsActor.remove(c1);
-                        conferenceRepository.save(c);
-                        break;
-                    } else if (commentRepository.findOne(c1).getResponses().contains(idComment)){
-                        Comment aux = commentRepository.findOne(c1);
-                        List<String> responses = aux.getResponses();
-                        responses.remove(c1);
-                        commentRepository.save(aux);
+                if (c.getComments() != null){
+                    for (String c1 : c.getComments()){
+                        if (c1.equals(idComment)){
+                            List<String> commentsActor = c.getComments();
+                            commentsActor.remove(c1);
+                            conferenceRepository.save(c);
+                            break;
+                        } else if (commentRepository.findOne(c1).getResponses().contains(idComment)){
+                            Comment aux = commentRepository.findOne(c1);
+                            List<String> responses = aux.getResponses();
+                            responses.remove(c1);
+                            commentRepository.save(aux);
+                        }
                     }
                 }
             }
