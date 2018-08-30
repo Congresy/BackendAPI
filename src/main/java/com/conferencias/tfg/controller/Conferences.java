@@ -285,7 +285,7 @@ public class Conferences {
         conferenceRepository.save(conference);
 
 		for(Actor a : actors){
-			if(a.getUserAccount_().equals(organizator)){
+			if(a.getId().equals(organizator)){
 				actor = a;
 			}
 		}

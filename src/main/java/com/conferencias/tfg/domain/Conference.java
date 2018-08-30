@@ -42,7 +42,6 @@ public class Conference {
     @JsonView(Detailed.class)
 	private String end;
 	@NotBlank
-	@Length(max = 50)
 	@JsonView(Detailed.class)
 	private String speakersNames;
 	@NotBlank
@@ -171,7 +170,6 @@ public class Conference {
 
 	@JsonView(Detailed.class)
 	private List<String> events;
-	@NotNull
 	@JsonView(Detailed.class)
     private String organizator;
     @JsonView(Detailed.class)
