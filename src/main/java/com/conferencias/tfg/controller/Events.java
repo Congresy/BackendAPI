@@ -98,9 +98,8 @@ public class Events {
         return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Get participants of a event", response = Conference.class)
-    @GetMapping(value = "/participants/{idConference}")
-    @JsonView(Views.Detailed.class)
+    @ApiOperation(value = "Get participants of a event", response = Iterable.class)
+    @GetMapping(value = "/participants/{idConference}", produces = "application/json")
     public ResponseEntity<?> getParticipants(@PathVariable("idConference") String id) {
         Event conference = eventRepository.findOne(id);
         List<Actor> res = new ArrayList<>();
@@ -109,15 +108,14 @@ public class Events {
             return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
         }
 
-        try {
-            for (Actor a : actorRepository.findAll()){
-                if (a.getEvents().contains(id)){
-                    res.add(a);
+        for (Actor a : actorRepository.findAll()){
+                if (a.getEvents() != null){
+                    if (a.getEvents().contains(id)){
+                        res.add(a);
+                    }
                 }
+
             }
-        } catch (NullPointerException e){
-            res = new ArrayList<>();
-        }
 
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
