@@ -465,11 +465,13 @@ public class Comments {
                             commentsActor.remove(c1);
                             conferenceRepository.save(c);
                             break;
-                        } else if (commentRepository.findOne(c1).getResponses().contains(idComment)){
-                            Comment aux = commentRepository.findOne(c1);
-                            List<String> responses = aux.getResponses();
-                            responses.remove(c1);
-                            commentRepository.save(aux);
+                        } else if (commentRepository.findOne(c1).getResponses() != null){
+                            if (commentRepository.findOne(c1).getResponses().contains(idComment)){
+                                Comment aux = commentRepository.findOne(c1);
+                                List<String> responses = aux.getResponses();
+                                responses.remove(c1);
+                                commentRepository.save(aux);
+                            }
                         }
                     }
                 }
