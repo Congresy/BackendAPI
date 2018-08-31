@@ -29,6 +29,18 @@ public class SocialNetworks {
         this.socialNetworkRepository = socialNetworkRepository;
     }
 
+    @ApiOperation(value = "Get a social network by id", response = Iterable.class)
+    @GetMapping("/{idSocialNetwork}")
+    public ResponseEntity<?> getSocialNetwork(@PathVariable("idSocialNetwork") String id) {
+        SocialNetwork res = socialNetworkRepository.findOne(id);
+
+        if (res == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
 
     @ApiOperation(value = "Get all social networks for an actor", response = Iterable.class)
     @GetMapping("/actor/{idActor}")
