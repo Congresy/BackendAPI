@@ -446,7 +446,7 @@ public class Events {
 
         Conference conferenceAux = conferenceRepository.findOne(event.getConference());
 
-        if (parseDateC(conferenceAux.getStart().substring(0,10)).compareTo(parseDateC(event.getStart().substring(0,10))) > 0 || parseDateC(conferenceAux.getStart().substring(0,10)).compareTo(parseDateC(event.getStart().substring(0,10))) < 0){
+        if (parseDateC(conferenceAux.getStart().substring(0,10)).compareTo(parseDateC(event.getStart().substring(0,10))) > 0 || parseDateC(conferenceAux.getEnd().substring(0,10)).compareTo(parseDateC(event.getEnd().substring(0,10))) < 0){
             return new ResponseEntity<Error>(HttpStatus.CONFLICT);
         }
 
