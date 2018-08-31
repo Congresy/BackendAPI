@@ -135,7 +135,10 @@ public class Actors {
 
         try {
             for (String s : actor.getFriends()){
-                friends.add(actorRepository.findOne(s));
+                if (actor.getFriends()  != null){
+                    friends.add(actorRepository.findOne(s));
+
+                }
             }
         } catch (NullPointerException e){
             friends =  new ArrayList<>();
@@ -255,20 +258,20 @@ public class Actors {
                 actor1.setFriends(friendsOfActor1);
                 actorRepository.save(actor1);
             } catch (NullPointerException e){
-                friendsOfActor1 = new ArrayList<>();
-                friendsOfActor1.add(actor2.getId());
-                actor1.setFriends(friendsOfActor1);
+                friendsOfActor2 = new ArrayList<>();
+                friendsOfActor2.add(actor2.getId());
+                actor1.setFriends(friendsOfActor2);
                 actorRepository.save(actor1);
             }
 
             try {
                 friendsOfActor2 = actor2.getFriends();
-                friendsOfActor1.add(actor1.getId());
+                friendsOfActor2.add(actor1.getId());
                 actor2.setFriends(friendsOfActor2);
                 actorRepository.save(actor2);
             } catch (NullPointerException e){
                 friendsOfActor2 = new ArrayList<>();
-                friendsOfActor1.add(actor1.getId());
+                friendsOfActor2.add(actor1.getId());
                 actor2.setFriends(friendsOfActor2);
                 actorRepository.save(actor2);
             }

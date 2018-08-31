@@ -428,9 +428,11 @@ public class Comments {
 
         // Get actor
         for (Actor a: actorRepository.findAll()){
-            if(a.getComments().contains(comment.getId())){
-                actor = a;
-                break;
+            if (a.getComments() != null){
+                if(a.getComments().contains(comment.getId())){
+                    actor = a;
+                    break;
+                }
             }
         }
 
@@ -438,17 +440,19 @@ public class Comments {
         if (postRepository.findOne(idComment) != null){
 
             for (Post p : postRepository.findAll()){
-                for (String p1 : p.getComments()){
-                    if (p1.equals(idComment)){
-                        List<String> commentsActor = p.getComments();
-                        commentsActor.remove(p1);
-                        postRepository.save(p);
-                        break;
-                    } else if (commentRepository.findOne(p1).getResponses().contains(idComment)){
-                        Comment aux = commentRepository.findOne(p1);
-                        List<String> responses = aux.getResponses();
-                        responses.remove(p1);
-                        commentRepository.save(aux);
+                if (p.getComments() != null){
+                    for (String p1 : p.getComments()){
+                        if (p1.equals(idComment)){
+                            List<String> commentsActor = p.getComments();
+                            commentsActor.remove(p1);
+                            postRepository.save(p);
+                            break;
+                        } else if (commentRepository.findOne(p1).getResponses().contains(idComment)){
+                            Comment aux = commentRepository.findOne(p1);
+                            List<String> responses = aux.getResponses();
+                            responses.remove(p1);
+                            commentRepository.save(aux);
+                        }
                     }
                 }
             }
