@@ -325,6 +325,7 @@ public class Comments {
         List<String> responses;
         List<String> commentsActor;
 
+        comment.setAuthor(idAuthor);
         comment.setCommentable(commentToResponse.getCommentable());
 
         commentRepository.save(comment);
