@@ -341,7 +341,7 @@ public class Conferences {
 	@DeleteMapping(value = "/{idConference}", produces = "application/json")
 	public ResponseEntity<?> delete(@PathVariable("idConference") String id) {
 		Conference conference = conferenceRepository.findOne(id);
-		List<String> events = new ArrayList<>();
+		List<String> events;
 
 		if (conference == null) {
 			return new ResponseEntity<Error>(HttpStatus.NOT_FOUND);
@@ -387,11 +387,11 @@ public class Conferences {
 					if (comment.getResponses().isEmpty()){
 						commentRepository.delete(idComment);
 					} else {
-						for (String s : comment.getResponses()) {
-							if (s != null) {
+						for (String s : comment.getResponses()){
+							if (s != null)
 								commentRepository.delete(commentRepository.findOne(s));
-							}
 						}
+						commentRepository.delete(idComment);
 					}
 				} else {
 					commentRepository.delete(idComment);

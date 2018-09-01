@@ -445,13 +445,17 @@ public class Comments {
                         if (p1.equals(idComment)){
                             List<String> commentsActor = p.getComments();
                             commentsActor.remove(p1);
+                            p.setComments(commentsActor);
                             postRepository.save(p);
                             break;
-                        } else if (commentRepository.findOne(p1).getResponses().contains(idComment)){
-                            Comment aux = commentRepository.findOne(p1);
-                            List<String> responses = aux.getResponses();
-                            responses.remove(p1);
-                            commentRepository.save(aux);
+                        } else if (commentRepository.findOne(p1).getResponses() != null){
+                            if (commentRepository.findOne(p1).getResponses().contains(idComment)) {
+                                Comment aux = commentRepository.findOne(p1);
+                                List<String> responses = aux.getResponses();
+                                responses.remove(p1);
+                                aux.setResponses(responses);
+                                commentRepository.save(aux);
+                            }
                         }
                     }
                 }
@@ -463,6 +467,7 @@ public class Comments {
                         if (c1.equals(idComment)){
                             List<String> commentsActor = c.getComments();
                             commentsActor.remove(c1);
+                            c.setComments(commentsActor);
                             conferenceRepository.save(c);
                             break;
                         } else if (commentRepository.findOne(c1).getResponses() != null){
@@ -470,6 +475,7 @@ public class Comments {
                                 Comment aux = commentRepository.findOne(c1);
                                 List<String> responses = aux.getResponses();
                                 responses.remove(c1);
+                                aux.setResponses(responses);
                                 commentRepository.save(aux);
                             }
                         }
@@ -494,6 +500,7 @@ public class Comments {
                     if (s != null)
                         commentRepository.delete(commentRepository.findOne(s));
                 }
+                commentRepository.delete(idComment);
             }
         } else {
             commentRepository.delete(idComment);

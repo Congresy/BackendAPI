@@ -202,11 +202,11 @@ public class Posts {
                         if (comment.getResponses().isEmpty()){
                             commentRepository.delete(idComment);
                         } else {
-                            for (String s : comment.getResponses()) {
-                                if (s != null) {
+                            for (String s : comment.getResponses()){
+                                if (s != null)
                                     commentRepository.delete(commentRepository.findOne(s));
-                                }
                             }
+                            commentRepository.delete(idComment);
                         }
                     } else {
                         commentRepository.delete(idComment);
