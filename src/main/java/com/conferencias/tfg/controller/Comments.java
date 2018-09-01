@@ -437,7 +437,7 @@ public class Comments {
         }
 
         // Delete the comment in the commentable element
-        if (postRepository.findOne(idComment) != null){
+        if (postRepository.findOne(comment.getCommentable()) != null){
 
             for (Post p : postRepository.findAll()){
                 if (p.getComments() != null){
