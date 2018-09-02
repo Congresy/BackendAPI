@@ -7,11 +7,13 @@ import io.swagger.annotations.Api;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
 @CrossOrigin
+@ApiIgnore
 @RestController
 @RequestMapping("payments")
 @Api(value = "Payments", description = "Operations related with payments")
