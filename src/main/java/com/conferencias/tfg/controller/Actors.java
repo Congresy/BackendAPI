@@ -379,12 +379,10 @@ public class Actors {
         UserAccount uA = userAccountRepository.findOne(currentActor.getUserAccount_());
 
         if (!actorWrapper.getUserAccount().getPassword().equals("")){
-            uA.setPassword(actorWrapper.getUserAccount().getPassword());
+            uA.setPassword(customPasswordEncoder.encode(actorWrapper.getUserAccount().getPassword()));
         }
 
-        userAccountRepository.findOne(currentActor.getUserAccount_()).setUsername(actorWrapper.getUserAccount().getUsername());
-
-        userAccountRepository.save(userAccountRepository.findOne(currentActor.getUserAccount_()));
+        userAccountRepository.save(uA);
 
         actorRepository.save(currentActor);
 
