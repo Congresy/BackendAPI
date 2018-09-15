@@ -376,6 +376,12 @@ public class Actors {
         currentActor.setPrivate_(actorWrapper.getActor().isPrivate_());
         currentActor.setPhoto(actorWrapper.getActor().getPhoto());
 
+        UserAccount uA = userAccountRepository.findOne(currentActor.getUserAccount_());
+
+        if (!actorWrapper.getUserAccount().getPassword().equals("")){
+            uA.setPassword(actorWrapper.getUserAccount().getPassword());
+        }
+
         userAccountRepository.findOne(currentActor.getUserAccount_()).setUsername(actorWrapper.getUserAccount().getUsername());
 
         userAccountRepository.save(userAccountRepository.findOne(currentActor.getUserAccount_()));
