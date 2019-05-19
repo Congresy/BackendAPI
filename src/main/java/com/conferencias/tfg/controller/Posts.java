@@ -217,7 +217,7 @@ public class Posts {
 
         for (Actor a : actorRepository.findAll()){
             if (a.getPosts() != null){
-                if (a.getConferences().contains(post.getId())){
+                if (a.getPosts().contains(post.getId())){
                     List<String> add = actor.getPosts();
                     add.remove(id);
                     actor.setPosts(add);
